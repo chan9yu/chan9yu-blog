@@ -188,8 +188,10 @@ private: false # true면 공개 목록에서 제외
 조회수 기능을 로컬에서 켜려면 `.env.local`에 다음을 넣습니다.
 
 ```
-KV_REST_API_URL=
-KV_REST_API_TOKEN=
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
 ```
+
+Vercel KV 시절의 `KV_REST_API_URL`과 `KV_REST_API_TOKEN`도 그대로 읽으므로 기존 설정을 쓰던 사람은 바꾸지 않아도 됩니다.
 
 없어도 빌드와 렌더는 정상 동작하고 조회수만 0으로 표시됩니다. 조회수를 확인할 일이 없다면 설정하지 않아도 됩니다.

@@ -21,9 +21,11 @@ Vercel이 프로덕션과 미리보기를 모두 만든다. 도메인은 `chan9y
 | `NEXT_PUBLIC_SITE_URL`                 | 절대 URL이 어긋나 OG와 sitemap이 깨진다       |
 | `GITHUB_REPO_CLONE_TOKEN`              | 서브모듈을 받지 못해 빌드가 멈춘다            |
 | `NEXT_PUBLIC_GISCUS_REPO`와 나머지 3종 | 댓글 자리에 안내 문구만 뜬다                  |
-| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | 조회수가 0으로 보이고 인기 글이 최신순이 된다 |
+| `UPSTASH_REDIS_REST_URL`과 `_TOKEN`    | 조회수가 0으로 보이고 인기 글이 최신순이 된다 |
 
 giscus 관련 키는 `_REPO`와 `_REPO_ID`, `_CATEGORY`, `_CATEGORY_ID` 넷이고 하나라도 빠지면 댓글이 뜨지 않는다.
+
+조회수 키는 `UPSTASH_REDIS_REST_URL`과 `UPSTASH_REDIS_REST_TOKEN` 둘이다. 둘이 없으면 Vercel KV 시절의 `KV_REST_API_URL`과 `KV_REST_API_TOKEN`으로 떨어진다. 어느 쌍을 쓰든 URL과 토큰이 함께 있어야 하고 하나만 있으면 조회수가 동작하지 않는다.
 
 토큰은 권한을 최소로 발급한다. 서브모듈 토큰은 읽기 전용이면 충분하다.
 
@@ -59,7 +61,7 @@ giscus 관련 키는 `_REPO`와 `_REPO_ID`, `_CATEGORY`, `_CATEGORY_ID` 넷이�
 배포 후 확인한다.
 
 - 최근 글이 홈과 목록, RSS, sitemap에 나오는가
-- 조회수가 숫자로 뜨는가. 대시가 보이면 KV 설정을 본다
+- 조회수가 숫자로 뜨는가. 대시가 보이면 Redis 설정을 본다
 - 댓글이 붙는가. 안내 문구가 보이면 giscus 키를 본다
 - 새 글의 OG 카드가 공유 미리보기에서 제대로 렌더되는가
 
@@ -73,7 +75,7 @@ giscus 관련 키는 `_REPO`와 `_REPO_ID`, `_CATEGORY`, `_CATEGORY_ID` 넷이�
 
 ### 조회수가 안 보일 때
 
-KV가 없거나 실패해도 페이지는 정상 동작하도록 설계되어 있다. 숫자 대신 대시가 뜨고 인기 글이 최신순으로 바뀔 뿐이다. 급하지 않으므로 KV 상태를 확인한 뒤 고친다.
+Redis가 없거나 실패해도 페이지는 정상 동작하도록 설계되어 있다. 숫자 대신 대시가 뜨고 인기 글이 최신순으로 바뀔 뿐이다. 급하지 않으므로 Redis 상태를 확인한 뒤 고친다.
 
 ### 페이지가 열리지 않을 때
 

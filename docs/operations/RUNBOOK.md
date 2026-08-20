@@ -4,7 +4,7 @@
 
 ## 배포 파이프라인
 
-Vercel이 프로덕션과 미리보기를 모두 만든다. 도메인은 `www.chan9yu.dev`이고 apex는 www로 넘긴다.
+Vercel이 프로덕션과 미리보기를 모두 만든다. 도메인은 `chan9yu.dev`다. 이 값이 `src/shared/config/site.ts`에 있고 canonical과 OG, sitemap이 전부 여기서 나온다.
 
 빌드는 세 단계로 이어진다.
 

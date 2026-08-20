@@ -58,7 +58,7 @@ Next.js 16 App Router와 MDX로 만든 개인 개발 블로그입니다. 글은 
 
 Vercel에 자동으로 배포됩니다. `main`에 머지하면 프로덕션에 올라가고, `develop`으로 PR을 열면 Preview가 만들어집니다.
 
-빌드 명령은 `pnpm build`이고 결과물은 `.next/`에 나옵니다. 조회수를 쓰려면 `KV_REST_API_URL`과 `KV_REST_API_TOKEN`을 환경 변수로 넣습니다. 넣지 않아도 빌드와 렌더는 정상 동작합니다.
+배포 빌드는 `pnpm build:vercel`로 돌고 결과물은 `.next/`에 나옵니다. 로컬에서 같은 조건으로 확인하려면 `pnpm build:strict`를 씁니다. 그냥 `pnpm build`는 frontmatter를 어긴 글을 건너뛰기만 합니다. 조회수를 쓰려면 `KV_REST_API_URL`과 `KV_REST_API_TOKEN`을 환경 변수로 넣습니다. 넣지 않아도 빌드와 렌더는 정상 동작합니다.
 
 ## 개발 참여
 

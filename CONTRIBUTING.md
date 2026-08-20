@@ -42,18 +42,19 @@ git submodule update --init --recursive
 
 ## 명령어
 
-| 명령어               | 설명                                  |
-| -------------------- | ------------------------------------- |
-| `pnpm dev`           | 개발 서버 (포트 3100)                 |
-| `pnpm build`         | 프로덕션 빌드                         |
-| `pnpm start`         | 빌드 결과 실행                        |
-| `pnpm type:check`    | 타입 검사                             |
-| `pnpm lint`          | ESLint                                |
-| `pnpm format`        | Prettier로 포매팅                     |
-| `pnpm test`          | Vitest 단위 테스트와 통합 테스트      |
-| `pnpm test:watch`    | Vitest 감시 모드                      |
-| `pnpm test:coverage` | 커버리지 리포트                       |
-| `pnpm validate:seo`  | 빌드 없이 frontmatter SEO 규칙만 검사 |
+| 명령어               | 설명                                   |
+| -------------------- | -------------------------------------- |
+| `pnpm dev`           | 개발 서버 (포트 3100)                  |
+| `pnpm build`         | 프로덕션 빌드                          |
+| `pnpm start`         | 빌드 결과 실행                         |
+| `pnpm type:check`    | 타입 검사                              |
+| `pnpm lint`          | ESLint                                 |
+| `pnpm format`        | Prettier로 포매팅                      |
+| `pnpm test`          | Vitest 단위 테스트와 통합 테스트       |
+| `pnpm test:watch`    | Vitest 감시 모드                       |
+| `pnpm test:coverage` | 커버리지 리포트                        |
+| `pnpm validate:seo`  | 빌드 없이 frontmatter SEO 규칙만 검사  |
+| `pnpm link:agents`   | `.agents/` 본문을 도구 디렉토리에 링크 |
 
 ## 프로젝트 구조
 
@@ -66,6 +67,8 @@ src/
 └── shared/      components, styles, seo, config, utils, hooks, types, libs, assets
 
 contents/        MDX 콘텐츠 (Git 서브모듈, 저장소 루트)
+docs/            문서 (product, design, operations, prompts)
+scripts/         빌드 전 검사와 이미지 복사, 커밋 템플릿
 ```
 
 지켜야 할 규칙은 세 가지입니다.
@@ -75,6 +78,24 @@ contents/        MDX 콘텐츠 (Git 서브모듈, 저장소 루트)
 3. feature끼리 직접 import하지 않습니다. 필요하면 `app`에서 조립하거나 공통 부분을 `shared`로 올립니다.
 
 각 feature는 `index.ts`로만 바깥과 연결합니다. 배럴 파일에는 re-export만 두고 타입이나 상수, 함수를 정의하지 않습니다.
+
+## AI 협업 설정
+
+저장소 루트의 `.agents/`와 `.claude/`는 AI 코딩 도구가 읽는 파일입니다. 사람이 쓰는 코드는 여기 없습니다.
+
+```
+.agents/         규칙과 스킬 본문. 도구에 매이지 않는 형식
+.claude/         Claude Code용. rules와 skills는 .agents/로 가는 링크
+AGENTS.md        늘 지켜야 하는 것. CLAUDE.md가 이 파일로 가는 링크
+```
+
+본문은 `.agents/`에 한 벌만 둡니다. 도구 디렉토리에는 링크만 두어 도구가 늘어도 고칠 곳이 한 군데로 남습니다. `.claude/rules/`나 `.claude/skills/`에 실제 파일을 만들면 링크 스크립트가 오류를 내고 멈춥니다.
+
+규칙이나 스킬을 더했으면 링크를 새로 겁니다. `pnpm install` 때도 자동으로 돕니다.
+
+```bash
+pnpm link:agents
+```
 
 ## 코드 규약
 

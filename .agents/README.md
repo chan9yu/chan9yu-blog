@@ -69,12 +69,10 @@ description: 브랜치 전략과 커밋 메시지 형식, 금지 패턴
 `.agents/rules/{이름}.md`를 만들고 프론트매터에 `description`을 적는다. 특정 파일에만 필요한 룰이면 `paths`도 적는다. 그다음 링크를 만든다.
 
 ```bash
-bash .agents/scripts/link-agents.sh
+pnpm link:agents
 ```
 
-`.claude/rules/{이름}.md` 링크가 생기고, `.agents/rules/`에서 지운 룰의 링크는 사라진다.
-
-자주 돌리게 되면 `package.json`의 `scripts`에 `"link:agents": "bash .agents/scripts/link-agents.sh"`를 넣어 `pnpm link:agents`로 줄인다. `prepare`에 이어 붙이면 `pnpm install` 때 함께 돈다. 지금 `prepare`는 `lefthook install`만 돌린다.
+`.claude/rules/{이름}.md` 링크가 생기고, `.agents/rules/`에서 지운 룰의 링크는 사라진다. `prepare`에 붙어 있어 `pnpm install` 때도 함께 돈다.
 
 늘 적용되는 룰을 추가했다면 `AGENTS.md`에도 한 줄 적는다. Codex는 링크를 따라가지 않는다.
 
@@ -86,4 +84,4 @@ bash .agents/scripts/link-agents.sh
 
 룰과 달리 스킬은 늘 로드되지 않는다. 요청이 스킬 설명과 맞을 때만 붙는다. 여러 단계를 밟는 절차, 또는 작업 하나에서만 쓰는 지식은 룰이 아니라 스킬로 만든다.
 
-현재 `ping` 스킬이 있다. 링크가 살아 있는지 확인하는 용도이고 하는 일은 없다.
+현재 네 개가 있다. `v130-rewrite`가 v1.3.0 재작성을 이끌고, `fsd-layout`과 `primitive-build`, `a11y-dialog-check`가 각각 배치와 구현, 검증을 맡는다.

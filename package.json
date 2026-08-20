@@ -32,7 +32,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
-		"prepare": "lefthook install"
+		"link:agents": "bash .agents/scripts/link-agents.sh",
+		"prepare": "lefthook install && pnpm link:agents"
 	},
 	"dependencies": {
 		"@shikijs/rehype": "^4.4.3",

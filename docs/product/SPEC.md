@@ -198,7 +198,7 @@
 | `KV_REST_API_URL`, `KV_REST_API_TOKEN` 등 KV 계열                  | 조회수 0 표시, 인기 포스트는 최신순 |
 | `GITHUB_REPO_CLONE_TOKEN`                                          | Vercel에서 서브모듈 clone 실패      |
 
-품질 게이트는 두 겹이다. 커밋 전 lefthook이 eslint와 prettier, `tsc --noEmit`을 돌리고, CI는 타입 검사와 Vitest(41개 파일)를 돌린다.
+품질 게이트는 세 겹이다. lefthook이 커밋할 때 eslint와 prettier를, 푸시할 때 `tsc --noEmit`을 돌린다. CI는 타입 검사와 Vitest(41개 파일)를 돌린다.
 
 ## 기술 결정
 

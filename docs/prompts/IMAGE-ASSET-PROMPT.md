@@ -19,7 +19,7 @@
 | 뱃지 대체 배경       | `/badge` 라우트가 그림                        | 480x270              | 썸네일 없는 글의 README 카드   |
 | 썸네일 대체          | `public/images/post-placeholder.png`          | 1600x900             | 썸네일 없는 글의 목록 카드     |
 
-`android-chrome-512x512.png`와 `post-placeholder.png`는 아직 없다. v1.3.0에서 만든다. 512 아이콘은 manifest에 등록해야 설치 화면에서 흐릿하게 나오지 않는다.
+`logo-mark.svg`와 `android-chrome-512x512.png`, `post-placeholder.png` 셋은 아직 없다. v1.3.0에서 만든다. 심볼 마크가 파비콘과 OG, 뱃지의 원본이므로 그것부터 만든다. 512 아이콘은 manifest에 등록해야 설치 화면에서 흐릿하게 나오지 않는다.
 
 ## 공통 조건
 

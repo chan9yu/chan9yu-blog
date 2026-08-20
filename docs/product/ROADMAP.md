@@ -51,11 +51,11 @@ M7 완료 후에는 마일스톤 대신 release 사이클로 운영한다. 통�
 | 갈래          | 무엇을                                     | 규모               |
 | ------------- | ------------------------------------------ | ------------------ |
 | FSD 2.0 전환  | 3계층 자체 구조를 FSD 표준 레이어로 옮긴다 | 파일 166개 이동    |
-| shadcn 제거   | 프리미티브 3개를 직접 만들고 4개를 지운다  | 신규 3개, 삭제 4개 |
+| shadcn 제거   | 프리미티브 7개를 직접 만들고 4개를 지운다  | 신규 7개, 삭제 4개 |
 | 디자인 개편   | 토큰과 타이포를 정리하고 화면에 적용한다   | 토큰과 전 화면     |
 | 하네스 재구성 | 룰과 스킬을 `.agents/`에 다시 세운다       | 룰 1개에서 확장    |
 | SEO 보강      | 메타데이터와 구조화 데이터를 다시 본다     | 라우트 전체        |
-| 의존성 정리   | 쓰지 않는 것을 뺀다                        | 4개 제거 예상      |
+| 의존성 정리   | 쓰지 않는 것을 뺀다                        | 5개 제거 예상      |
 
 ### 순서
 
@@ -83,7 +83,7 @@ M7 완료 후에는 마일스톤 대신 release 사이클로 운영한다. 통�
 
 - [ ] `shared/components/ui/`에서 `Accordion`, `Badge`, `DropdownMenu`, `Sonner` 삭제
 - [ ] `shared/components/common/`에서 `FadeInWhenVisible`, `PageTransition` 삭제
-- [ ] 쓰이지 않는 keyframe 5종 삭제 (`fade-in-up`, `scale-in`, `slide-in-left`, `slide-in-right`, `pulse-subtle`, `shimmer`)
+- [ ] 쓰이지 않는 keyframe 6종 삭제 (`fade-in-up`, `scale-in`, `slide-in-from-left`, `slide-in-from-right`, `pulse-subtle`, `shimmer`)
 - [ ] 쓰이지 않는 토큰 삭제 또는 연결 (`--shadow-accent`, `success`와 `warning`, `info` 계열, `--color-text-disabled`, `--radius-xl`, z-index 4종)
 - [ ] `getPostBySlug`와 `getBatchPostViews`, `TrendingSnapshot` 타입 정리
 
@@ -91,7 +91,7 @@ z-index 토큰은 정의만 있고 코드는 `z-30`처럼 숫자를 직접 쓴�
 
 ### 3. FSD 2.0 전환
 
-FSD는 7개 레이어를 정의하고 위 레이어가 아래 레이어만 참조하게 한다. Next.js와 함께 쓸 때는 FSD의 `app`과 `pages`를 `_app`과 `_pages`로 바꿔 프레임워크 폴더와 이름이 겹치지 않게 하고, Next의 `src/app`은 재노출만 한다.
+FSD 명세는 레이어 일곱을 정의하지만 Processes가 폐기돼 여섯을 쓴다. 위 레이어가 아래 레이어만 참조한다. Next.js와 함께 쓸 때는 FSD의 `app`과 `pages`를 `_app`과 `_pages`로 바꿔 프레임워크 폴더와 이름이 겹치지 않게 하고, Next의 `src/app`은 재노출만 한다.
 
 현재 3계층을 이렇게 나눈다.
 
@@ -135,7 +135,10 @@ DESIGN.md가 정한 값으로 맞춘다.
 - [ ] `Sheet` 직접 구현. Dialog 위에 방향과 슬라이드만 얹는다
 - [ ] `FocusTrap`을 만들어 Dialog와 Sheet가 공유하게 한다
 - [ ] `Toast`를 아주 작게 만든다. 지금 쓰는 곳은 복사 알림 하나다
+- [ ] `Skeleton`과 `VisuallyHidden`을 만든다
 - [ ] 대화상자 접근성 점검 목록 7가지를 테스트로 증명한다
+
+만들 목록의 정본은 `docs/design/DESIGN.md`의 프리미티브 목록이다.
 
 **가장 위험한 지점이다.** Radix가 대신 해주던 것을 빼먹으면 접근성이 조용히 무너진다. 포커스 가두기, 닫을 때 포커스 복원, `aria-modal`, ESC, 배경 스크롤 잠금, 바깥 클릭, 뒤 배경 감추기 일곱이다. 눈으로 보면 멀쩡해 보이므로 테스트로 잡는다.
 
@@ -159,7 +162,7 @@ DESIGN-SPEC.md의 화면 명세대로 맞춘다.
 - [ ] 뱃지 팔레트를 디자인 토큰에 맞춘다. 지금 gray 계열이 하드코딩되어 있다
 - [ ] `android-chrome-512x512.png`를 만들어 manifest에 등록한다
 - [ ] `manifest`의 `background_color`를 토큰과 잇는다
-- [ ] `.claude/rules/seo.md`와 실제 코드의 어긋남을 맞춘다. RSS 편수와 `/og` 런타임 설명이 사실과 다르다
+- [ ] SEO 규약을 `.agents/rules/`에 다시 세운다. 옛 규칙은 RSS 편수와 `/og` 런타임 설명이 사실과 달라 그대로 살릴 수 없다
 
 ### 8. 의존성 정리
 

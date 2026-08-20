@@ -1,11 +1,10 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import matter from "gray-matter";
-
 import { calculateReadingTime } from "../utils/calculateReadingTime";
 import { extractTocFromMarkdown } from "../utils/extractTocFromMarkdown";
 import { parseFrontmatter } from "../utils/parseFrontmatter";
+import { splitFrontmatter } from "../utils/splitFrontmatter";
 import { POSTS_DIR } from "./paths";
 
 // CommonMark §6.4 Emphasis: 닫는 `**` 앞에 `)` 등 구두점 + 뒤에 한글이 붙으면 닫힘 조건 불충족 → 리터럴 `**` 출력.
@@ -40,7 +39,7 @@ export function getPostDetail(slug: string) {
 	try {
 		const raw = readFileSync(filePath, "utf-8");
 		const frontmatter = parseFrontmatter(raw, slug);
-		const { content } = matter(raw);
+		const { content } = splitFrontmatter(raw);
 
 		// 원본 content로 toc 추출 — preprocessMdxContent 결과는 <strong> 삽입으로 rehype-slug id와 어긋날 수 있음.
 		const toc = extractTocFromMarkdown(content);

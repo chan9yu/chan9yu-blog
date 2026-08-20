@@ -1,15 +1,16 @@
+import { getRedis, hasRedisCredentials } from "@/shared/libs/redis";
 import type { PostSummary } from "@/shared/types";
 
 const VIEW_KEY_PREFIX = "views:post:";
 const DEFAULT_LIMIT = 5;
 
-// KV 미설정 PR preview·로컬 빌드를 깨지 않도록 fallback. `fallback: true` 플래그로 호출자가 UI 분기 가능.
+// Redis 미설정 PR preview와 로컬 빌드를 깨지 않도록 fallback. `fallback: true` 플래그로 호출자가 UI 분기 가능.
 export async function getTrendingPosts(posts: PostSummary[], limit = DEFAULT_LIMIT) {
 	if (posts.length === 0) {
 		return { posts: [], fallback: false };
 	}
 
-	if (!hasKvCredentials()) {
+	if (!hasRedisCredentials()) {
 		return { posts: pickRecentPosts(posts, limit), fallback: true };
 	}
 
@@ -22,7 +23,7 @@ export async function getTrendingPosts(posts: PostSummary[], limit = DEFAULT_LIM
 		});
 		return { posts: sorted.slice(0, limit), fallback: false };
 	} catch (error) {
-		console.warn("[getTrendingPosts] KV fetch failed, falling back to date-desc:", error);
+		console.warn("[getTrendingPosts] Redis fetch failed, falling back to date-desc:", error);
 		return { posts: pickRecentPosts(posts, limit), fallback: true };
 	}
 }
@@ -32,14 +33,8 @@ function pickRecentPosts(posts: PostSummary[], limit: number) {
 	return [...posts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
 }
 
-function hasKvCredentials() {
-	return Boolean(process.env.KV_REST_API_URL) && Boolean(process.env.KV_REST_API_TOKEN);
-}
-
-// 동적 import는 KV 미설정 빌드에서 @vercel/kv 초기화를 회피하기 위한 2차 방어선 (1차는 hasKvCredentials).
 async function fetchViewsMap(slugs: string[]) {
-	const { kv } = await import("@vercel/kv");
 	const keys = slugs.map((slug) => `${VIEW_KEY_PREFIX}${slug}`);
-	const values = await kv.mget<Array<number | null>>(...keys);
+	const values = await getRedis().mget<Array<number | null>>(...keys);
 	return Object.fromEntries(slugs.map((slug, index) => [slug, values[index] ?? 0]));
 }

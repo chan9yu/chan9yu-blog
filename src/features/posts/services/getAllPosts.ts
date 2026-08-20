@@ -1,13 +1,12 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import matter from "gray-matter";
-
 import type { PostSummary } from "@/shared/types";
 
 import { calculateReadingTime } from "../utils/calculateReadingTime";
 import { parseFrontmatter } from "../utils/parseFrontmatter";
 import { sortPostsByDateDescending } from "../utils/sortPostsByDateDescending";
+import { splitFrontmatter } from "../utils/splitFrontmatter";
 import { POSTS_DIR } from "./paths";
 
 type GetAllPostsOptions = {
@@ -35,7 +34,7 @@ export function getAllPosts(options: GetAllPostsOptions = {}) {
 
 			if (!includePrivate && frontmatter.private) continue;
 
-			const { content } = matter(raw);
+			const { content } = splitFrontmatter(raw);
 			const readingTimeMinutes = calculateReadingTime(content);
 
 			posts.push({ ...frontmatter, readingTimeMinutes });

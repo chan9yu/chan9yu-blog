@@ -10,7 +10,7 @@
  * 이 파일이 **프로듀서↔MSW mock 드리프트의 유일한 게이트**이므로 exact-shape 강제가 핵심.
  *
  * M3-07 [Red] 단계 — 현재 placeholder가 PRD 위반(slug 누설 / 200 + body / no-store 헤더 미설정)으로
- * shape·status·header 단언이 실패. M3-08 [Green]에서 `@vercel/kv` 연결 + PRD shape 정합화 시 녹색 전환.
+ * shape·status·header 단언이 실패. M3-08 [Green]에서 Redis 연결 + PRD shape 정합화 시 녹색 전환.
  */
 
 import { NextRequest } from "next/server";
@@ -18,21 +18,29 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GET, POST } from "../route";
 
-const { kvStore } = vi.hoisted(() => ({ kvStore: new Map<string, number>() }));
+const { redisStore, fakeRedis } = vi.hoisted(() => {
+	const redisStore = new Map<string, number>();
 
-vi.mock("@vercel/kv", () => ({
-	kv: {
-		get: vi.fn(async (key: string) => kvStore.get(key) ?? null),
-		incr: vi.fn(async (key: string) => {
-			const next = (kvStore.get(key) ?? 0) + 1;
-			kvStore.set(key, next);
-			return next;
-		})
-	}
+	return {
+		redisStore,
+		fakeRedis: {
+			get: async (key: string) => redisStore.get(key) ?? null,
+			incr: async (key: string) => {
+				const next = (redisStore.get(key) ?? 0) + 1;
+				redisStore.set(key, next);
+				return next;
+			}
+		}
+	};
+});
+
+vi.mock("@/shared/libs/redis", () => ({
+	getRedis: () => fakeRedis,
+	hasRedisCredentials: () => true
 }));
 
 beforeEach(() => {
-	kvStore.clear();
+	redisStore.clear();
 	vi.clearAllMocks();
 });
 

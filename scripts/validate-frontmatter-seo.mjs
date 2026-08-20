@@ -3,7 +3,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import matter from "gray-matter";
+import { VFile } from "vfile";
+import { matter } from "vfile-matter";
 
 const POSTS_DIR = "contents/posts";
 const TITLE_MAX = 60;
@@ -22,8 +23,9 @@ for (const slug of slugs) {
 	const filePath = join(POSTS_DIR, slug, "index.mdx");
 	let fm;
 	try {
-		const raw = readFileSync(filePath, "utf-8");
-		fm = matter(raw).data;
+		const file = new VFile(readFileSync(filePath, "utf-8"));
+		matter(file);
+		fm = file.data.matter;
 	} catch (e) {
 		violations.push({ slug, errors: [`파일 파싱 실패: ${e.message}`] });
 		continue;

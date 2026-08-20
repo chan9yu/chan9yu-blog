@@ -19,9 +19,12 @@ const post = (slug: string, date: string): PostSummary => ({
 
 const mgetMock = vi.fn();
 
-vi.mock("@vercel/kv", () => ({
-	kv: {
-		mget: (...args: unknown[]) => mgetMock(...args)
+// hasRedisCredentials는 실물을 쓴다. 환경 변수 분기가 이 파일의 검증 대상이라 mock으로 덮으면 안 된다.
+vi.mock("@upstash/redis", () => ({
+	Redis: {
+		fromEnv: () => ({
+			mget: (...args: unknown[]) => mgetMock(...args)
+		})
 	}
 }));
 
@@ -30,6 +33,8 @@ describe("getTrendingPosts", () => {
 
 	beforeEach(() => {
 		mgetMock.mockReset();
+		delete process.env.UPSTASH_REDIS_REST_URL;
+		delete process.env.UPSTASH_REDIS_REST_TOKEN;
 		process.env.KV_REST_API_URL = "https://kv.example";
 		process.env.KV_REST_API_TOKEN = "token";
 	});
@@ -38,7 +43,7 @@ describe("getTrendingPosts", () => {
 		process.env = { ...originalEnv };
 	});
 
-	it("KV 조회수 내림차순 상위 N개를 반환한다", async () => {
+	it("Redis 조회수 내림차순 상위 N개를 반환한다", async () => {
 		mgetMock.mockResolvedValueOnce([10, 50, 30]);
 		const posts = [post("a", "2026-01-01"), post("b", "2026-02-01"), post("c", "2026-03-01")];
 
@@ -57,7 +62,7 @@ describe("getTrendingPosts", () => {
 		expect(result.posts.map((p) => p.slug)).toEqual(["newest", "middle", "older"]);
 	});
 
-	it("KV 값이 null이면 0으로 취급한다", async () => {
+	it("Redis 값이 null이면 0으로 취급한다", async () => {
 		mgetMock.mockResolvedValueOnce([null, 5]);
 		const posts = [post("a", "2026-02-01"), post("b", "2026-01-01")];
 
@@ -66,7 +71,7 @@ describe("getTrendingPosts", () => {
 		expect(result.posts.map((p) => p.slug)).toEqual(["b", "a"]);
 	});
 
-	it("KV 환경 변수 미설정 시 date desc fallback을 반환한다", async () => {
+	it("Redis 환경 변수 미설정 시 date desc fallback을 반환한다", async () => {
 		delete process.env.KV_REST_API_URL;
 		delete process.env.KV_REST_API_TOKEN;
 		const posts = [post("newer", "2026-02-01"), post("older", "2026-01-01")];
@@ -78,8 +83,8 @@ describe("getTrendingPosts", () => {
 		expect(mgetMock).not.toHaveBeenCalled();
 	});
 
-	it("KV 호출이 throw하면 date desc fallback을 반환한다", async () => {
-		mgetMock.mockRejectedValueOnce(new Error("KV upstream error"));
+	it("Redis 호출이 throw하면 date desc fallback을 반환한다", async () => {
+		mgetMock.mockRejectedValueOnce(new Error("Redis upstream error"));
 		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 		const posts = [post("a", "2026-02-01"), post("b", "2026-01-01")];
 

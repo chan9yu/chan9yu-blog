@@ -1,6 +1,6 @@
 ---
 name: primitive-build
-description: shadcn과 Radix 없이 UI 프리미티브를 직접 만드는 절차. Button, Badge, Dialog, Sheet, Toast, FocusTrap을 손으로 구현할 때 쓴다. "Dialog 직접 만들어", "shadcn 걷어내고", "Radix 없이", "프리미티브 구현", "포커스 트랩", "variant 만들기" 같은 표현에 트리거한다. 대화상자를 만들 때 빠뜨리기 쉬운 것과 토큰 사용 규칙을 포함한다.
+description: shadcn과 Radix 없이 UI 프리미티브를 직접 만드는 절차. Button, Dialog, Sheet, Toast, Skeleton, VisuallyHidden, FocusTrap을 손으로 구현할 때 쓴다. "Dialog 직접 만들어", "shadcn 걷어내고", "Radix 없이", "프리미티브 구현", "포커스 트랩", "variant 만들기" 같은 표현에 트리거한다. 대화상자를 만들 때 빠뜨리기 쉬운 것과 토큰 사용 규칙을 포함한다.
 ---
 
 # 프리미티브 직접 구현
@@ -9,16 +9,19 @@ description: shadcn과 Radix 없이 UI 프리미티브를 직접 만드는 절�
 
 ## 만들 것
 
+일곱이다. 정본은 `docs/design/DESIGN.md`의 프리미티브 목록이고 여기는 만드는 법을 담는다.
+
 | 프리미티브     | 쓰는 곳               | 핵심                        |
 | -------------- | --------------------- | --------------------------- |
 | Button         | 여기저기              | variant와 size 매핑         |
 | Dialog         | 검색 모달, 라이트박스 | 포커스와 스크롤, 키보드     |
 | Sheet          | 모바일 서랍           | Dialog 위에 방향과 슬라이드 |
 | Toast          | 복사 알림             | 보조 기술에 변경 알리기     |
-| FocusTrap      | Dialog와 Sheet가 공유 | Tab 가두기                  |
+| Skeleton       | 목록 로딩             | 실제 콘텐츠와 높이가 같게   |
 | VisuallyHidden | 아이콘 버튼 이름      | 화면에서만 감추기           |
+| FocusTrap      | Dialog와 Sheet가 공유 | Tab 가두기                  |
 
-Tooltip은 지금 쓰는 곳이 없다. 필요해지기 전에 만들지 않는다.
+Badge와 Accordion, DropdownMenu는 쓰는 곳이 없어 옮기지 않고 지운다. Tooltip은 필요해질 때 만든다.
 
 ## 공통 규칙
 

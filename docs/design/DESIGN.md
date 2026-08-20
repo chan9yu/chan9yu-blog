@@ -216,19 +216,21 @@ v1.3.0에서 shadcn/ui와 그 기반인 Radix 의존을 전부 걷어내고 컴�
 
 v1.3.0에서 직접 만들 것이다. 지금 있는 것과 새로 필요한 것을 나눴다.
 
+일곱을 만든다. 이 목록이 정본이고 다른 문서는 여기를 따른다.
+
 | 프리미티브     | 상태        | 대체하는 것             | 만들 때 핵심                              |
 | -------------- | ----------- | ----------------------- | ----------------------------------------- |
 | Button         | 다시 만든다 | shadcn Button, CVA      | variant 5종, size 4종, 아이콘 전용 크기   |
-| Badge          | 다시 만든다 | shadcn Badge            | variant 3종으로 줄인다                    |
 | Dialog         | 새로 만든다 | Radix Dialog            | 포커스 가두기, 스크롤 잠금, ESC           |
 | Sheet          | 새로 만든다 | Radix Dialog 기반 Sheet | Dialog 위에 방향과 슬라이드만 얹는다      |
-| Tooltip        | 필요 시     | Radix Tooltip           | 터치 기기에서는 뜨지 않아야 한다          |
 | Toast          | 새로 만든다 | sonner                  | 지금 쓰는 곳이 복사 알림 하나라 아주 작게 |
 | Skeleton       | 다시 만든다 | 자체 구현               | 실제 콘텐츠와 높이가 같아야 한다          |
 | VisuallyHidden | 새로 만든다 | 개별 sr-only 클래스     | 화면에서 감추되 보조 기술에는 남긴다      |
 | FocusTrap      | 새로 만든다 | Radix 내부 구현         | Dialog와 Sheet가 공유한다                 |
 
-Tooltip은 현재 쓰는 곳이 없다. 필요해지기 전에 만들지 않는다.
+만들지 않는 것도 있다. Badge와 Accordion, DropdownMenu는 지금 쓰는 곳이 없어 옮기지 않고 지운다. Tooltip은 필요해질 때 만든다.
+
+프리미티브는 FSD의 shared 레이어 `ui` 세그먼트에 둔다. 배럴 없이 `shared/ui/Button`처럼 직접 경로로 가져온다.
 
 ### 직접 만들 때 빠뜨리기 쉬운 것
 
@@ -249,7 +251,7 @@ Radix가 대신 해주던 것을 옮겨 적었다. 대화상자 계열을 직접
 - 임의값을 쓰지 않는다. 토큰이 만든 유틸(`max-w-content`, `border-border-subtle`)이나 표준 클래스를 쓰고, 필요한 값이 없으면 토큰을 늘린다
 - 프리미티브는 바깥 여백을 스스로 갖지 않는다. 배치는 쓰는 쪽이 정한다
 - 프리미티브는 `className`을 받아 마지막에 병합한다. 쓰는 쪽이 덮어쓸 수 있어야 한다
-- 배럴 파일을 만들지 않는다. `shared/components/ui/Button`처럼 직접 경로로 가져온다
+- 배럴 파일을 만들지 않는다. `shared/ui/Button`처럼 직접 경로로 가져온다
 
 ## 모션
 
@@ -287,7 +289,7 @@ Radix가 대신 해주던 것을 옮겨 적었다. 대화상자 계열을 직접
 
 - 목록 카드의 등장을 JavaScript 대신 CSS 스크롤 타임라인(`animation-timeline: view()`)으로 옮긴다. 스크롤 리스너 없이 동작하고 미지원 브라우저는 애니메이션 없이 정상 표시된다
 - 페이지 이동에 View Transitions를 적용한다. 문서 간 전환은 `@view-transition` 규칙으로 켠다
-- 사용하지 않는 모션 자산을 지운다. 컴포넌트 두 개와 keyframe 다섯 개가 정의만 되어 있다
+- 사용하지 않는 모션 자산을 지운다. 컴포넌트 두 개와 keyframe 여섯 개가 정의만 되어 있다
 
 ## 다크 모드
 

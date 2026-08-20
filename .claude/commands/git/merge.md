@@ -2,42 +2,21 @@
 description: PR을 머지하고 브랜치를 정리해주세요.
 ---
 
-PR을 머지하고 브랜치를 정리해주세요:
+# Merge
+
+완료된 feature 브랜치를 `main`으로 머지하고 정리한다.
 
 ## 절차
 
-1. `gh pr list`로 열린 PR 목록 확인
-2. 사용자가 지정한 PR 번호 또는 현재 브랜치의 PR을 대상으로 선택
-3. `gh pr view <번호>`로 PR 상태(리뷰, CI 체크) 확인
-4. CI 체크가 통과했는지 확인 (`gh pr checks <번호>`)
-5. 머지 전 사용자에게 최종 확인 요청
-6. `gh pr merge <번호>` 실행 (기본: squash merge)
-7. 머지 완료 후 로컬 브랜치 정리
+1. 완료 기준 확인. 설계 정합성 리뷰와 QA 통과 여부를 본다. 미충족이면 머지하지 않고 보고한다
+2. 머지 경로 결정
+   - PR이 있으면: `gh pr merge --merge` (머지 커밋 유지)
+   - 원격/PR이 없으면: `git switch main` 후 `git merge --no-ff feature/{name}`
+3. 머지 커밋 메시지는 기본 형식 유지 (`Merge branch 'feature/{name}'`)
+4. 머지 후 검증. `pnpm check` 통과 확인
+5. 브랜치 정리. `git branch -d feature/{name}` (원격 브랜치가 있으면 원격도 삭제)
+6. `git log --oneline -5`로 결과 확인
 
-## 머지 전략
+## 규칙
 
-- **기본**: Squash merge (`--squash`) — 여러 커밋을 하나로 합쳐 깔끔한 히스토리 유지
-- 단일 커밋 PR: Merge commit (`--merge`) 또는 Squash 모두 가능
-- 사용자가 명시적으로 요청 시 다른 전략 사용 가능 (`--rebase`, `--merge`)
-
-## 머지 후 정리
-
-```bash
-# develop 브랜치로 전환 및 최신화 (마일스톤 PR 기준)
-git checkout develop
-git pull origin develop
-
-# 머지된 로컬 feature 브랜치 삭제
-git branch -d <feature/M{n}-*>
-```
-
-> 프로덕션 릴리스 PR(`main` 대상)이었다면 `git checkout main && git pull origin main`.
-
-## 주의사항
-
-- **마일스톤 PR의 base는 `develop`**. 머지 후 `develop` 최신화 → 다음 마일스톤 브랜치의 기반이 됨
-- CI 체크가 실패한 PR은 머지하지 않는다 (사용자에게 실패 원인 안내)
-- 머지 충돌이 있으면 사용자에게 알리고 해결 방법을 제안한다
-- `main`·`develop` 브랜치에 직접 force push하지 않는다
-- 원격 브랜치 삭제는 GitHub PR 머지 시 자동 처리되므로 별도 실행하지 않는다
-- 로컬 브랜치 삭제 전 머지가 완료되었는지 반드시 확인한다 (`-d` 플래그 사용, `-D` 지양)
+`.agents/rules/git-workflow.md`의 브랜치 전략과 금지 패턴을 따른다.

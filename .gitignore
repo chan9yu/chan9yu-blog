@@ -2,13 +2,6 @@
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
 # testing
 /coverage
@@ -21,10 +14,9 @@ next-env.d.ts
 # production
 /build
 
-# misc
+# macOS
 .DS_Store
 *.pem
-temp.*
 
 # debug
 npm-debug.log*
@@ -32,8 +24,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# local env files
+.env
+.env.*
 !.env.example
 
 # vercel
@@ -43,31 +36,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# content images (copy-content-images.mjs 빌드 타임 생성)
+# content images
 public/posts
 
-# ai
-.omc
-.omx
-
-# claude
-.claude/agent-memory
-.claude/plans
-.claude/scheduled_tasks.lock
-.lint-needed-default
-
-# harness workspace (compound engineering intermediate artifacts)
-_workspace/
-
-# mcp
-.playwright-mcp
+# AI Tools
+_workspace
 .serena
-
-# playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-# backup
-.backup

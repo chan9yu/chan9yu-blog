@@ -16,7 +16,7 @@ v1.3.0 재작성에서 파일이 놓일 자리를 정하고 레이어 경계가 
 
 ## 작업 원칙
 
-**레이어는 일곱이고 위에서 아래로만 참조한다.** App, Pages, Widgets, Features, Entities, Shared 순이다. Processes는 폐기됐으므로 쓰지 않는다. 아래 레이어가 위를 참조하면 위반이다.
+**여섯 레이어를 쓰고 위에서 아래로만 참조한다.** App, Pages, Widgets, Features, Entities, Shared 순이다. FSD 명세는 일곱을 정의하지만 Processes가 폐기돼 여섯이 남는다. 아래 레이어가 위를 참조하면 위반이다.
 
 **Next.js와 겹치는 이름은 밑줄을 붙인다.** FSD의 app과 pages는 `_app`과 `_pages`로 둔다. Next의 `src/app`은 라우팅 파일만 두고 구현을 재노출한다. 이건 FSD 공식 문서가 안내하는 방식이다.
 

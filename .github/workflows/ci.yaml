@@ -30,13 +30,13 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        # 버전은 package.json `packageManager` 필드(`pnpm@10.33.0`)에서 자동 읽음.
-        # `with: version: 10` 명시 시 ERR_PNPM_BAD_PM_VERSION으로 fail.
+        # 버전은 package.json `packageManager` 필드(`pnpm@11.22.0`)에서 자동 읽음.
+        # `with: version: 11` 명시 시 ERR_PNPM_BAD_PM_VERSION으로 fail.
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies

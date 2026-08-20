@@ -64,7 +64,7 @@ git submodule update --init --recursive
 src/
 ├── app/         라우팅, metadata, providers
 ├── features/    9개 도메인 (posts, tags, series, search, views, comments, theme, lightbox, about)
-└── shared/      components, styles, seo, config, utils, hooks, types, libs, assets
+└── shared/      assets, components, config, hooks, libs, seo, styles, test, types, utils
 
 contents/        MDX 콘텐츠 (Git 서브모듈, 저장소 루트)
 docs/            문서 (product, design, operations, prompts)
@@ -138,7 +138,7 @@ git checkout -b feature/{슬러그}
 
 `<type>: <요약>` 형식을 씁니다. 괄호로 감싼 scope는 쓰지 않습니다.
 
-type은 `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `style` 중에서 고릅니다.
+type은 `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore` 중에서 고릅니다.
 
 ```
 feat: 검색 모달에 최근 포스트 추천 추가

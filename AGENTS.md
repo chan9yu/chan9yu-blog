@@ -15,7 +15,7 @@ v1.3.0에서 shadcn/ui와 Radix 의존을 걷어내고 UI 컴포넌트를 직접
 ```
 src/app/         라우팅, metadata, providers
 src/features/    posts, tags, series, search, views, comments, theme, lightbox, about
-src/shared/      components, styles, seo, config, utils, hooks, types
+src/shared/      assets, components, config, hooks, libs, seo, styles, test, types, utils
 contents/        MDX 콘텐츠 (별도 저장소, Git 서브모듈)
 docs/            문서. product, design, operations, prompts
 ```

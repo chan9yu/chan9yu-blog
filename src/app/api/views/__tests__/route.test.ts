@@ -1,18 +1,3 @@
-/**
- * RT-/api/views Route Handler 계약 테스트 — PRD §7.5 + ROADMAP M3-08.
- *
- * - `GET /api/views?slug=xxx` → 200 + `{ views: number }` (slug 필드 누설 금지)
- * - `POST /api/views { slug }` → **204 no body**
- * - 잘못된 입력 → 400
- * - `Cache-Control: no-store` (GET·POST 모두)
- *
- * Route Handler 함수를 직접 호출하는 서버 단위 테스트. MSW/kv-client는 별개 레이어.
- * 이 파일이 **프로듀서↔MSW mock 드리프트의 유일한 게이트**이므로 exact-shape 강제가 핵심.
- *
- * M3-07 [Red] 단계 — 현재 placeholder가 PRD 위반(slug 누설 / 200 + body / no-store 헤더 미설정)으로
- * shape·status·header 단언이 실패. M3-08 [Green]에서 Redis 연결 + PRD shape 정합화 시 녹색 전환.
- */
-
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -95,7 +80,6 @@ describe("GET /api/views", () => {
 	});
 
 	it("공백이 포함된 무효 slug → 400", async () => {
-		// URL 인코딩된 공백 → searchParams.get이 자동 디코드 → validateSlug가 거부
 		const res = await GET(buildGetRequest("invalid%20slug"));
 		expect(res.status).toBe(400);
 	});
@@ -139,13 +123,11 @@ describe("POST /api/views", () => {
 	});
 
 	it("JSON body가 string primitive → 400", async () => {
-		// JSON.stringify("x") = "\"x\"" 이므로 유효 JSON이지만 object가 아니어서 거부
 		const res = await POST(buildPostRequest({ type: "json", data: "just-a-string" }));
 		expect(res.status).toBe(400);
 	});
 
 	it("JSON body가 null → 400", async () => {
-		// JSON.stringify(null) = "null" 이므로 유효 JSON이지만 object가 아니어서 거부
 		const res = await POST(buildPostRequest({ type: "json", data: null }));
 		expect(res.status).toBe(400);
 	});

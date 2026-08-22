@@ -1,4 +1,3 @@
-// Components
 export {
 	PopularPosts,
 	PostCard,
@@ -13,8 +12,6 @@ export {
 	ShareButtons,
 	Toc
 } from "./components";
-
-// Services (서버 전용)
 export {
 	findAdjacentPosts,
 	findRelatedPostsByTags,

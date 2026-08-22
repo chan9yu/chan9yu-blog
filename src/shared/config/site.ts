@@ -39,23 +39,17 @@ export const siteSocials: SocialLinkConfig[] = [
 	{ label: "Email", href: "mailto:dev.cgyeo@gmail.com", iconName: "Mail" }
 ];
 
-// 환경별 사이트 URL 결정 (canonical·OG·sitemap·rss SSOT).
-// 우선순위: NEXT_PUBLIC_SITE_URL > Vercel production > Vercel preview > 로컬 dev fallback.
-// NEXT_PUBLIC_SITE_URL을 최상위에 둔 이유 — Cloudflare Pages·Netlify·self-host 등
-// Vercel 외 배포에서도 명시적 도메인 주입만으로 canonical/sitemap이 정확히 동작.
 export function getSiteUrl() {
 	const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 	if (explicit) {
 		try {
 			const parsed = new URL(explicit);
-			// production에서는 https 강제 — canonical/OG가 http로 깨지면 SEO 시그널 손상.
 			if (process.env.NODE_ENV === "production" && parsed.protocol !== "https:") {
 				throw new Error(`NEXT_PUBLIC_SITE_URL must use https:// in production (got "${parsed.protocol}//")`);
 			}
 			return explicit.replace(/\/+$/, "");
 		} catch (error) {
 			if (process.env.NODE_ENV === "production") throw error;
-			// dev/preview: invalid URL은 무시하고 다음 분기로 fallback (개발자 실수에 빠른 피드백 + 빌드 차단은 회피).
 		}
 	}
 

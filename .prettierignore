@@ -15,6 +15,9 @@ public/posts
 # 서브모듈
 contents
 
+# 작업 자료 (git 추적 대상 아님)
+_workspace
+
 # 락 파일
 *.lock
 pnpm-lock.yaml

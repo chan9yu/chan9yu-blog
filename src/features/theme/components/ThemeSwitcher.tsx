@@ -4,7 +4,6 @@ import { Moon, Sun } from "lucide-react";
 
 import { useTheme } from "../hooks/useTheme";
 
-// hydration 이전(mounted=false): opacity-0 placeholder로 FOUC 차단 + 레이아웃 점프 방지.
 export function ThemeSwitcher() {
 	const { resolvedTheme, toggleTheme, mounted } = useTheme();
 	const isDark = resolvedTheme === "dark";

@@ -10,8 +10,6 @@ type MdxImageProps = ComponentProps<"img"> & {
 	caption?: string;
 };
 
-// MDX `![alt](src)` 구문은 width/height를 전달하지 않으므로 next/image 대신 네이티브 <img> 사용.
-// 클릭 시 같은 <article> 내 figure 이미지를 수집해 라이트박스 carousel로 표시.
 export function MdxImage({ alt, caption, className, src, ...rest }: MdxImageProps) {
 	const { openMany } = useLightbox();
 	const captionId = useId();

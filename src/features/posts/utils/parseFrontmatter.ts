@@ -1,8 +1,7 @@
-import { PostFrontmatterSchema } from "../schemas/frontmatter";
-import { splitFrontmatter } from "./splitFrontmatter";
+import { splitFrontmatter } from "@/shared/utils/splitFrontmatter";
 
-// frontmatter.slug ↔ 디렉토리명 일치 검증으로 contents/posts/* 라우트 정합성 보장.
-// `--` 구분자는 일부 에디터가 `---` 대신 출력하는 경우가 있어 보정.
+import { PostFrontmatterSchema } from "../schemas/frontmatter";
+
 export function parseFrontmatter(raw: string, dirSlug: string) {
 	const normalized = raw.replace(/^--(?!-)/gm, "---");
 	const { data } = splitFrontmatter(normalized);

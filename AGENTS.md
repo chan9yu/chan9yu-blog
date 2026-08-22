@@ -86,3 +86,13 @@ pnpm test            # Vitest
 | ---------- | --------------------- | ------------------------------------------------------- | -------------------------------------- |
 | 2026-08-20 | 기존 하네스 제거      | 에이전트 15개, 스킬 15종, 룰 17개                       | v1.3.0 방향과 어긋남                   |
 | 2026-08-20 | 위험 기반 4인 팀 구성 | fsd-architect, ui-builder, a11y-verifier, code-reviewer | 재작성에서 실제로 깨지는 자리에만 대응 |
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

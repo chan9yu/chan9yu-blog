@@ -1,17 +1,3 @@
-/**
- * ThemeSwitcher Integration 테스트 — ROADMAP M3-13 Red.
- *
- * 계약 (US-004, ADR-011):
- * - 초기 렌더: 버튼은 존재하나 hydration 전에는 icon opacity-0 (FOUC 방지)
- * - mount 후: light 기본 → Moon 아이콘 + aria-pressed=false
- * - 클릭: dark 전환 → Sun 아이콘 + aria-pressed=true, html.dark 클래스 토글
- * - localStorage 복원: "theme=dark" 저장 후 재마운트 시 dark 유지
- * - View Transitions API: `document.startViewTransition` 지원 시 호출, 미지원 시 직접 apply
- *
- * Red: 현재 ThemeSwitcher는 next-themes를 직접 소비. features/theme/hooks/useTheme wrapper 부재.
- * 테스트는 wrapper 훅이 제공할 동작(mounted 감지, toggleTheme, View Transitions 분기)을 검증.
- */
-
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ThemeProvider } from "next-themes";
@@ -48,7 +34,7 @@ function setupMatchMedia(matches = false) {
 beforeEach(() => {
 	localStorage.clear();
 	document.documentElement.classList.remove("dark", "light");
-	setupMatchMedia(false); // prefers-color-scheme: dark → false → system=light
+	setupMatchMedia(false);
 });
 
 afterEach(() => {
@@ -124,7 +110,6 @@ describe("ThemeSwitcher", () => {
 	});
 
 	it("View Transitions API 미지원 환경에서도 테마 전환 동작 (progressive enhancement)", async () => {
-		// document.startViewTransition 제거
 		const originalST = (document as unknown as { startViewTransition?: unknown }).startViewTransition;
 		delete (document as unknown as { startViewTransition?: unknown }).startViewTransition;
 

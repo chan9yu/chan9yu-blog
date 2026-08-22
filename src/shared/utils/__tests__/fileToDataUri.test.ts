@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 
 import { fileToDataUri } from "../fileToDataUri";
 
-// 1x1 투명 PNG (8바이트 시그니처 포함 최소 바이트)
 const PNG_1X1 = Buffer.from(
 	"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==",
 	"base64"

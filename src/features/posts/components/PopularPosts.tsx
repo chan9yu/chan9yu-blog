@@ -7,13 +7,6 @@ type PopularPostsProps = {
 	posts: PostSummary[];
 };
 
-/**
- * 레거시 TrendingPosts 디자인 참조:
- * - space-y-4
- * - 각 Link: group block space-y-1, hover translate-x-1
- * - h3: line-clamp-2 text-sm font-medium, hover 시 accent 색상
- * - time: text-xs
- */
 export function PopularPosts({ posts }: PopularPostsProps) {
 	if (posts.length === 0) {
 		return <p className="text-muted-foreground text-sm">아직 포스트가 없습니다.</p>;
@@ -25,7 +18,7 @@ export function PopularPosts({ posts }: PopularPostsProps) {
 				<li key={post.slug}>
 					<Link
 						href={`/posts/${post.slug}`}
-						className="group focus-visible:ring-ring block space-y-1 rounded transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:translate-x-1"
+						className="group focus-visible:ring-ring block space-y-1 rounded transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 					>
 						<h3 className="text-card-foreground group-hover:text-accent group-focus-visible:text-accent line-clamp-2 text-sm leading-tight font-medium transition-colors">
 							{post.title}

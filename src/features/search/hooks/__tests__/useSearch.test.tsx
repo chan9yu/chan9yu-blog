@@ -5,9 +5,6 @@ import type { PostSummary } from "@/shared/types";
 
 import { useSearch } from "../useSearch";
 
-/**
- * PostSummary 고정 필드 — 개별 테스트에서 검색 대상 필드만 오버라이드한다.
- */
 const postBase = {
 	date: "2026-01-01",
 	private: false,
@@ -170,7 +167,6 @@ describe("useSearch", () => {
 	it("fuzzy 매칭(오타)도 기본 threshold 0.4로 허용한다", () => {
 		const { result } = renderHook(() => useSearch({ posts }));
 
-		// "react" 대신 한 글자 오타 "reakt"
 		act(() => {
 			result.current.setQuery("reakt");
 		});
@@ -212,7 +208,6 @@ describe("useSearch", () => {
 			vi.advanceTimersByTime(200);
 		});
 
-		// 첫 결과는 react 관련 포스트여야 함 — typescript 타이머가 취소되었다는 증거
 		const first = result.current.results[0];
 		expect(first).toBeDefined();
 		expect(first?.post.title.toLowerCase()).toContain("react");

@@ -1,0 +1,148 @@
+html[data-modal-open] {
+	overflow: hidden;
+}
+
+[data-dialog] {
+	position: fixed;
+	inset: 0;
+	display: none;
+	width: 100%;
+	max-width: none;
+	height: 100%;
+	max-height: none;
+	margin: 0;
+	padding: 1rem;
+	border: 0;
+	background-color: transparent;
+	color: inherit;
+	transition-property: display, overlay;
+	transition-duration: var(--duration-exit);
+	transition-behavior: allow-discrete;
+}
+
+[data-dialog][open] {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition-duration: var(--duration-screen);
+}
+
+[data-dialog]::backdrop {
+	background-color: rgb(0 0 0 / 0.5);
+	opacity: 0;
+	transition-property: opacity, display, overlay;
+	transition-duration: var(--duration-exit);
+	transition-timing-function: var(--ease-exit);
+	transition-behavior: allow-discrete;
+}
+
+[data-dialog][open]::backdrop {
+	opacity: 1;
+	transition-duration: var(--duration-screen);
+	transition-timing-function: var(--ease-move);
+}
+
+@starting-style {
+	[data-dialog][open]::backdrop {
+		opacity: 0;
+	}
+}
+
+[data-dialog-panel] {
+	max-height: 100%;
+	opacity: 0;
+	transform: scale(0.98);
+	transition-property: opacity, transform;
+	transition-duration: var(--duration-exit);
+	transition-timing-function: var(--ease-exit);
+}
+
+[data-dialog][open] [data-dialog-panel] {
+	opacity: 1;
+	transform: scale(1);
+	transition-duration: var(--duration-screen);
+	transition-timing-function: var(--ease-move);
+	will-change: opacity, transform;
+}
+
+@starting-style {
+	[data-dialog][open] [data-dialog-panel] {
+		opacity: 0;
+		transform: scale(0.98);
+	}
+}
+
+[data-lightbox]::backdrop {
+	background-color: rgb(0 0 0 / 0.8);
+}
+
+[data-lightbox] [data-dialog-panel] {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+[data-lightbox-slide] {
+	animation: lightbox-slide var(--duration-enter) var(--ease-enter);
+}
+
+@keyframes lightbox-slide {
+	from {
+		opacity: 0;
+		transform: translateX(var(--slide-from, 0));
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+[data-drawer] {
+	padding: 0;
+}
+
+[data-drawer][data-side="bottom"] {
+	align-items: flex-end;
+}
+
+[data-drawer][data-side="right"] {
+	align-items: stretch;
+	justify-content: flex-end;
+}
+
+[data-drawer] [data-dialog-panel] {
+	background-color: var(--color-bg-default);
+	opacity: 1;
+	overflow-y: auto;
+}
+
+[data-drawer][data-side="bottom"] [data-dialog-panel] {
+	width: 100%;
+	max-height: 72vh;
+	border-start-start-radius: var(--radius-xl);
+	border-start-end-radius: var(--radius-xl);
+	transform: translateY(100%);
+}
+
+[data-drawer][data-side="right"] [data-dialog-panel] {
+	height: 100%;
+	transform: translateX(100%);
+}
+
+[data-drawer][data-side="bottom"][open] [data-dialog-panel] {
+	transform: translateY(0);
+}
+
+[data-drawer][data-side="right"][open] [data-dialog-panel] {
+	transform: translateX(0);
+}
+
+@starting-style {
+	[data-drawer][data-side="bottom"][open] [data-dialog-panel] {
+		transform: translateY(100%);
+	}
+
+	[data-drawer][data-side="right"][open] [data-dialog-panel] {
+		transform: translateX(100%);
+	}
+}

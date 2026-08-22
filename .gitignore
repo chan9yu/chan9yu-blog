@@ -5,6 +5,10 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 # next.js
 /.next/
@@ -42,3 +46,4 @@ public/posts
 # AI Tools
 _workspace
 .serena
+.playwright-mcp

@@ -41,7 +41,6 @@ function buildItemXml(siteUrl: string, authorName: string, authorEmail: string, 
 	return lines.join("\n");
 }
 
-// author는 RFC 4287 형식 `email (name)`, pubDate는 RFC 822 — RSS 2.0 표준 호환.
 export function buildRssFeed(input: BuildRssFeedInput) {
 	const { siteUrl, siteTitle, siteDescription, authorName, authorEmail, locale, posts } = input;
 	const language = locale.replace("_", "-");

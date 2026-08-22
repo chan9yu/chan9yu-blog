@@ -1,16 +1,3 @@
-/**
- * LightboxProvider + ImageLightbox Integration 테스트 — ROADMAP M3-15 Red.
- *
- * 계약 (US-014):
- * - `open(single)` → 오버레이 오픈, 화살표 없음 (1장 carousel off)
- * - `openMany(images, startIndex)` → 화살표 2개 렌더, 해당 인덱스부터 시작
- * - ArrowRight / ArrowLeft 키보드 nav (circular)
- * - ESC 닫기 → 상태 초기화
- * - fade 300ms 오픈 (Radix state-open animation class 확인)
- *
- * Red: 현재 LightboxContext는 single-image `{ open(single), close }`만 지원. multi-image carousel 미구현.
- */
-
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it } from "vitest";
@@ -84,7 +71,6 @@ describe("LightboxProvider + ImageLightbox", () => {
 		);
 
 		await user.click(screen.getByRole("button", { name: "open many" }));
-		// 초기 index=0 → image-a
 		expect((await screen.findByRole("img", { name: "image-a" })).tagName).toBe("IMG");
 
 		await user.click(screen.getByRole("button", { name: /다음 이미지/ }));

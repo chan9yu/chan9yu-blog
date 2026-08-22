@@ -109,8 +109,6 @@ describe("buildSitemapEntries", () => {
 	});
 
 	it("호출자가 private 제외한 입력만 넘기면 sitemap에 private이 등장하지 않는다", () => {
-		// PRD §13.3: private 필터는 호출자(default export 함수)가 getPublicPosts()로 처리.
-		// 빌더는 입력만 신뢰한다.
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: SAMPLE_PUBLIC_POSTS,

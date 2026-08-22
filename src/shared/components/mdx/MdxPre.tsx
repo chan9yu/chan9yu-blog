@@ -12,11 +12,6 @@ type MdxPreProps = ComponentProps<"pre"> & {
 	filename?: string;
 };
 
-/**
- * 복사 버튼이 있는 코드 블록 컨테이너. 자식 <code>의 text를 클립보드에 복사.
- * M2에서 Shiki 서버 렌더링 결과를 감싸며 filename/lang 메타는 remark/rehype에서 주입.
- * setTimeout 사용은 useEffect cleanup 루프로 격리 (workflow.md 준수).
- */
 export function MdxPre({ filename, className, children, ...rest }: MdxPreProps) {
 	const preRef = useRef<HTMLPreElement>(null);
 	const [copied, setCopied] = useState(false);
@@ -60,7 +55,7 @@ export function MdxPre({ filename, className, children, ...rest }: MdxPreProps) 
 				type="button"
 				onClick={handleCopy}
 				aria-label={copied ? "복사됨" : "코드 복사"}
-				className="bg-card text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring absolute top-2 right-2 inline-flex size-9 cursor-pointer items-center justify-center rounded-md opacity-0 shadow-sm transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+				className="bg-card text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring border-border-subtle absolute top-2 right-2 inline-flex size-9 cursor-pointer items-center justify-center rounded-md border opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 			>
 				{copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
 			</button>

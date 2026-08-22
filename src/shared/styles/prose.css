@@ -1,56 +1,42 @@
-/**
- * MDX 본문 스타일. `.prose` 스코프로 FEAT-POST-DETAIL 본문에만 적용.
- * MDX 전용 커스텀 컴포넌트(MdxHeading, MdxPre 등)가 이 규칙을 상속/오버라이드.
- */
-
 .prose {
 	color: var(--color-text-primary);
-	font-size: 1rem;
-	line-height: 1.75;
+	font-size: 0.96875rem;
+	line-height: 1.85;
+	text-wrap: pretty;
 }
 
 .prose > * + * {
-	margin-top: 1.5em;
+	margin-top: 1.625em;
 }
 
-/*
- * heading 크기 기준:
- * CustomMDX에서 # → <h2>, ## → <h3>, ### → <h4> (+1 시프트)
- * 각 태그가 이전 레벨의 시각적 크기를 이어받도록 조정.
- *
- *   #  (MDX) → <h2> 2rem    ← 기존 native <h1> 브라우저 기본값과 동일
- *   ## (MDX) → <h3> 1.75rem ← 기존 .prose h2 크기
- *   ### (MDX)→ <h4> 1.375rem ← 기존 .prose h3 크기
- */
 .prose h2 {
-	font-size: 2rem;
+	font-size: 1.5625rem;
 	font-weight: 700;
-	line-height: 1.25;
-	margin-top: 2.5em;
-	margin-bottom: 0.75em;
-	scroll-margin-top: 5rem;
+	line-height: 1.45;
+	letter-spacing: -0.02em;
+	margin-top: 56px;
+	margin-bottom: 20px;
 }
 
 .prose h3 {
-	font-size: 1.75rem;
-	font-weight: 600;
-	line-height: 1.35;
-	margin-top: 2em;
-	margin-bottom: 0.5em;
-	scroll-margin-top: 5rem;
+	font-size: 1.1875rem;
+	font-weight: 700;
+	line-height: 1.45;
+	letter-spacing: -0.02em;
+	margin-top: 40px;
+	margin-bottom: 14px;
 }
 
 .prose h4 {
-	font-size: 1.375rem;
+	font-size: 1.0625rem;
 	font-weight: 600;
-	line-height: 1.4;
-	margin-top: 1.75em;
-	margin-bottom: 0.5em;
-	scroll-margin-top: 5rem;
+	line-height: 1.45;
+	margin-top: 28px;
+	margin-bottom: 10px;
 }
 
 .prose p {
-	line-height: 1.75;
+	line-height: 1.85;
 }
 
 .prose a {
@@ -58,7 +44,7 @@
 	text-decoration: underline;
 	text-underline-offset: 3px;
 	text-decoration-thickness: 1px;
-	transition: color 150ms ease;
+	transition: color var(--duration-color) var(--ease-out);
 }
 
 .prose a:hover {
@@ -76,34 +62,46 @@
 
 .prose ul,
 .prose ol {
-	padding-left: 1.5em;
+	padding-left: 18px;
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
 
 .prose ul {
-	list-style: disc;
+	list-style: none;
 }
 
 .prose ol {
 	list-style: decimal;
+	padding-left: 22px;
 }
 
 .prose li {
 	margin-top: 0.5em;
+	position: relative;
 }
 
-.prose li::marker {
+.prose ul > li::before {
+	content: "";
+	position: absolute;
+	top: 0.75em;
+	left: -14px;
+	width: 4px;
+	height: 4px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-accent-default);
+}
+
+.prose ol > li::marker {
 	color: var(--color-text-tertiary);
 }
 
 .prose blockquote {
-	border-left: 3px solid var(--color-accent-default);
-	padding: 0.5em 1em;
+	border-left: 2px solid var(--color-accent-default);
+	padding: 0.25em 0 0.25em 1em;
 	color: var(--color-text-secondary);
-	font-style: italic;
-	margin-top: 1.5em;
-	margin-bottom: 1.5em;
+	margin-top: 1.625em;
+	margin-bottom: 1.625em;
 }
 
 .prose :not(pre) > code {
@@ -119,11 +117,11 @@
 	background-color: var(--color-code-bg);
 	color: var(--color-text-primary);
 	padding: 1em 1.25em;
-	border-radius: var(--radius-md);
+	border-radius: 10px;
 	border: 1px solid var(--color-code-border);
 	overflow-x: auto;
 	line-height: 1.6;
-	font-size: 0.875rem;
+	font-size: 0.84375rem;
 }
 
 .prose hr {
@@ -133,13 +131,13 @@
 }
 
 .prose img {
-	border-radius: var(--radius-md);
+	border-radius: var(--radius-lg);
 	margin: 0 auto;
 }
 
 .prose table {
 	border-collapse: collapse;
-	font-size: 0.9375rem;
+	font-size: 0.90625rem;
 }
 
 .prose th,
@@ -154,5 +152,6 @@
 
 .prose th {
 	font-weight: 600;
-	background-color: var(--color-bg-subtle);
+	border-bottom: 1px solid var(--color-border-strong);
+	background-color: transparent;
 }

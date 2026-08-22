@@ -1,5 +1,3 @@
-// frontmatter SEO 검증 — title·description 길이, slug 형식, 디렉토리명 정합성을 빌드 타임에 차단.
-// 위반 시 exit 1 → prebuild fail → CI/Vercel 빌드 차단. .claude/rules/seo.md 참조.
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -7,6 +5,7 @@ import { VFile } from "vfile";
 import { matter } from "vfile-matter";
 
 const POSTS_DIR = "contents/posts";
+const SERIES_DIR = "contents/series";
 const TITLE_MAX = 60;
 const DESC_MIN = 120;
 const DESC_MAX = 160;
@@ -60,6 +59,39 @@ for (const slug of slugs) {
 	}
 }
 
+const seriesNames = new Set();
+for (const slug of slugs) {
+	try {
+		const file = new VFile(readFileSync(join(POSTS_DIR, slug, "index.mdx"), "utf-8"));
+		matter(file);
+		const name = file.data.matter?.series;
+		if (name) seriesNames.add(name);
+	} catch {}
+}
+
+const seriesMetaFiles = new Set(
+	readdirSync(SERIES_DIR, { withFileTypes: true })
+		.filter((d) => d.isFile() && d.name.endsWith(".md"))
+		.map((d) => d.name.replace(/\.md$/, ""))
+);
+
+for (const name of seriesNames) {
+	if (!seriesMetaFiles.has(name)) {
+		violations.push({ slug: `series/${name}`, errors: [`${SERIES_DIR}/${name}.md 없음 — 시리즈 소개가 비어버린다`] });
+		continue;
+	}
+
+	const file = new VFile(readFileSync(join(SERIES_DIR, `${name}.md`), "utf-8"));
+	matter(file);
+	const meta = file.data.matter ?? {};
+	const errors = [];
+
+	if (!meta.title) errors.push("title 누락");
+	if (!meta.description) errors.push("description 누락");
+
+	if (errors.length > 0) violations.push({ slug: `series/${name}`, errors });
+}
+
 if (violations.length > 0) {
 	console.error("\n[validate-frontmatter-seo] ❌ FAIL — frontmatter SEO 위반\n");
 	for (const v of violations) {
@@ -72,4 +104,4 @@ if (violations.length > 0) {
 	process.exit(1);
 }
 
-console.log(`[validate-frontmatter-seo] ✅ PASS — ${slugs.length}개 포스트 검증 통과`);
+console.log(`[validate-frontmatter-seo] ✅ PASS — 포스트 ${slugs.length}개, 시리즈 ${seriesNames.size}개 검증 통과`);

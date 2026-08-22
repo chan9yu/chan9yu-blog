@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import { getPublicPosts } from "@/features/posts";
-import { getAllSeries, getSeriesDetail } from "@/features/series";
+import { getAllSeries, getAllSeriesMeta, getSeriesDetail, stripSeriesPrefix } from "@/features/series";
+import { Breadcrumb } from "@/shared/components/common/Breadcrumb";
 import { Container } from "@/shared/components/layouts/Container";
 import { getSiteUrl } from "@/shared/config/site";
 import { buildBreadcrumbJsonLd, buildMetadata, JsonLdScript, NOT_FOUND_METADATA } from "@/shared/seo";
@@ -14,11 +15,10 @@ type SeriesDetailPageProps = {
 	params: Promise<{ slug: string }>;
 };
 
-// generateMetadata + Page가 동일 렌더 트리에서 lookup 공유 (generateStaticParams는 별도 트리).
-const findSeriesBySlug = cache((slug: string) => getSeriesDetail(getPublicPosts(), slug));
+const findSeriesBySlug = cache((slug: string) => getSeriesDetail(getPublicPosts(), slug, getAllSeriesMeta()));
 
 export async function generateStaticParams() {
-	return getAllSeries(getPublicPosts()).map((series) => ({ slug: series.slug }));
+	return getAllSeries(getPublicPosts(), getAllSeriesMeta()).map((series) => ({ slug: series.slug }));
 }
 
 export async function generateMetadata({ params }: SeriesDetailPageProps) {
@@ -28,12 +28,12 @@ export async function generateMetadata({ params }: SeriesDetailPageProps) {
 
 	return buildMetadata({
 		title: series.name,
-		description: `${series.name} 시리즈 — 총 ${series.posts.length}개의 연재 글로 구성되어 있습니다.`,
+		description:
+			series.description ?? `${series.name} 시리즈. 총 ${series.posts.length}개의 연재 글로 구성되어 있습니다.`,
 		path: `/series/${encodeURIComponent(series.slug)}`
 	});
 }
 
-// series slug는 한글 허용이라 normalizeSlug 대신 직접 lookup — generateStaticParams 외 경로는 Next.js SSG가 404 처리.
 export default async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 	const { slug } = await params;
 	const series = findSeriesBySlug(decodeURIComponent(slug));
@@ -54,10 +54,14 @@ export default async function SeriesDetailPage({ params }: SeriesDetailPageProps
 			<Container>
 				<div className="py-8 lg:py-10">
 					<header className="mb-12 space-y-6">
+						<Breadcrumb items={[{ label: "시리즈", href: "/series" }, { label: series.name }]} />
 						<div className="space-y-4">
-							<h1 className="text-foreground text-3xl leading-tight font-bold tracking-tight text-balance break-keep sm:text-4xl md:text-5xl">
+							<h1 className="text-foreground tracking-heading text-2xl leading-tight font-bold text-balance break-keep">
 								{series.name}
 							</h1>
+							{series.description && (
+								<p className="text-muted-foreground max-w-prose leading-relaxed break-keep">{series.description}</p>
+							)}
 							<div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
 								<span className="inline-flex items-center gap-2">
 									<BookOpen className="size-4" aria-hidden />총 {series.posts.length}개의 글
@@ -78,10 +82,10 @@ export default async function SeriesDetailPage({ params }: SeriesDetailPageProps
 								</span>
 								<Link
 									href={`/posts/${post.slug}`}
-									className="group bg-card border-border-subtle focus-visible:ring-ring block flex-1 rounded-xl border p-5 transition-all hover:shadow-md focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									className="group bg-card border-border-subtle focus-visible:ring-ring hover:border-accent/40 block flex-1 rounded-lg border p-5 transition-[border-color] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 								>
 									<h2 className="text-card-foreground group-hover:text-accent line-clamp-2 text-base leading-snug font-semibold transition-colors sm:text-lg">
-										{post.title}
+										{stripSeriesPrefix(post.title, series.name)}
 									</h2>
 									<p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-relaxed">{post.description}</p>
 									<time

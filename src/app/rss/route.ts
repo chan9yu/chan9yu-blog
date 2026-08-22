@@ -3,7 +3,6 @@ import { getSiteUrl, siteMetadata, siteSocials } from "@/shared/config/site";
 
 import { buildRssFeed } from "../rss-feed";
 
-// SSG-first(PRD G-1) — 빌드 타임 prerender → runtime contents/ 의존 0% (v1.1.2 incident 회귀 차단).
 export const dynamic = "force-static";
 
 function resolveAuthorEmail() {

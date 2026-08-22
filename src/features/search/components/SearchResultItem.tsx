@@ -35,7 +35,6 @@ function findMatchIndices(result: SearchResult, key: "title" | "description") {
 	return match?.indices ?? [];
 }
 
-// 중첩된 Fuse match indices를 cursor 기반으로 처리 — 완전 중첩은 skip, 부분 중첩은 effectiveStart=max(start,cursor)로 새 mark.
 function renderHighlighted(source: string, indices: ReadonlyArray<readonly [number, number]>) {
 	if (indices.length === 0) return source;
 

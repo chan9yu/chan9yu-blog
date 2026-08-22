@@ -7,7 +7,6 @@ import { useState } from "react";
 import type { LightboxImage } from "../contexts/LightboxContext";
 import { LightboxContext } from "../contexts/LightboxContext";
 
-/** 초기 번들에서 제외해 LCP 개선 — 라이트박스는 사용자 인터랙션 후에만 필요 */
 const ImageLightbox = dynamic(() => import("./ImageLightbox").then((mod) => ({ default: mod.ImageLightbox })), {
 	ssr: false
 });
@@ -15,30 +14,30 @@ const ImageLightbox = dynamic(() => import("./ImageLightbox").then((mod) => ({ d
 type LightboxState = {
 	images: ReadonlyArray<LightboxImage>;
 	index: number;
+	open: boolean;
 };
 
-const INITIAL_STATE: LightboxState = { images: [], index: 0 };
+const INITIAL_STATE: LightboxState = { images: [], index: 0, open: false };
 
 type LightboxProviderProps = {
 	children: ReactNode;
 };
 
-// 상태 모델: `images.length === 0`이면 닫힘 상태. `open(single)`은 `openMany([single], 0)` sugar.
 export function LightboxProvider({ children }: LightboxProviderProps) {
 	const [state, setState] = useState<LightboxState>(INITIAL_STATE);
 
 	const open = (image: LightboxImage) => {
-		setState({ images: [image], index: 0 });
+		setState({ images: [image], index: 0, open: true });
 	};
 
 	const openMany = (images: ReadonlyArray<LightboxImage>, startIndex = 0) => {
 		if (images.length === 0) return;
 		const bounded = Math.max(0, Math.min(startIndex, images.length - 1));
-		setState({ images, index: bounded });
+		setState({ images, index: bounded, open: true });
 	};
 
 	const close = () => {
-		setState(INITIAL_STATE);
+		setState((prev) => ({ ...prev, open: false }));
 	};
 
 	const goNext = () => {
@@ -55,13 +54,20 @@ export function LightboxProvider({ children }: LightboxProviderProps) {
 		});
 	};
 
-	const isOpen = state.images.length > 0;
+	const hasOpened = state.images.length > 0;
 
 	return (
 		<LightboxContext value={{ open, openMany, close }}>
 			{children}
-			{isOpen && (
-				<ImageLightbox images={state.images} index={state.index} onNext={goNext} onPrev={goPrev} onClose={close} />
+			{hasOpened && (
+				<ImageLightbox
+					open={state.open}
+					images={state.images}
+					index={state.index}
+					onNext={goNext}
+					onPrev={goPrev}
+					onClose={close}
+				/>
 			)}
 		</LightboxContext>
 	);

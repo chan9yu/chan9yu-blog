@@ -1,7 +1,6 @@
 import type { TocItem } from "@/shared/types";
 import { slugify } from "@/shared/utils/slugify";
 
-// 중복 id에 `-1`, `-2` suffix 부여는 rehype-slug 동작과 일치 — TOC 링크가 헤딩 id와 매칭되려면 동일 규칙 필수.
 export function extractTocFromMarkdown(content: string) {
 	const withoutCodeBlocks = content.replace(/```[\s\S]*?```/g, "");
 

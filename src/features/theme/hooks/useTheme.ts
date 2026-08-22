@@ -6,7 +6,6 @@ import { useHydrated } from "@/shared/hooks/useHydrated";
 
 type Theme = "light" | "dark";
 
-// next-themes wrapper: hydration 이전 null 반환으로 FOUC 차단 + View Transitions API progressive enhancement.
 export function useTheme() {
 	const { resolvedTheme, setTheme: setNextTheme } = useNextTheme();
 	const mounted = useHydrated();
@@ -16,11 +15,16 @@ export function useTheme() {
 	const applyWithTransition = (theme: Theme) => {
 		const apply = () => setNextTheme(theme);
 
-		if (typeof document !== "undefined" && typeof document.startViewTransition === "function") {
-			document.startViewTransition(apply);
-		} else {
+		if (typeof document === "undefined" || typeof document.startViewTransition !== "function") {
 			apply();
+			return;
 		}
+
+		document.documentElement.dataset.vt = "theme";
+		const transition = document.startViewTransition(apply);
+		void transition.finished.finally(() => {
+			delete document.documentElement.dataset.vt;
+		});
 	};
 
 	const toggleTheme = () => {

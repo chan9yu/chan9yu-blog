@@ -1,6 +1,3 @@
-// `/api/views` 계약(PRD §7.5)의 machine-readable reference — Route Handler 수정 시 이 파일도 동기화 필수.
-// validateSlug를 서버와 동일하게 재사용해 drift 차단.
-
 import { http, HttpResponse } from "msw";
 
 import { validateSlug } from "@/shared/utils/slug";

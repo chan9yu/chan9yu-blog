@@ -89,7 +89,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
 					<ScrollReset />
 					<a
 						href="#main-content"
-						className="focus-visible:ring-ring bg-background text-foreground sr-only z-50 rounded-md px-4 py-2 font-medium focus-visible:not-sr-only focus-visible:fixed focus-visible:top-4 focus-visible:left-4 focus-visible:ring-2 focus-visible:outline-none"
+						className="focus-visible:ring-ring bg-card border-border-default text-foreground fixed -top-16 left-4 z-50 inline-flex h-11 items-center rounded-md border px-4 text-sm font-medium transition-[top] focus-visible:top-4 focus-visible:ring-2 focus-visible:outline-none"
 					>
 						본문 바로가기
 					</a>
@@ -110,7 +110,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
 					<Footer />
 					<ScrollToTop />
 				</Providers>
-				{/* Vercel 호스트 환경에서만 마운트 — 로컬 `pnpm start`에서는 `_vercel/insights/script.js` 404 회귀 차단. */}
 				{process.env.VERCEL ? (
 					<>
 						<Analytics />

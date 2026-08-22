@@ -2,19 +2,13 @@ import { SocialLinks } from "@/shared/components/common/SocialLinks";
 
 import { socialItems } from "../utils/socialItems";
 
-/**
- * 레거시 홈 Hero 디자인:
- * - h1 2줄: `안녕하세요 👋` / `프론트엔드 개발자 {accent}여찬규{/accent}입니다.`
- * - 소개 본문 2문단 (text-sm sm:text-base md:text-lg, leading-relaxed)
- * - CTA 버튼 없이 SocialLinks(아이콘+텍스트 버튼형) 바로 노출
- */
 export function HomeHero() {
 	return (
 		<section className="space-y-4 sm:space-y-6" aria-labelledby="home-hero-title">
 			<div className="space-y-3 sm:space-y-4">
 				<h1
 					id="home-hero-title"
-					className="text-foreground text-2xl leading-tight font-bold tracking-tight text-balance sm:text-3xl md:text-4xl lg:text-5xl"
+					className="text-foreground tracking-hero text-3xl leading-tight font-extrabold text-balance min-[420px]:text-4xl"
 				>
 					안녕하세요 <span aria-hidden>👋</span>
 					<br />

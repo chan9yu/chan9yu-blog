@@ -5,6 +5,8 @@ import { HomeHero } from "@/features/about";
 import { getPublicPosts, getTrendingPosts, PopularPosts, RecentPostsList } from "@/features/posts";
 import { getTrendingSeries, TrendingSeries } from "@/features/series";
 import { getTrendingTags, TrendingTags } from "@/features/tags";
+import { SectionTitle } from "@/shared/components/common/SectionTitle";
+import { SidebarSection } from "@/shared/components/common/SidebarSection";
 import { Container } from "@/shared/components/layouts/Container";
 import { buildMetadata } from "@/shared/seo";
 import { resolvePostThumbnails } from "@/shared/utils/resolveThumbnail";
@@ -16,7 +18,6 @@ export const metadata: Metadata = buildMetadata({
 	path: "/"
 });
 
-// SSG-first(PRD G-1) — 트렌딩 KV 호출은 빌드 타임에 박제. 1시간 단위 갱신.
 export const revalidate = 3600;
 
 const RECENT_POSTS_LIMIT = 6;
@@ -41,64 +42,41 @@ export default async function HomePage() {
 					<HomeHero />
 
 					<section aria-labelledby="recent-posts-title" className="space-y-4 sm:space-y-6">
-						<div className="flex items-center justify-between">
-							<h2
-								id="recent-posts-title"
-								className="text-foreground flex items-center gap-2 text-lg font-bold tracking-tight sm:gap-3 sm:text-xl md:text-2xl"
-							>
-								<span className="bg-accent h-6 w-1 rounded-full sm:h-7" aria-hidden />
-								최근 포스트
-							</h2>
-							<Link
-								href="/posts"
-								aria-label="최근 포스트 전체 보기"
-								className="text-accent focus-visible:ring-ring rounded text-xs font-medium transition-colors hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none sm:text-sm"
-							>
-								전체 보기 <span aria-hidden>→</span>
-							</Link>
-						</div>
+						<SectionTitle
+							id="recent-posts-title"
+							action={
+								<Link
+									href="/posts"
+									aria-label="최근 포스트 전체 보기"
+									className="text-accent focus-visible:ring-ring shrink-0 rounded text-sm font-medium transition-colors hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+								>
+									전체 보기 <span aria-hidden>&rarr;</span>
+								</Link>
+							}
+						>
+							최근 포스트
+						</SectionTitle>
 						<RecentPostsList posts={recentPosts} />
 					</section>
 				</div>
 
 				<aside aria-label="추천 블록" className="hidden lg:block lg:w-64 lg:shrink-0">
 					<div className="sticky top-24 space-y-6">
-						<section aria-labelledby="popular-posts-title" className="space-y-3">
-							<h2
-								id="popular-posts-title"
-								className="text-muted-foreground flex items-center gap-2 text-sm font-semibold"
-							>
-								<span className="bg-accent size-1.5 rounded-full" aria-hidden />
-								<span lang="en">Popular Posts</span>
-							</h2>
+						<SidebarSection title="Popular Posts" titleId="popular-posts-title" lang="en">
 							<PopularPosts posts={popularPosts} />
-						</section>
+						</SidebarSection>
 
-						<hr className="border-border" />
+						<hr className="border-border-subtle" />
 
-						<section aria-labelledby="trending-series-title" className="space-y-3">
-							<h2
-								id="trending-series-title"
-								className="text-muted-foreground flex items-center gap-2 text-sm font-semibold"
-							>
-								<span className="bg-accent size-1.5 rounded-full" aria-hidden />
-								<span lang="en">Popular Series</span>
-							</h2>
+						<SidebarSection title="Popular Series" titleId="trending-series-title" lang="en">
 							<TrendingSeries series={trendingSeries} />
-						</section>
+						</SidebarSection>
 
-						<hr className="border-border" />
+						<hr className="border-border-subtle" />
 
-						<section aria-labelledby="trending-tags-title" className="space-y-3">
-							<h2
-								id="trending-tags-title"
-								className="text-muted-foreground flex items-center gap-2 text-sm font-semibold"
-							>
-								<span className="bg-accent size-1.5 rounded-full" aria-hidden />
-								<span lang="en">Popular Tags</span>
-							</h2>
+						<SidebarSection title="Popular Tags" titleId="trending-tags-title" lang="en">
 							<TrendingTags tags={trendingTags} />
-						</section>
+						</SidebarSection>
 					</div>
 				</aside>
 			</div>

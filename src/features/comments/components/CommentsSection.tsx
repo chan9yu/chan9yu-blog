@@ -34,8 +34,6 @@ function resolveGiscusTheme(resolvedTheme: string | undefined) {
 	return resolvedTheme === "dark" ? "dark" : "light";
 }
 
-// `@giscus/react` 미설치 — 공식 `giscus.app/client.js` script 직접 주입하는 DIY 로더 (경량 wrapper).
-// IntersectionObserver lazy-mount + 테마 변경 시 postMessage로 iframe 테마 동기화.
 export function CommentsSection({ slug, isPrivate = false }: CommentsSectionProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [shouldLoad, setShouldLoad] = useState(false);
@@ -92,7 +90,6 @@ export function CommentsSection({ slug, isPrivate = false }: CommentsSectionProp
 			if (script.parentNode) script.parentNode.removeChild(script);
 			container.querySelector("iframe.giscus-frame")?.remove();
 		};
-		// resolvedTheme은 아래 postMessage effect에서 처리하므로 재주입 회피를 위해 deps 제외.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [shouldLoad, slug, config]);
 

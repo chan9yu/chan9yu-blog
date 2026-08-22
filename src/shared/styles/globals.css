@@ -1,15 +1,14 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @import "./tokens.css";
+@import "./motion.css";
 @import "./base.css";
 @import "./animations.css";
+@import "./dialog.css";
 @import "./scrollbar.css";
 @import "./shiki.css";
 @import "./prose.css";
 
-/* button·focus 리셋 — @layer base 안에 두어 Tailwind utilities가 override 가능하도록.
-   CSS 명세상 @import는 모든 @layer/@rule보다 앞에 위치해야 하므로 위에 모아둠. */
 @layer base {
 	button {
 		background: none;
@@ -29,12 +28,7 @@
 	}
 }
 
-/**
- * Tailwind 4 @theme: Semantic CSS 변수를 Tailwind 유틸(bg-*, text-*, rounded-*)로 노출.
- * `inline` 키워드는 var() 참조를 빌드 타임에 resolve — .dark 오버라이드가 런타임에 여전히 작동.
- */
 @theme inline {
-	/* Surface */
 	--color-bg-default: var(--color-bg-default);
 	--color-bg-subtle: var(--color-bg-subtle);
 	--color-bg-muted: var(--color-bg-muted);
@@ -42,26 +36,22 @@
 	--color-surface-raised: var(--color-surface-raised);
 	--color-surface-overlay: var(--color-surface-overlay);
 
-	/* Text */
 	--color-text-primary: var(--color-text-primary);
 	--color-text-secondary: var(--color-text-secondary);
 	--color-text-tertiary: var(--color-text-tertiary);
 	--color-text-disabled: var(--color-text-disabled);
 	--color-text-inverse: var(--color-text-inverse);
 
-	/* Border */
 	--color-border-subtle: var(--color-border-subtle);
 	--color-border-default: var(--color-border-default);
 	--color-border-strong: var(--color-border-strong);
 
-	/* Accent */
 	--color-accent: var(--color-accent-default);
 	--color-accent-hover: var(--color-accent-hover);
 	--color-accent-active: var(--color-accent-active);
 	--color-accent-subtle: var(--color-accent-subtle);
 	--color-accent-foreground: var(--color-accent-foreground);
 
-	/* Feedback */
 	--color-success: var(--color-success);
 	--color-success-subtle: var(--color-success-subtle);
 	--color-warning: var(--color-warning);
@@ -71,14 +61,11 @@
 	--color-info: var(--color-info);
 	--color-info-subtle: var(--color-info-subtle);
 
-	/* Code */
 	--color-code-bg: var(--color-code-bg);
 	--color-code-border: var(--color-code-border);
 
-	/* Focus */
 	--color-focus-ring: var(--color-focus-ring);
 
-	/* Radius */
 	--radius-xs: var(--radius-xs);
 	--radius-sm: var(--radius-sm);
 	--radius-md: var(--radius-md);
@@ -86,17 +73,14 @@
 	--radius-xl: var(--radius-xl);
 	--radius-full: var(--radius-full);
 
-	/* Shadow */
 	--shadow-sm: var(--shadow-sm);
 	--shadow-md: var(--shadow-md);
 	--shadow-lg: var(--shadow-lg);
 	--shadow-accent: var(--shadow-accent);
 
-	/* Container */
 	--container-content: var(--container-content);
 	--container-prose: var(--container-prose);
 
-	/* shadcn/ui alias — Semantic 토큰을 shadcn 표준 키로 노출 (bg-background, text-foreground 등) */
 	--color-background: var(--color-bg-default);
 	--color-foreground: var(--color-text-primary);
 	--color-card: var(--color-surface-default);
@@ -115,98 +99,118 @@
 	--color-input: var(--color-border-default);
 	--color-ring: var(--color-focus-ring);
 
-	/* Animation */
-	--animate-fade-in: fade-in 0.3s ease-out;
-	--animate-fade-in-up: fade-in-up 0.35s ease-out;
-	--animate-scale-in: scale-in 0.2s ease-out;
-	--animate-pulse-subtle: pulse-subtle 2s ease-in-out infinite;
+	--animate-fade-in: fade-in var(--duration-exit) var(--ease-out);
 
-	/* Font families */
 	--font-sans:
 		var(--font-pretendard), system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic",
 		sans-serif;
 	--font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code", Menlo, Monaco, Consolas, monospace;
 
-	/* Typography scale — CSS-only. Tailwind에서 text-display, text-h1, text-body 등 유틸로 자동 생성 */
-	--text-display: 3rem;
-	--text-display--line-height: 1.2;
-	--text-display--font-weight: 700;
-	--text-display--letter-spacing: -0.02em;
+	--text-xs: 0.78125rem;
+	--text-sm: 0.84375rem;
+	--text-base: 0.96875rem;
+	--text-lg: 1.0625rem;
+	--text-xl: 1.1875rem;
+	--text-2xl: 1.5625rem;
+	--text-3xl: 1.8125rem;
+	--text-4xl: 2.125rem;
 
-	--text-h1: 2.25rem;
-	--text-h1--line-height: 1.2;
-	--text-h1--font-weight: 700;
-	--text-h1--letter-spacing: -0.01em;
+	--text-chip: 0.71875rem;
+	--text-chip--line-height: 1.5;
 
-	--text-h2: 1.75rem;
-	--text-h2--line-height: 1.35;
-	--text-h2--font-weight: 700;
-	--text-h2--letter-spacing: -0.01em;
+	--text-subtitle: 0.90625rem;
+	--text-subtitle--line-height: 1.6;
 
-	--text-h3: 1.375rem;
-	--text-h3--line-height: 1.35;
-	--text-h3--font-weight: 600;
+	--leading-tight: 1.45;
+	--leading-snug: 1.55;
+	--leading-prose: 1.85;
 
-	--text-h4: 1.125rem;
-	--text-h4--line-height: 1.5;
-	--text-h4--font-weight: 600;
-
-	--text-body-lg: 1.125rem;
-	--text-body-lg--line-height: 1.75;
-
-	--text-body: 1rem;
-	--text-body--line-height: 1.75;
-
-	--text-body-sm: 0.875rem;
-	--text-body-sm--line-height: 1.6;
-
-	--text-label: 0.875rem;
-	--text-label--line-height: 1.5;
-	--text-label--font-weight: 500;
-
-	--text-caption: 0.75rem;
-	--text-caption--line-height: 1.5;
+	--tracking-hero: -0.035em;
+	--tracking-title: -0.03em;
+	--tracking-heading: -0.02em;
+	--tracking-flat: -0.015em;
 }
 
-/**
- * Custom variants — shadcn/Radix primitive에서 사용하는 arbitrary `data-[state=open]`·`[&_svg]`·
- * `data-[variant=destructive]:*:[svg]` 같은 셀렉터 표현을 canonical variant 이름으로 치환한다.
- * VSCode Tailwind extension의 `suggestCanonicalClasses` 경고 제거 + `styling.md` arbitrary 금지 원칙 +
- * `shadcn.md` 후처리 5번 "arbitrary canonical 교체" 의무의 통합 대응.
- */
-@custom-variant state-open (&[data-state="open"]);
-@custom-variant state-closed (&[data-state="closed"]);
-@custom-variant state-checked (&[data-state="checked"]);
-@custom-variant state-unchecked (&[data-state="unchecked"]);
-@custom-variant side-top (&[data-side="top"]);
-@custom-variant side-right (&[data-side="right"]);
-@custom-variant side-bottom (&[data-side="bottom"]);
-@custom-variant side-left (&[data-side="left"]);
-@custom-variant variant-destructive (&[data-variant="destructive"]);
-@custom-variant state-open-child-svg (&[data-state="open"] > svg);
-@custom-variant variant-destructive-svg (&[data-variant="destructive"] svg);
-@custom-variant child-svg (& svg);
-@custom-variant child-svg-no-size (& svg:not([class*="size-"]));
-@custom-variant child-svg-no-color (& svg:not([class*="text-"]));
-
-/* Semantic dimension utilities — arbitrary value([...]) 대체용 @utility 정의 */
-/* 2026 animated gradient text — accent→violet→accent 순환 */
-@utility text-gradient-animated {
-	background: linear-gradient(135deg, var(--color-accent-default), #8b5cf6, #06b6d4, var(--color-accent-default));
-	background-size: 300% 300%;
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
-	color: transparent;
-	animation: gradient-shift 6s ease infinite;
-}
-
-@utility top-modal {
-	top: 10vh;
+@utility mt-modal {
+	margin-top: 10vh;
 }
 
 @utility max-h-modal-content {
 	max-height: 60vh;
+}
+
+@utility aspect-og {
+	aspect-ratio: 1200 / 630;
+}
+
+@utility grid-post-row {
+	grid-template-columns: 200px minmax(0, 1fr);
+}
+
+@media (max-width: 1023px) {
+	.grid-post-row {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@utility grid-tags {
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+@media (max-width: 479px) {
+	.grid-tags {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@utility w-accent-bar {
+	width: 3px;
+}
+
+@utility max-w-tag {
+	max-width: 150px;
+}
+
+@utility max-w-tag-md {
+	max-width: 160px;
+}
+
+@utility max-w-tag-sm {
+	max-width: 120px;
+}
+
+@utility bg-post-placeholder {
+	background-image: url("/images/post-placeholder-light.png");
+	background-position: center;
+	background-size: cover;
+}
+
+.dark .bg-post-placeholder {
+	background-image: url("/images/post-placeholder-dark.png");
+}
+
+@utility h-series-head {
+	height: 214px;
+}
+
+@utility grid-cards {
+	grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+@utility grid-series {
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@media (max-width: 479px) {
+	.grid-cards {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 699px) {
+	.grid-series {
+		grid-template-columns: 1fr;
+	}
 }
 
 @utility max-h-sidebar {
@@ -237,20 +241,32 @@
 	max-width: 90vw;
 }
 
-/* Sonner — 테마 변수를 CSS로 관리 (Sonner.tsx의 style prop 제거) */
-.toaster {
-	--normal-bg: var(--color-popover);
-	--normal-text: var(--color-popover-foreground);
-	--normal-border: var(--color-border);
-	--border-radius: var(--radius-md);
-}
-
-/* ReadingProgress — JS가 --progress(0~1)만 주입, transform은 CSS에서 처리 */
 .reading-progress-bar {
 	transform: scaleX(var(--progress, 0));
 }
 
-/* FadeInWhenVisible — JS가 --fade-delay만 주입, transition-delay는 CSS에서 처리 */
-.fade-in-delay {
-	transition-delay: var(--fade-delay, 0ms);
+[data-toc-panel],
+[data-toc-opener] {
+	transition-property: opacity, transform, visibility;
+	transition-duration: var(--duration-screen);
+	transition-timing-function: var(--ease-move);
+	transition-behavior: allow-discrete;
+	opacity: 0;
+	visibility: hidden;
+}
+
+[data-toc-panel] {
+	transform: translateX(100%);
+}
+
+[data-toc-opener] {
+	transform: translateX(-50%);
+}
+
+[data-toc-panel][data-open="true"],
+[data-toc-opener][data-open="true"] {
+	opacity: 1;
+	transform: translateX(0);
+	visibility: visible;
+	will-change: opacity, transform;
 }

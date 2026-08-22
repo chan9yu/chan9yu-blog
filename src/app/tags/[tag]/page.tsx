@@ -1,9 +1,9 @@
-import { Tag } from "lucide-react";
 import { notFound } from "next/navigation";
 import { cache, Suspense } from "react";
 
 import { getPublicPosts, PostList, PostListSkeleton } from "@/features/posts";
 import { getAllTags, getPostsByTag } from "@/features/tags";
+import { Breadcrumb } from "@/shared/components/common/Breadcrumb";
 import { Container } from "@/shared/components/layouts/Container";
 import { getSiteUrl } from "@/shared/config/site";
 import { buildBreadcrumbJsonLd, buildMetadata, JsonLdScript, NOT_FOUND_METADATA } from "@/shared/seo";
@@ -14,7 +14,6 @@ type TagDetailPageProps = {
 	params: Promise<{ tag: string }>;
 };
 
-// generateMetadata + Page가 동일 렌더 트리에서 lookup 공유 (series/[slug] 패턴 일관).
 const findPostsByTag = cache((decoded: string) => getPostsByTag(getPublicPosts(), decoded));
 
 export async function generateStaticParams() {
@@ -64,14 +63,12 @@ export default async function TagDetailPage({ params }: TagDetailPageProps) {
 			<Container>
 				<div className="py-8 lg:py-10">
 					<header className="mb-12 space-y-6">
+						<Breadcrumb items={[{ label: "태그", href: "/tags" }, { label: `#${display}` }]} />
 						<div className="space-y-4">
-							<div className="flex items-center gap-3">
-								<Tag className="text-accent size-8" aria-hidden />
-								<h1 className="text-foreground text-3xl leading-tight font-bold tracking-tight text-balance break-keep sm:text-4xl md:text-5xl">
-									#{display}
-								</h1>
-							</div>
-							<p className="text-muted-foreground text-base sm:text-lg">총 {filtered.length}개의 글</p>
+							<h1 className="text-foreground tracking-heading text-2xl leading-tight font-bold text-balance break-keep">
+								#{display}
+							</h1>
+							<p className="text-muted-foreground text-sm">총 {filtered.length}개의 글</p>
 						</div>
 						<hr className="border-border" />
 					</header>

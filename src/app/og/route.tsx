@@ -7,9 +7,6 @@ export const dynamic = "force-dynamic";
 const MAX_TITLE = 80;
 const MAX_TAG = 32;
 
-// CWE-601 Open Redirect 차단 — siteMetadata.url의 hostname만 외부 redirect 허용.
-// 그 외 외부 URL은 fallback 렌더 (공격자가 /og?thumbnail=https://evil.com을 합법
-// 도메인의 OG endpoint로 위장하는 phishing 벡터 차단).
 const ALLOWED_THUMBNAIL_HOSTS = new Set<string>([new URL(siteMetadata.url).hostname]);
 
 function truncate(input: string, max: number) {

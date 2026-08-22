@@ -86,7 +86,6 @@ describe("getPostDetail", () => {
 	});
 
 	it("frontmatter 검증 실패 → null 반환", () => {
-		// description 누락 → Zod 검증 실패
 		mockedReadFileSync.mockReturnValue(
 			"---\ntitle: incomplete\nslug: bad-post\ndate: 2026-04-01\n---\n" as unknown as ReturnType<typeof fs.readFileSync>
 		);

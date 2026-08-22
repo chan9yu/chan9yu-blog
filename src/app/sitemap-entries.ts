@@ -10,7 +10,6 @@ type BuildSitemapEntriesInput = {
 	series: Series[];
 };
 
-// priority/changefreq는 PRD_TECHNICAL §10.4 매핑 — 변경 시 PRD와 동기화 필수.
 export function buildSitemapEntries(input: BuildSitemapEntriesInput) {
 	const now = new Date();
 	const { siteUrl, publicPosts, tags, series } = input;

@@ -11,11 +11,6 @@ type TagListProps = {
 	className?: string;
 };
 
-/**
- * 레거시 TagList 디자인: block rounded-lg px-3 py-2 + count 내림차순.
- * - filter: `/posts?tag=slug` 쿼리 파라미터 방식
- * - navigation: `/tags/[slug]` 라우트 방식
- */
 export function TagList({ tags, currentTag, variant = "navigation", className }: TagListProps) {
 	const getHref = (tag: TagCount) => {
 		if (variant === "filter") return `/posts?tag=${encodeURIComponent(tag.slug)}`;

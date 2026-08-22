@@ -1,6 +1,5 @@
 import type { PostSummary } from "@/shared/types";
 
-// 입력은 date desc 가정 — `prev`는 배열 뒤쪽(과거), `next`는 앞쪽(미래).
 export function findAdjacentPosts(posts: PostSummary[], slug: string) {
 	const index = posts.findIndex((post) => post.slug === slug);
 

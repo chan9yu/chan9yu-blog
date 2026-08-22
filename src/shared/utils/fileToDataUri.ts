@@ -9,7 +9,6 @@ const MIME_BY_EXT: Record<string, string> = {
 	".gif": "image/gif"
 };
 
-// Node.js 빌드 타임 전용 — Client Component에서 호출 시 node:fs 번들 실패.
 export function fileToDataUri(absolutePath: string) {
 	const ext = extname(absolutePath).toLowerCase();
 	const mime = MIME_BY_EXT[ext];

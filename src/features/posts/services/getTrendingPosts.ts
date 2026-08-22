@@ -4,7 +4,6 @@ import type { PostSummary } from "@/shared/types";
 const VIEW_KEY_PREFIX = "views:post:";
 const DEFAULT_LIMIT = 5;
 
-// Redis 미설정 PR preview와 로컬 빌드를 깨지 않도록 fallback. `fallback: true` 플래그로 호출자가 UI 분기 가능.
 export async function getTrendingPosts(posts: PostSummary[], limit = DEFAULT_LIMIT) {
 	if (posts.length === 0) {
 		return { posts: [], fallback: false };
@@ -28,7 +27,6 @@ export async function getTrendingPosts(posts: PostSummary[], limit = DEFAULT_LIM
 	}
 }
 
-// 호출자 정렬 계약에 의존하지 않도록 자체 date desc 재정렬 — fallback 동작이 조용히 깨지지 않도록 방어.
 function pickRecentPosts(posts: PostSummary[], limit: number) {
 	return [...posts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, limit);
 }

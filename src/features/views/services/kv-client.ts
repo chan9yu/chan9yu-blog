@@ -1,5 +1,3 @@
-// 조회수는 부가 기능 — KV 실패가 UI를 throw로 중단하지 않도록 모든 함수가 silent fail + console.warn.
-
 const VIEWS_ENDPOINT = "/api/views";
 
 type ViewsResponse = {
@@ -52,7 +50,6 @@ export async function incrementPostViews(slug: string) {
 	}
 }
 
-// 중복 slug 자동 dedup. 반환 키 순회 순서는 보장 안 함 — 호출자는 slug로 직접 lookup할 것.
 export async function getBatchPostViews(slugs: ReadonlyArray<string>) {
 	if (slugs.length === 0) return {};
 

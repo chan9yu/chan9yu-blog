@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-// Cmd+K (macOS) / Ctrl+K. callback ref 패턴으로 stale closure 방지 + 이벤트 리스너 1회만 등록.
 export function useSearchShortcut(callback: () => void) {
 	const callbackRef = useRef(callback);
 

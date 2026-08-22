@@ -1,17 +1,8 @@
-/**
- * Shiki 코드 하이라이팅 레이아웃 + 듀얼 테마 CSS 변수 (M2-20, ADR-001).
- * github-light / github-dark 듀얼 테마는 Shiki가 CSS 커스텀 프로퍼티를 span에 주입하며,
- * 아래 규칙이 현재 테마에 맞는 색을 적용한다.
- * background-color는 디자인 시스템 토큰(var(--color-code-bg))으로 통일하므로 Shiki 배경 무시.
- */
-
-/* 듀얼 테마 — 라이트 모드 (기본) */
 .shiki,
 .shiki span {
 	color: var(--shiki-light);
 }
 
-/* 듀얼 테마 — 다크 모드 */
 .dark .shiki,
 .dark .shiki span {
 	color: var(--shiki-dark);
@@ -28,8 +19,6 @@ pre.shiki {
 	line-height: 1.6;
 	tab-size: 2;
 }
-
-/* .line은 inline 유지 — display:block 설정 시 <pre> 내부 \n이 추가 줄바꿈으로 보존돼 이중 간격 발생 */
 
 .dark pre.shiki {
 	color-scheme: dark;

@@ -19,7 +19,6 @@ const post = (slug: string, date: string): PostSummary => ({
 
 const mgetMock = vi.fn();
 
-// hasRedisCredentials는 실물을 쓴다. 환경 변수 분기가 이 파일의 검증 대상이라 mock으로 덮으면 안 된다.
 vi.mock("@upstash/redis", () => ({
 	Redis: {
 		fromEnv: () => ({

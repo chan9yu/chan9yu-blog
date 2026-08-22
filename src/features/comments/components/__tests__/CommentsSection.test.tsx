@@ -1,15 +1,3 @@
-/**
- * CommentsSection Integration 테스트 — ROADMAP M3-11 Red.
- *
- * 계약:
- * - `isPrivate=true` → 섹션 비렌더 (Giscus 로드 금지, 개인정보 유출 방지)
- * - 환경변수(`NEXT_PUBLIC_GISCUS_*`) 누락 → placeholder + 설정 안내 메시지
- * - 환경변수 OK + `IntersectionObserver.isIntersecting=true` → Giscus client.js script 주입
- * - 언마운트 시 script 정리
- *
- * Red: 현재 구현은 "스크롤하면 댓글이 로드됩니다" placeholder만 표시. Giscus 주입·privacy 미구현.
- */
-
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -24,7 +12,6 @@ class MockIntersectionObserver {
 		observeCallbacks.push(cb);
 	}
 	observe() {
-		// 즉시 교차 발동
 		const cb = observeCallbacks[observeCallbacks.length - 1];
 		cb?.([{ isIntersecting: true }]);
 	}
@@ -59,7 +46,6 @@ describe("CommentsSection", () => {
 	});
 
 	it("환경변수 누락 시 config 안내 placeholder 렌더", () => {
-		// env 설정 안 함
 		render(<CommentsSection slug="react-19-use" />);
 		expect(screen.getByRole("heading", { name: "댓글" })).toBeInTheDocument();
 		expect(screen.getByText(/Giscus 환경변수.*설정/)).toBeInTheDocument();
@@ -98,7 +84,6 @@ describe("CommentsSection", () => {
 
 		expect(container.querySelector('script[src*="giscus.app"]')).not.toBeNull();
 		unmount();
-		// 언마운트 후 script 요소는 React가 해당 node 트리에서 제거해야 함
 		expect(document.querySelector('script[src*="giscus.app"]')).toBeNull();
 	});
 });

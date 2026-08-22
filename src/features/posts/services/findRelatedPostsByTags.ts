@@ -2,7 +2,6 @@ import type { PostSummary, RelatedPost } from "@/shared/types";
 
 const DEFAULT_LIMIT = 3;
 
-// 정렬: overlapScore desc → 동률 시 입력 순서(date desc 가정) 보존.
 export function findRelatedPostsByTags(
 	posts: PostSummary[],
 	target: PostSummary,

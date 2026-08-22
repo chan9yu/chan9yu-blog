@@ -18,11 +18,8 @@ type CustomMDXProps = {
 	source: string;
 };
 
-/** MDXRemote heading 슬롯 props. id는 rehype-slug 플러그인이 주입. */
 type HeadingSlotProps = ComponentProps<"h2"> & { id?: string };
 
-// # → <h2>, ## → <h3>, ### → <h4> (+1 시프트)
-// 이유: 페이지 <h1>은 PostMetaHeader의 포스트 제목이 담당
 function MdxH1(props: HeadingSlotProps) {
 	return <MdxHeading level={2} {...props} />;
 }
@@ -35,14 +32,6 @@ function MdxH3(props: HeadingSlotProps) {
 	return <MdxHeading level={4} {...props} />;
 }
 
-/**
- * MDX는 standalone 이미지를 `<p>`로 감싸는데, MdxImage가 `<figure>`를 렌더하면
- * `<p><figure>...</figure></p>` — 유효하지 않은 HTML → 하이드레이션 오류.
- *
- * remarkBreaks가 연속 이미지 사이 개행을 `<br>`로 변환하므로
- * children이 [MdxImage, br, MdxImage] 형태가 될 수 있다.
- * 단일 자식 체크(only.length === 1) 대신 any child 체크로 모든 케이스를 커버한다.
- */
 function MdxP({ children, ...props }: ComponentProps<"p">) {
 	const hasBlockChild = Children.toArray(children).some((child) => isValidElement(child) && child.type === MdxImage);
 	if (hasBlockChild) {
@@ -51,7 +40,6 @@ function MdxP({ children, ...props }: ComponentProps<"p">) {
 	return <p {...props}>{children}</p>;
 }
 
-/** MDXRemote components 맵. 모듈 상수로 선언해 안정적 참조 보장 + 빌드 타임 정적 prerender 호환. */
 const MDX_COMPONENTS = {
 	h1: MdxH1,
 	h2: MdxH2,
@@ -64,8 +52,6 @@ const MDX_COMPONENTS = {
 	Callout
 } as const;
 
-// Shiki: defaultColor=false로 CSS 변수(--shiki-light/--shiki-dark) 주입 → 실제 색상은 shiki.css가 토글.
-// remarkBreaks: 한국어 블로그 특성상 개행을 <br>로 보존.
 export async function CustomMDX({ source }: CustomMDXProps) {
 	const highlighter = await getShikiHighlighter();
 

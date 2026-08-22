@@ -1,18 +1,3 @@
-/**
- * PostList Integration 테스트 — ROADMAP M3-17 Red / M3-18 Green.
- *
- * 계약 (US-001):
- * - 빈 배열 → 안내 메시지(role="status") 렌더
- * - 포스트 배열 → 카드 렌더, 각 카드는 `/posts/{slug}` 링크
- * - 최초 12개까지 표시(페이지 크기), 그 이상은 sentinel 기반 확장
- * - 카드에 제목·설명·reading time·태그 표시
- * - 썸네일 있으면 `<img>`, 없으면 placeholder (grid 전용)
- * - ViewToggle 컨트롤 존재
- *
- * 현재 M2-22~24에서 fixture → 실 서비스 전환 이미 완료되어 green 기대.
- * 이 테스트는 US-001 AC를 통합 관점에서 명시적으로 고정 (regression 보호).
- */
-
 import { render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -53,7 +38,7 @@ function makePost(overrides: Partial<PostSummary> = {}): PostSummary {
 describe("PostList", () => {
 	it("빈 배열 → 안내 메시지 (role=status)", () => {
 		render(<PostList posts={[]} />);
-		expect(screen.getByRole("status")).toHaveTextContent(/포스트가 없습니다/);
+		expect(screen.getByRole("status")).toHaveTextContent(/글이 없습니다/);
 	});
 
 	it("포스트 배열 → 각 카드는 /posts/{slug} 링크", () => {
@@ -80,17 +65,17 @@ describe("PostList", () => {
 		const card = screen.getByRole("link", { name: /유니크 제목/ });
 		expect(within(card).getByText("유니크 제목")).toBeInTheDocument();
 		expect(within(card).getByText("유니크 설명")).toBeInTheDocument();
-		expect(within(card).getByText("7분")).toBeInTheDocument();
+		expect(within(card).getByText(/읽는 시간 7분/)).toBeInTheDocument();
 		expect(within(card).getByText("typescript")).toBeInTheDocument();
 	});
 
-	it("썸네일이 있는 포스트는 <img> 렌더", () => {
+	it("썸네일이 있는 포스트는 <img> 렌더 (카드 제목이 링크 이름을 담당하므로 alt는 비운다)", () => {
 		const post = makePost({ thumbnail: "/posts/sample/images/thumb.png", title: "썸네일 있음" });
-		render(<PostList posts={[post]} />);
+		const { container } = render(<PostList posts={[post]} />);
 
-		const card = screen.getByRole("link", { name: /썸네일 있음/ });
-		const img = within(card).getByRole("img", { name: "썸네일 있음" });
+		const img = container.querySelector("img");
 		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute("alt", "");
 	});
 
 	it("최초 12개까지만 표시 (페이지 크기, 무한 스크롤 전)", () => {
@@ -102,14 +87,12 @@ describe("PostList", () => {
 
 		const links = screen.getAllByRole("link");
 		expect(links.length).toBe(12);
-		// 0..11 표시, 12..19는 숨김
 		expect(screen.getByRole("link", { name: /포스트 11/ })).toBeInTheDocument();
 		expect(screen.queryByRole("link", { name: /포스트 12/ })).not.toBeInTheDocument();
 	});
 
 	it("ViewToggle 컨트롤 존재 (리스트/격자 전환 버튼)", () => {
 		render(<PostList posts={[makePost()]} />);
-		// role=toolbar + aria-label="뷰 모드" 래퍼 안에 aria-pressed를 가진 2개 버튼 (WAI-ARIA APG)
 		const toolbar = screen.getByRole("toolbar", { name: "뷰 모드" });
 		expect(within(toolbar).getByRole("button", { name: "리스트 보기" })).toBeInTheDocument();
 		expect(within(toolbar).getByRole("button", { name: "격자 보기" })).toBeInTheDocument();

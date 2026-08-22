@@ -29,7 +29,6 @@ type SearchSuggestionsProps = {
 	onSelect: () => void;
 };
 
-// 호출자 정렬 계약에 의존하지 않도록 자체 date desc 정렬 — 모든 항목은 a 링크로 SearchModal 키보드 내비에 편입.
 export function SearchSuggestions({ posts, onSelect }: SearchSuggestionsProps) {
 	const trendingTags = computeTrendingTags(posts, TRENDING_TAGS_LIMIT);
 	const recentPosts = [...posts].sort((a, b) => b.date.localeCompare(a.date)).slice(0, RECENT_POSTS_LIMIT);

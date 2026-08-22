@@ -1,15 +1,3 @@
-/**
- * PostMetaHeader Integration 테스트 — ROADMAP M3-19 Red / M3-20 Green.
- *
- * 계약 (US-002 메타 헤더):
- * - 제목(h1), 설명, 날짜(datetime), 태그 목록 렌더
- * - 태그 Link의 href는 `/tags/{tag}` — 한글/특수문자 slug 대응 (decodeURIComponent 경로)
- * - viewCounterSlot과 shareSlot은 prop으로 주입 가능 (Law 3: 다른 feature UI 조립은 app 레이어)
- * - 빈 tags → 태그 목록 자체 비렌더
- *
- * 현재 구현은 이미 모두 만족. 이 테스트는 regression 보호.
- */
-
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 

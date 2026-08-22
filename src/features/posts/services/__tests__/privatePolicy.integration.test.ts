@@ -46,15 +46,6 @@ seriesOrder: ${seriesOrder === null ? "null" : seriesOrder}
 
 내용.`;
 
-/**
- * M4-21: private 포스트 제외 정책 통합 테스트.
- *
- * `getPublicPosts()`가 single source of truth로 private을 거른다는 가정 하에,
- * 그룹 1~4의 모든 collector(태그·시리즈·관련·인접·트렌딩)가 private을 누설하지 않는지 검증.
- *
- * 검증 대상 services는 `getPublicPosts()` 결과를 입력받는 순수 함수들이므로,
- * 테스트는 fs를 모킹해 mix(public + private)를 만든 뒤 결과에 private slug가 등장하지 않음을 확인한다.
- */
 describe("Private 포스트 제외 정책 (M4-21)", () => {
 	const mockedReaddirSync = vi.mocked(fs.readdirSync);
 	const mockedReadFileSync = vi.mocked(fs.readFileSync);
@@ -110,7 +101,6 @@ describe("Private 포스트 제외 정책 (M4-21)", () => {
 		const related = findRelatedPostsByTags(posts, target);
 
 		expect(related.find((p) => p.slug === "private-x")).toBeUndefined();
-		// private-x의 "secret" 태그가 overlapScore 계산에 누설되지 않음
 		expect(related.find((p) => p.tags.includes("secret"))).toBeUndefined();
 	});
 
@@ -130,11 +120,9 @@ describe("Private 포스트 제외 정책 (M4-21)", () => {
 		const posts = getPublicPosts();
 		const counts = getTagCounts(posts);
 
-		// public-a + public-b 모두 react 태그 → count 2 (private-x의 react 기여분 제외)
 		const react = counts.find((c) => c.tag === "react");
 		expect(react?.count).toBe(2);
 
-		// private-x가 가진 "secret" 태그는 어디에도 등장하지 않는다
 		expect(counts.find((c) => c.tag === "secret")).toBeUndefined();
 	});
 

@@ -19,7 +19,6 @@ describe("slugify", () => {
 		expect(slugify("use() 훅 완벽이해")).toBe("use-훅-완벽이해");
 	});
 
-	// github-slugger는 각 공백을 개별 하이픈으로 변환 (collapse 없음)
 	it("연속 공백 → 개별 하이픈 (github-slugger 정합)", () => {
 		expect(slugify("hello   world")).toBe("hello---world");
 	});
@@ -32,7 +31,6 @@ describe("slugify", () => {
 		expect(slugify("  (hello)  ")).toBe("hello");
 	});
 
-	// github-slugger는 연속 하이픈을 단일화하지 않음 — 있는 그대로 보존
 	it("연속 하이픈 보존 (github-slugger 정합)", () => {
 		expect(slugify("hello--world")).toBe("hello--world");
 	});
@@ -45,7 +43,6 @@ describe("slugify", () => {
 		expect(slugify("!!!")).toBe("");
 	});
 
-	// rehype-slug(github-slugger)와 동작이 일치해야 하는 핵심 케이스
 	it("' - ' 패턴 (공백-하이픈-공백): 3문자 → 3하이픈", () => {
 		expect(slugify("Step 1: A - B")).toBe("step-1-a---b");
 	});

@@ -34,8 +34,6 @@ export function parseBadgeIndex(raw: string) {
 
 const BADGE_FONT_DIR = join(process.cwd(), "public", "fonts");
 
-// 빌드 타임 전용. ImageResponse(next/og) 내부 Satori 엔진은 정적 ttf/otf/woff만 지원
-// — variable woff2(PretendardVariable)는 못 읽어 한글이 깨지므로 정적 OTF를 별도 로드.
 export function loadBadgeFonts() {
 	return [
 		{

@@ -13,15 +13,12 @@ type FooterLink = {
 	icon?: ReactNode;
 };
 
-// RSS는 XML 응답이므로 같은 탭에서 열면 raw XML이 노출되어 UX가 나쁘다 → external: true.
 const FOOTER_LINKS: ReadonlyArray<FooterLink> = [
 	{ href: "/rss", label: "RSS", external: true, icon: <Rss className="size-4" aria-hidden /> },
 	{ href: "https://github.com/chan9yu", label: "GitHub", external: true },
 	{ href: "mailto:dev.cgyeo@gmail.com", label: "Email", external: false }
 ];
 
-// Next.js 16 Server Component 프리렌더는 new Date() 호출을 차단(next/prerender-current-time)
-// → 모듈 초기화 시점에 평가하여 SSG 빌드 연도 고정.
 const BUILD_YEAR = new Date().getFullYear();
 
 export function Footer() {

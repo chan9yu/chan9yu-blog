@@ -7,7 +7,6 @@ import { getAllPosts } from "../getAllPosts";
 
 vi.mock("node:fs");
 
-/** readdirSync withFileTypes 응답을 흉내 낸 최소 Dirent 객체 */
 const makeDirent = (name: string, isDir = true) =>
 	({
 		name,
@@ -20,7 +19,6 @@ const makeDirent = (name: string, isDir = true) =>
 		isSymbolicLink: () => false
 	}) as unknown as fs.Dirent;
 
-/** parseFrontmatter가 파싱할 수 있는 유효한 MDX 문자열 생성 */
 const makeMdx = (slug: string, date: string, isPrivate = false) =>
 	`---
 title: "테스트 포스트"
@@ -110,7 +108,6 @@ describe("getAllPosts", () => {
 		mockedReadFileSync.mockImplementation((path) => {
 			if (path.toString().includes("valid-post"))
 				return makeMdx("valid-post", "2026-04-01") as unknown as ReturnType<typeof fs.readFileSync>;
-			// slug·description 누락 → PostFrontmatterSchema 검증 실패
 			return "---\ntitle: invalid only\n---\n" as unknown as ReturnType<typeof fs.readFileSync>;
 		});
 

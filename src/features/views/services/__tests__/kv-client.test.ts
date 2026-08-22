@@ -6,8 +6,6 @@ import { server } from "@/shared/test/msw/server";
 
 import { getBatchPostViews, getPostViews, incrementPostViews } from "../kv-client";
 
-// console.warn은 실패 경로마다 호출되므로 spy로 억제하고 호출 여부를 단언.
-// store 격리는 전역 setup.ts의 afterEach에서 단일 진실 공급원으로 관리한다.
 beforeEach(() => {
 	vi.spyOn(console, "warn").mockImplementation(() => {});
 });
@@ -47,7 +45,6 @@ describe("getPostViews", () => {
 	});
 
 	it("잘못된 slug 요청은 조용히 0 fallback", async () => {
-		// 클라이언트 slug 검증은 선택사항 — 서버가 400을 돌려주면 0으로 처리.
 		await expect(getPostViews("invalid slug with space")).resolves.toBe(0);
 		expect(console.warn).toHaveBeenCalled();
 	});

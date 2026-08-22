@@ -6,11 +6,6 @@ import { siteSocials } from "@/shared/config/site";
 
 type SocialIconName = (typeof siteSocials)[number]["iconName"];
 
-/**
- * Github·Linkedin은 lucide-react에서 공식 브랜드 마크가 제거되어 SVG 직접 사용.
- * SVG 파일: src/shared/assets/svgs/ (@svgr/webpack → React 컴포넌트로 변환).
- * 나머지(Mail·Rss)는 lucide-react 유지.
- */
 const ICON_MAP = {
 	Github: GithubIcon,
 	Linkedin: LinkedinIcon,

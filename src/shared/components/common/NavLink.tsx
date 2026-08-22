@@ -8,7 +8,7 @@ import type { ComponentProps } from "react";
 import { cn } from "@/shared/utils/cn";
 
 const navLink = cva(
-	"focus-visible:ring-ring/50 inline-flex min-h-11 items-center rounded-lg px-4 py-2 text-sm font-medium transition-all motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none hover:bg-muted",
+	"focus-visible:ring-ring/50 inline-flex min-h-11 items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none hover:bg-muted",
 	{
 		variants: {
 			active: {

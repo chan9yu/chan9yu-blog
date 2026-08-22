@@ -13,9 +13,9 @@ export function ViewCounter({ slug }: ViewCounterProps) {
 
 	if (failed) {
 		return (
-			<span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm" aria-label="조회수 정보 없음">
+			<span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm">
 				<Eye className="size-4" aria-hidden />
-				<span aria-hidden>— 회</span>
+				조회 정보 없음
 			</span>
 		);
 	}
@@ -24,17 +24,15 @@ export function ViewCounter({ slug }: ViewCounterProps) {
 		return (
 			<span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm" aria-label="조회수 불러오는 중">
 				<Eye className="size-4" aria-hidden />
-				<span aria-hidden className="bg-muted inline-block h-4 w-12 animate-pulse rounded" />
+				<span aria-hidden className="bg-bg-muted inline-block h-4 w-12 animate-pulse rounded" />
 			</span>
 		);
 	}
 
-	const label = `조회수 ${views}회`;
-
 	return (
-		<span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm" aria-label={label}>
+		<span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm tabular-nums">
 			<Eye className="size-4" aria-hidden />
-			<span aria-hidden>{`${views.toLocaleString("ko-KR")}회`}</span>
+			조회 {views.toLocaleString("ko-KR")}
 		</span>
 	);
 }

@@ -127,7 +127,7 @@ export default async function PostDetailPage({ params }: PostDetailPageProps) {
 						{currentSeries && <SeriesNavigation series={currentSeries} currentSlug={summary.slug} />}
 
 						{thumbnailSrc && (
-							<div className="relative aspect-2/1 w-full overflow-hidden rounded-xl sm:rounded-2xl">
+							<div className="relative aspect-2/1 w-full overflow-hidden rounded-lg">
 								<Image
 									src={thumbnailSrc}
 									alt={summary.title}

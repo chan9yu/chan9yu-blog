@@ -13,12 +13,12 @@ export function AboutProfile() {
 	return (
 		<article>
 			<header className="mb-12">
-				<h1 className="text-foreground mb-6 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">About</h1>
+				<h1 className="text-foreground tracking-heading mb-6 text-2xl leading-tight font-bold">About</h1>
 				<hr className="border-border" />
 			</header>
 
 			<div className="mb-12 flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-				<div className="bg-muted relative size-32 shrink-0 overflow-hidden rounded-xl">
+				<div className="bg-muted relative size-32 shrink-0 overflow-hidden rounded-lg">
 					<Image
 						src={siteMetadata.avatar}
 						alt={`${siteMetadata.author} 프로필 사진`}

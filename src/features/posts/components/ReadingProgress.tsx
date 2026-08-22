@@ -3,12 +3,6 @@
 import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
-/**
- * 페이지 최상단 고정 진행률 바.
- * - transform: scaleX(...) 방식으로 60fps 부드럽게 (width % 대신)
- * - requestAnimationFrame throttle로 scroll 이벤트 낭비 제거
- * - progress > 0 때 blur glow 레이어 추가 (반투명 잔상)
- */
 function calculateScrollProgress() {
 	const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 	const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -47,7 +41,6 @@ export function ReadingProgress() {
 	}, []);
 
 	const progressStyle = { "--progress": progress / 100 } as CSSProperties & { "--progress": number };
-	const showGlow = progress > 0;
 
 	return (
 		<div
@@ -58,14 +51,9 @@ export function ReadingProgress() {
 			aria-valuemin={0}
 			aria-valuemax={100}
 		>
-			<div
-				className="reading-progress-bar bg-accent h-1 w-full origin-left transition-transform duration-150"
-				style={progressStyle}
-			/>
-			{showGlow && (
+			{progress > 0 && (
 				<div
-					aria-hidden
-					className="reading-progress-bar bg-accent pointer-events-none absolute inset-x-0 top-0 h-1 w-full origin-left opacity-50 blur-md transition-transform duration-150"
+					className="reading-progress-bar bg-accent h-1 w-full origin-left transition-transform will-change-transform"
 					style={progressStyle}
 				/>
 			)}

@@ -1,45 +1,23 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+import { EmptyState } from "@/shared/components/common/EmptyState";
 import { useHydrated } from "@/shared/hooks/useHydrated";
 import type { PostSummary } from "@/shared/types";
 import { cn } from "@/shared/utils/cn";
-import { EASE_OUT } from "@/shared/utils/motion";
 
 import { useViewMode } from "../hooks/useViewMode";
 import { PostCard } from "./PostCard";
+import { PostRow } from "./PostRow";
 import { ViewToggle } from "./ViewToggle";
 
 const PAGE_SIZE = 12;
-
-const cardVariants = {
-	hidden: { opacity: 0, scale: 0.95 },
-	visible: {
-		opacity: 1,
-		scale: 1,
-		transition: { duration: 0.3, ease: EASE_OUT }
-	},
-	exit: {
-		opacity: 0,
-		scale: 0.95,
-		transition: { duration: 0.2 }
-	}
-};
-
-const containerVariants = {
-	hidden: {},
-	visible: {
-		transition: { staggerChildren: 0.05 }
-	}
-};
 
 type PostListProps = {
 	posts: PostSummary[];
 };
 
-// hydrated gate — useViewMode server="list" vs client=localStorage 미스매치(React #418) 차단.
 export function PostList({ posts }: PostListProps) {
 	const { view } = useViewMode();
 	const hydrated = useHydrated();
@@ -81,11 +59,7 @@ export function PostList({ posts }: PostListProps) {
 	}, [hasMore]);
 
 	if (posts.length === 0) {
-		return (
-			<p className="text-muted-foreground py-16 text-center text-sm" role="status">
-				조건에 맞는 포스트가 없습니다.
-			</p>
-		);
+		return <EmptyState title="조건에 맞는 글이 없습니다." description="태그를 바꾸거나 전체 목록에서 찾아보세요." />;
 	}
 
 	return (
@@ -94,36 +68,17 @@ export function PostList({ posts }: PostListProps) {
 				<ViewToggle />
 			</div>
 
-			{/* layout prop: 뷰 전환 시 flex↔grid 위치 변화를 framer-motion이 FLIP으로 보간 */}
-			<motion.div
-				layout
-				variants={containerVariants}
-				initial={false}
-				animate="visible"
-				className={cn(
-					effectiveView === "list"
-						? "flex flex-col gap-3 sm:gap-4 md:gap-6"
-						: "grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6"
-				)}
+			<div
+				key={effectiveView}
+				data-view-swap=""
+				className={cn(effectiveView === "list" ? "flex flex-col gap-4" : "grid-cards grid gap-5")}
 			>
-				<AnimatePresence mode="popLayout">
-					{visiblePosts.map((post, index) => {
-						// 첫 카드: layout 보간만 적용(variants 없음) — initial 애니메이션 우회로 LCP 보호 + view 전환 시 layout 일관성 회복.
-						if (index === 0) {
-							return (
-								<motion.div key={post.slug} layout>
-									<PostCard post={post} variant={effectiveView} />
-								</motion.div>
-							);
-						}
-						return (
-							<motion.div key={post.slug} layout variants={cardVariants} initial="hidden" animate="visible" exit="exit">
-								<PostCard post={post} variant={effectiveView} />
-							</motion.div>
-						);
-					})}
-				</AnimatePresence>
-			</motion.div>
+				{visiblePosts.map((post) => (
+					<div key={post.slug} data-card-reveal="">
+						{effectiveView === "list" ? <PostRow post={post} /> : <PostCard post={post} />}
+					</div>
+				))}
+			</div>
 
 			{hasMore && <div ref={sentinelRef} aria-hidden className="h-1" />}
 		</div>

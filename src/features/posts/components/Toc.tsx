@@ -1,12 +1,12 @@
 "use client";
 
 import { cva } from "class-variance-authority";
-import { AnimatePresence, motion } from "framer-motion";
 import { AlignLeft, X } from "lucide-react";
 import type { MouseEvent } from "react";
 import { useEffect, useId, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 
+import { Drawer } from "@/shared/components/ui/Drawer";
 import type { TocItem } from "@/shared/types";
 
 type TocProps = {
@@ -15,10 +15,9 @@ type TocProps = {
 
 const SCROLL_TOP_THRESHOLD_PX = 100;
 const INTERSECTION_ROOT_MARGIN = "-100px 0px -66% 0px";
-const HEADER_OFFSET_PX = 120;
 
 const tocLink = cva(
-	"focus-visible:ring-ring block rounded border-l-2 pl-2 text-sm transition-all motion-reduce:transition-none duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:translate-x-1",
+	"focus-visible:ring-ring block rounded border-l-2 pl-2 text-sm transition-[color,border-color] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
 	{
 		variants: {
 			active: {
@@ -39,7 +38,6 @@ function getServerSnapshot() {
 	return false;
 }
 
-// MDX 작성 레벨 기준 들여쓰기 (CustomMDX의 +1 시프트 전 원본 레벨).
 const LEVEL_PADDING_CLASS: Record<1 | 2 | 3, string> = {
 	1: "pl-0",
 	2: "pl-3",
@@ -49,7 +47,6 @@ const LEVEL_PADDING_CLASS: Record<1 | 2 | 3, string> = {
 export function Toc({ items }: TocProps) {
 	const [activeId, setActiveId] = useState<string | null>(null);
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
-	// createPortal hydration-safe 가드 — SSR에서는 렌더 금지.
 	const mounted = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
 	const mobileTitleId = useId();
 
@@ -92,22 +89,6 @@ export function Toc({ items }: TocProps) {
 		};
 	}, [items]);
 
-	useEffect(() => {
-		if (!isMobileOpen) return;
-
-		const handleKeyDown = (event: globalThis.KeyboardEvent) => {
-			if (event.key === "Escape") {
-				setIsMobileOpen(false);
-			}
-		};
-
-		document.addEventListener("keydown", handleKeyDown);
-
-		return () => {
-			document.removeEventListener("keydown", handleKeyDown);
-		};
-	}, [isMobileOpen]);
-
 	const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
 		event.preventDefault();
 
@@ -117,8 +98,7 @@ export function Toc({ items }: TocProps) {
 		const element = document.getElementById(id);
 		if (!element) return;
 
-		const offsetTop = element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX;
-		window.scrollTo({ top: offsetTop, behavior: "smooth" });
+		element.scrollIntoView();
 		window.history.replaceState(null, "", `#${id}`);
 		setIsMobileOpen(false);
 	};
@@ -156,65 +136,42 @@ export function Toc({ items }: TocProps) {
 			{mounted &&
 				createPortal(
 					<>
-						{/* FAB: ScrollToTop(right)과 겹치지 않도록 left 배치. */}
 						<button
 							type="button"
 							onClick={() => setIsMobileOpen(true)}
 							aria-label="목차 열기"
 							aria-expanded={isMobileOpen}
 							aria-controls="mobile-toc-sheet"
-							className="bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-ring fixed bottom-6 left-6 z-40 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full shadow-lg shadow-black/15 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:hover:scale-110 motion-safe:active:scale-95 lg:hidden"
+							className="bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-ring fixed bottom-6 left-6 z-40 flex size-12 cursor-pointer items-center justify-center rounded-full transition-[background-color,transform] duration-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none motion-safe:active:scale-[0.98] lg:hidden"
 						>
 							<AlignLeft className="size-5" aria-hidden />
 						</button>
 
-						<AnimatePresence>
-							{isMobileOpen && (
-								<>
-									<motion.div
-										key="toc-backdrop"
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										exit={{ opacity: 0 }}
-										transition={{ duration: 0.2 }}
-										onClick={handleCloseMobile}
-										className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden"
-										aria-hidden="true"
-									/>
+						<Drawer
+							id="mobile-toc-sheet"
+							open={isMobileOpen}
+							onClose={handleCloseMobile}
+							side="bottom"
+							aria-labelledby={mobileTitleId}
+						>
+							<div className="border-border-subtle bg-background sticky top-0 z-10 flex items-center justify-between border-b px-6 py-4">
+								<h2 id={mobileTitleId} className="text-lg font-bold">
+									목차
+								</h2>
+								<button
+									type="button"
+									onClick={handleCloseMobile}
+									aria-label="목차 닫기"
+									className="text-muted-foreground hover:bg-bg-subtle hover:text-foreground focus-visible:ring-ring flex size-11 cursor-pointer items-center justify-center rounded-lg transition-[background-color,color] focus-visible:ring-2 focus-visible:outline-none"
+								>
+									<X className="size-5" aria-hidden />
+								</button>
+							</div>
 
-									<motion.div
-										key="toc-sheet"
-										id="mobile-toc-sheet"
-										role="dialog"
-										aria-modal="true"
-										aria-labelledby={mobileTitleId}
-										initial={{ y: "100%" }}
-										animate={{ y: 0 }}
-										exit={{ y: "100%" }}
-										transition={{ type: "spring", damping: 30, stiffness: 300 }}
-										className="bg-background max-h-mobile-sheet fixed inset-x-0 bottom-0 z-50 overflow-y-auto rounded-t-2xl shadow-2xl lg:hidden"
-									>
-										<div className="border-border-subtle bg-background/80 sticky top-0 z-10 flex items-center justify-between border-b px-6 py-4 backdrop-blur-sm">
-											<h2 id={mobileTitleId} className="text-lg font-bold">
-												목차
-											</h2>
-											<button
-												type="button"
-												onClick={handleCloseMobile}
-												aria-label="목차 닫기"
-												className="text-muted-foreground hover:bg-bg-subtle hover:text-foreground focus-visible:ring-ring flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
-											>
-												<X className="size-5" aria-hidden />
-											</button>
-										</div>
-
-										<nav aria-label="목차 (모바일)" className="p-6">
-											<ul className="space-y-2.5">{tocItems}</ul>
-										</nav>
-									</motion.div>
-								</>
-							)}
-						</AnimatePresence>
+							<nav aria-label="목차 (모바일)" className="p-6">
+								<ul className="space-y-2.5">{tocItems}</ul>
+							</nav>
+						</Drawer>
 					</>,
 					document.body
 				)}

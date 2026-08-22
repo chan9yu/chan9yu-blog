@@ -45,7 +45,6 @@ thumbnail: null
 		expect(data).toEqual({});
 	});
 
-	// 첫 블록만 frontmatter다. 본문의 --- 는 마크다운 구분선이라 그대로 남아야 한다.
 	it("본문에 있는 구분선은 건드리지 않는다", () => {
 		const raw = `---
 title: "제목"
@@ -61,8 +60,6 @@ title: "제목"
 		expect(content).toBe("위 문단\n\n---\n\n아래 문단\n");
 	});
 
-	// YAML 1.1(js-yaml 3)은 따옴표 없는 날짜를 Date 객체로 바꾼다.
-	// 스키마가 date를 문자열로 요구하므로 문자열로 남는지 고정한다.
 	it("따옴표 없는 날짜를 Date로 바꾸지 않는다", () => {
 		const raw = `---
 date: 2026-04-15

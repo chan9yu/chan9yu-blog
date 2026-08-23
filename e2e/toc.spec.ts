@@ -1,36 +1,29 @@
 import { expect, test } from "@playwright/test";
 
+import { findPostWhere, loadAllArticleImages } from "./helpers";
+
 test.describe("M7-03 TOC 클릭 스크롤", () => {
-	test("포스트 상세에서 TOC 항목 클릭 시 해당 heading으로 스크롤된다", async ({ page }) => {
-		await page.goto("/posts");
+	test("목차 링크를 클릭하면 해당 heading으로 스크롤되고 URL hash가 anchor와 일치한다", async ({ page }) => {
+		await findPostWhere(
+			page,
+			async (p) => (await p.getByRole("navigation", { name: "목차" }).getByRole("link").count()) > 0,
+			"목차가 있는 글이 없다"
+		);
 
-		const firstCard = page
-			.locator("main")
-			.getByRole("link")
-			.filter({ has: page.locator("h3") })
-			.first();
-		await firstCard.click();
-		await expect(page).toHaveURL(/\/posts\/[\w-]+/);
+		await loadAllArticleImages(page);
 
-		const tocNav = page.getByRole("navigation", { name: /목차|TOC|Table of Contents/i });
-		const tocVisible = await tocNav.isVisible().catch(() => false);
-		test.skip(!tocVisible, "TOC 항목이 없는 포스트 또는 모바일 viewport — skip");
+		const tocLinks = page.getByRole("navigation", { name: "목차" }).getByRole("link");
+		const targetLink = tocLinks.last();
+		const href = await targetLink.getAttribute("href");
+		expect(href).toMatch(/^#./);
 
-		const tocLinks = tocNav.getByRole("link");
-		const tocCount = await tocLinks.count();
-		test.skip(tocCount === 0, "TOC 빈 포스트 — skip");
-
-		const targetLink = tocLinks.nth(Math.min(1, tocCount - 1));
-		const hash = await targetLink.getAttribute("href");
-		expect(hash).toMatch(/^#/);
+		const headingId = (href ?? "").slice(1);
+		const heading = page.locator(`article [id="${headingId}"]`);
+		await expect(heading).not.toBeInViewport();
 
 		await targetLink.click();
 
-		const encodedHash = encodeURI(hash ?? "");
-		await expect.poll(() => page.url().endsWith(encodedHash), { timeout: 3_000 }).toBe(true);
-
-		const headingId = decodeURIComponent(hash ?? "").slice(1);
-		const heading = page.locator(`[id="${headingId}"]`);
 		await expect(heading).toBeInViewport({ ratio: 0.5 });
+		await expect.poll(() => decodeURIComponent(new URL(page.url()).hash)).toBe(`#${headingId}`);
 	});
 });

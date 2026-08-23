@@ -1,8 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { gotoAndWaitForHydration } from "./helpers";
+
 test.describe("M7-01 홈 → 포스트 상세 스모크", () => {
 	test("홈 페이지에서 첫 포스트 카드 클릭 시 상세 페이지로 이동한다", async ({ page }) => {
-		await page.goto("/");
+		await gotoAndWaitForHydration(page, "/");
 
 		const main = page.locator("main");
 		const firstPostLink = main.locator('a[href^="/posts/"]').first();

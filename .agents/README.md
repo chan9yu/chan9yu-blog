@@ -19,7 +19,7 @@ CLAUDE.md              AGENTS.md 로 가는 심볼릭 링크
 
 `.claude/` 아래 `rules`와 `skills`에는 링크만 둔다. 본문을 직접 만들면 링크 스크립트가 실재 파일을 발견하고 멈춘다.
 
-이 저장소는 아직 루트에 `AGENTS.md`와 `CLAUDE.md`가 없다. 룰은 `.claude/rules/`를 자동으로 읽는 Claude Code에서만 걸리고, Codex 같은 도구에는 전달되지 않는 상태다. 두 도구를 다 쓸 생각이면 `AGENTS.md`를 만들고 `CLAUDE.md`를 그리로 가는 링크로 둔다.
+루트 `AGENTS.md`가 어느 도구에서나 지켜야 하는 것을 담고 `CLAUDE.md`는 그리로 가는 심볼릭 링크다.
 
 ## 도구마다 읽는 것이 다르다
 
@@ -84,4 +84,4 @@ pnpm link:agents
 
 룰과 달리 스킬은 늘 로드되지 않는다. 요청이 스킬 설명과 맞을 때만 붙는다. 여러 단계를 밟는 절차, 또는 작업 하나에서만 쓰는 지식은 룰이 아니라 스킬로 만든다.
 
-현재 네 개가 있다. `v130-rewrite`가 v1.3.0 재작성을 이끌고, `fsd-layout`과 `primitive-build`, `a11y-dialog-check`가 각각 배치와 구현, 검증을 맡는다.
+어떤 스킬이 있고 언제 쓰는지는 루트 `AGENTS.md`의 하네스 절이 정본이다.

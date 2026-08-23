@@ -1,0 +1,1 @@
+../../.agents/rules/no-fallback.md

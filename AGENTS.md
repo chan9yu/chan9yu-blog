@@ -2,23 +2,24 @@
 
 한국어권 프론트엔드 엔지니어를 위한 1인 저자 기술 블로그.
 
-## 스택
-
-Next.js 16 App Router, React 19 (Compiler), TypeScript 6 strict, Tailwind CSS 4, lucide-react, next-themes.
-
-v1.3.0에서 shadcn/ui와 Radix 의존을 걷어내고 UI 컴포넌트를 직접 만든다. 새 UI 요소를 shadcn CLI로 가져오지 않는다.
-
 ## 구조
 
-의존은 한 방향으로만 흐른다. `app/`에서 `features/`로, `features/`에서 `shared/`로 간다. feature끼리 직접 import하지 않고 `shared/`가 `features/`를 import하지 않는다.
+Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구현을 재노출만 한다. `src/`는 FSD 레이어 여섯으로 나뉜다. 위에서부터 `app`과 `pages`, `widgets`, `features`, `entities`, `shared` 순이고 위 레이어가 아래 레이어만 참조한다. 슬라이스 밖에서는 public API(`index.ts`)로만 가져오고 서버 전용 수출은 `index.server.ts`로 분리한다. entities끼리는 import 대신 구조적 타입으로 경계를 지킨다. 레이어 경계는 도구 둘이 막는다. eslint 내장 no-restricted-imports가 위 레이어 참조와 깊은 import를 에디터에서 잡고, Steiger가 CI에서 같은 레이어 슬라이스끼리의 크로스 임포트까지 잡는다. glob 패턴만으로는 자기 슬라이스를 구분할 수 없어 크로스 임포트가 eslint를 통과한다.
 
 ```
-src/app/         라우팅, metadata, providers
-src/features/    posts, tags, series, search, views, comments, theme, lightbox, about
-src/shared/      assets, components, config, hooks, libs, seo, styles, test, types, utils
+app/             Next.js App Router. 재노출만 한다
+pages/           README 하나만 둔다. 라우팅하지 않는다
+src/app/         providers, styles, api-routes 구현, 루트 UI
+src/pages/       home, posts, post, tags, tag, series, series-detail, about
+src/widgets/     header, footer, mobile-menu, post-list, toc, mdx-content
+src/features/    search, views, comments, theme, lightbox
+src/entities/    post, tag, series
+src/shared/      assets, config, lib, seo, test, ui
 contents/        MDX 콘텐츠 (별도 저장소, Git 서브모듈)
 docs/            문서. product, design, operations, prompts
 ```
+
+루트 `pages/`는 지우지 않는다. 없으면 Next.js가 `src/pages`를 Pages Router로 잡아 빌드가 E801로 멈춘다. 여기에 라우트 파일을 만들지도 않는다. 자세한 근거는 `pages/README.md`에 있다. 이 폴더가 있으면 `usePathname`의 반환 타입이 `string | null`이 되므로 `null`을 활성 상태 아님으로 다룬다.
 
 ## 명령어
 
@@ -27,9 +28,11 @@ pnpm dev             # 개발 서버 (port 3100)
 pnpm build           # 프로덕션 빌드
 pnpm build:strict    # frontmatter SEO 게이트 포함. 배포와 같은 조건
 pnpm lint            # ESLint
+pnpm lint:arch       # Steiger. FSD 레이어와 슬라이스 경계 검사
 pnpm format          # Prettier
 pnpm type:check      # 타입 검사
 pnpm test            # Vitest
+pnpm test:e2e        # Playwright. dev 서버(3100)를 자동 기동, 로컬 전용
 ```
 
 ## 늘 지킬 것
@@ -38,9 +41,11 @@ pnpm test            # Vitest
 
 **Git 쓰기.** `git commit`과 `git push`, `gh pr create`, 브랜치 생성은 사용자가 그때 명시적으로 요청할 때만 한다. 지난번 승인이 이번 작업까지 이어지지 않는다. 자세한 규약은 `.agents/rules/git-workflow.md`에 있다.
 
+**UI는 직접 만든다.** shadcn/ui와 Radix를 쓰지 않는다. 새 UI 요소를 shadcn CLI로 가져오지 않는다.
+
 **근본 원인.** 문제를 우회하지 않고 원인을 고친다. 의미 없는 `setTimeout`과 임시 플래그 변수, 재시도로 넘기지 않는다.
 
-**오류를 감추지 않는다.** 파일 읽기나 네트워크 호출을 감싸 빈 값을 돌려주는 코드를 만들지 않는다. 오류가 안 나는 것처럼 보이게 하는 대신 오류가 날 수 없는 설계로 바꾼다. 실제로 이 방식 때문에 검색 색인이 조용히 비어버린 적이 있다.
+**오류를 감추지 않는다.** 파일 읽기나 네트워크 호출을 감싸 빈 값을 돌려주는 코드를 만들지 않는다. 오류가 안 나는 것처럼 보이게 하는 대신 오류가 날 수 없는 설계로 바꾼다. 이 규칙이 생긴 사고 이력은 `.agents/rules/no-fallback.md`에 있다.
 
 **SSG를 먼저 생각한다.** 콘텐츠 페이지는 빌드 타임에 만든다. 런타임에 `contents/`를 읽는 코드를 새로 넣지 않는다.
 
@@ -68,24 +73,24 @@ pnpm test            # Vitest
 
 ## 룰
 
-룰 본문은 `.agents/rules/`에 있고 `.claude/rules/`에 링크가 걸려 있다. Claude Code는 링크된 룰을 자동으로 읽는다. 룰을 자동으로 읽지 않는 도구에서는 작업을 시작하기 전에 해당 파일을 직접 열어 읽는다.
+룰 본문은 `.agents/rules/`에 있다. Claude Code는 링크로 자동으로 읽고, 자동으로 읽지 않는 도구에서는 작업 전에 직접 연다. 링크 규약과 추가 방법은 `.agents/README.md`가 정본이다.
 
-현재 `git-workflow.md` 하나다.
+룰은 넷이다.
 
-## 하네스: v1.3.0 재작성
+| 룰                | 무엇을 다루는가                                                   |
+| ----------------- | ----------------------------------------------------------------- |
+| `git-workflow.md` | 브랜치 전략과 커밋 메시지 형식, 머지 방식, 금지 패턴              |
+| `no-fallback.md`  | 오류를 감싸 빈 값을 돌려주는 코드 금지. 허용되는 축소 동작의 조건 |
+| `comments.md`     | 주석을 쓰는 네 가지 경우. 지우면 동작이 깨지는 지시문 주석        |
+| `seo.md`          | 메타데이터와 JSON-LD 배치, RSS, OG 이미지, frontmatter 게이트     |
 
-**목표.** 기능을 v1.2.0과 같게 유지하면서 코드를 처음부터 다시 만든다.
+## 하네스
 
-**트리거.** FSD 레이어 배치, 컴포넌트 직접 구현, 디자인 적용, 접근성 검증이 걸린 작업을 요청받으면 `v130-rewrite` 스킬을 쓴다. 단순 질문과 문서 조회는 직접 답한다.
+**목표.** 이 저장소에서 실제로 깨지는 자리를 지킨다. 레이어 경계와 직접 만든 UI, 접근성, 저장소 규칙 위반 넷이다. 에이전트 넷과 스킬 셋, 위 룰 절의 룰 넷이 이 자리를 나눠 맡는다.
 
-**배치.** 스킬 본문은 `.agents/skills/`에 두고 `.claude/skills/`에서 링크로 읽는다. `.claude/skills/`에 실제 파일을 만들면 링크 스크립트가 멈춘다. 에이전트 정의는 도구마다 형식이 달라 링크하지 않고 `.claude/agents/`에 직접 둔다.
+**에이전트.** fsd-architect가 레이어 배치와 경계를 정하고, ui-builder가 토큰 위에 컴포넌트를 만들고, a11y-verifier가 접근성을 판정하고, code-reviewer가 규칙 위반을 잡는다. 만든 사람이 판정하지 않는다. 구현은 ui-builder가, 판정은 a11y-verifier와 code-reviewer가 한다.
 
-**변경 이력.**
-
-| 날짜       | 변경 내용             | 대상                                                    | 사유                                   |
-| ---------- | --------------------- | ------------------------------------------------------- | -------------------------------------- |
-| 2026-08-20 | 기존 하네스 제거      | 에이전트 15개, 스킬 15종, 룰 17개                       | v1.3.0 방향과 어긋남                   |
-| 2026-08-20 | 위험 기반 4인 팀 구성 | fsd-architect, ui-builder, a11y-verifier, code-reviewer | 재작성에서 실제로 깨지는 자리에만 대응 |
+**스킬.** 디렉토리 구조와 모듈 경계를 정할 때는 `fsd-nextjs`를, UI 프리미티브를 만들거나 고칠 때는 `primitive-build`를, 대화상자나 서랍을 만진 작업의 검증에는 `a11y-dialog-check`를 쓴다. 단순 질문과 문서 조회는 직접 답한다.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

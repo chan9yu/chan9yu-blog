@@ -1,27 +1,17 @@
 ---
 name: primitive-build
-description: shadcn과 Radix 없이 UI 프리미티브를 직접 만드는 절차. Button, Dialog, Sheet, Toast, Skeleton, VisuallyHidden, FocusTrap을 손으로 구현할 때 쓴다. "Dialog 직접 만들어", "shadcn 걷어내고", "Radix 없이", "프리미티브 구현", "포커스 트랩", "variant 만들기" 같은 표현에 트리거한다. 대화상자를 만들 때 빠뜨리기 쉬운 것과 토큰 사용 규칙을 포함한다.
+description: UI 프리미티브를 라이브러리 없이 직접 만드는 절차. 새 프리미티브를 만들 때와 Button, Dialog, Drawer 같은 기존 프리미티브를 고칠 때 쓴다. "프리미티브 구현", "Dialog 직접 만들어", "컴포넌트 새로 만들어", "포커스 트랩", "variant 만들기" 같은 표현에 트리거한다. 대화상자를 만들 때 빠뜨리기 쉬운 것과 토큰 사용 규칙을 포함한다.
 ---
 
 # 프리미티브 직접 구현
 
 디자인 토큰 위에 UI 조각을 만든다. 남의 컴포넌트에 우리 토큰을 덮어씌우지 않고, 우리 토큰 위에 우리 컴포넌트를 올린다.
 
-## 만들 것
+## 만들 것을 정하는 법
 
-일곱이다. 정본은 `docs/design/DESIGN.md`의 프리미티브 목록이고 여기는 만드는 법을 담는다.
+프리미티브 목록의 정본은 `docs/design/DESIGN.md`다. 여기는 만드는 법을 담는다.
 
-| 프리미티브     | 쓰는 곳               | 핵심                        |
-| -------------- | --------------------- | --------------------------- |
-| Button         | 여기저기              | variant와 size 매핑         |
-| Dialog         | 검색 모달, 라이트박스 | 포커스와 스크롤, 키보드     |
-| Sheet          | 모바일 서랍           | Dialog 위에 방향과 슬라이드 |
-| Toast          | 복사 알림             | 보조 기술에 변경 알리기     |
-| Skeleton       | 목록 로딩             | 실제 콘텐츠와 높이가 같게   |
-| VisuallyHidden | 아이콘 버튼 이름      | 화면에서만 감추기           |
-| FocusTrap      | Dialog와 Sheet가 공유 | Tab 가두기                  |
-
-Badge와 Accordion, DropdownMenu는 쓰는 곳이 없어 옮기지 않고 지운다. Tooltip은 필요해질 때 만든다.
+쓰는 곳이 없는 프리미티브는 미리 만들지 않는다. 필요해질 때 만든다. 지금 `src/shared/ui/`에는 Button과 Dialog, Drawer가 이 절차로 서 있고, Drawer는 Dialog 위에 방향만 얹는다. 대화상자 계열이 새로 필요하면 처음부터 만들지 말고 Dialog를 기반으로 얹는다.
 
 ## 공통 규칙
 
@@ -62,23 +52,21 @@ type ButtonProps = ComponentProps<"button"> & {
 
 ## 대화상자를 만들 때
 
-Radix가 대신하던 것이 일곱이다. 화면으로는 티가 나지 않으므로 만들 때마다 이 목록을 지난다.
+Radix 같은 라이브러리가 대신하던 것이 일곱이다. 화면으로는 티가 나지 않으므로 만들 때마다 이 목록을 지난다.
+
+이 저장소의 Dialog는 네이티브 `dialog` 요소와 `showModal()`을 쓴다. 포커스 진입과 ESC, 뒤 배경 감추기는 브라우저가 대신한다. 새 대화상자 계열은 Dialog를 기반으로 얹어 이 목록을 다시 구현하지 않는다.
 
 **1. 열릴 때 포커스를 안으로 옮긴다.** 안에 포커스 받을 것이 있으면 첫 번째로, 없으면 대화상자 자체에 `tabIndex={-1}`을 주고 거기로 보낸다.
 
-**2. Tab이 밖으로 새지 않게 한다.** 마지막에서 Tab을 누르면 처음으로, 처음에서 Shift+Tab을 누르면 마지막으로 돌아간다. FocusTrap이 이것만 담당하게 만들어 Dialog와 Sheet가 함께 쓴다.
+**2. Tab이 밖으로 새지 않게 한다.** 마지막에서 Tab을 누르면 처음으로, 처음에서 Shift+Tab을 누르면 마지막으로 돌아간다. 이 순환은 한 곳에만 구현한다. 지금은 Dialog가 담당하고 Drawer는 Dialog를 그대로 써서 함께 얻는다.
 
 **3. 닫을 때 열었던 곳으로 돌아간다.** 열기 직전 `document.activeElement`를 붙들고 있다가 닫을 때 그리로 포커스를 되돌린다. 이걸 빠뜨리면 닫은 뒤 Tab이 페이지 맨 처음부터 시작한다.
 
-**4. 역할과 이름을 붙인다.** `role="dialog"`와 `aria-modal="true"`를 주고 제목 요소의 id를 `aria-labelledby`로 잇는다. 제목이 보이지 않는 대화상자면 VisuallyHidden으로 넣는다.
+**4. 역할과 이름을 붙인다.** `role="dialog"`와 `aria-modal="true"`를 주고 제목 요소의 id를 `aria-labelledby`로 잇는다. 네이티브 `dialog` 요소를 `showModal()`로 열면 역할과 모달 의미는 브라우저가 준다. 제목이 보이지 않는 대화상자면 `sr-only`로 넣는다.
 
 **5. ESC로 닫는다.** 여러 겹이 열려 있으면 맨 위 하나만 닫힌다. 전역 리스너를 쓰면 전부 닫히므로 열린 순서를 스택으로 들고 있어야 한다.
 
-**6. 뒤 배경 스크롤을 잠근다.** `body`에 `overflow: hidden`을 주되 스크롤바가 사라지며 화면이 튀는 것을 막아야 한다. 사라질 스크롤바 폭만큼 `padding-right`를 준다.
-
-```tsx
-const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-```
+**6. 뒤 배경 스크롤을 잠근다.** 지금은 Dialog가 열릴 때 `html`에 `data-modal-open`을 달고 `src/app/styles/dialog.css`가 `overflow: hidden`을 건다. 잠글 때 스크롤바가 사라지며 화면이 가로로 튀면 사라질 폭만큼 보정한다.
 
 **7. 뒤 배경을 보조 기술에서 감춘다.** 열린 동안 바깥 형제 요소에 `aria-hidden="true"`를 주거나 대화상자에 `inert`를 쓴다. 이걸 빠뜨리면 스크린 리더가 뒤 내용을 계속 읽는다.
 

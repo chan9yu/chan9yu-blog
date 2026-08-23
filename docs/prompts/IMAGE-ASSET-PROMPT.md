@@ -6,20 +6,19 @@
 
 ## 자산 목록
 
-| 자산                 | 파일                                          | 규격                 | 쓰는 곳                        |
-| -------------------- | --------------------------------------------- | -------------------- | ------------------------------ |
-| 심볼 마크            | `public/favicons/logo-mark.svg`               | 벡터, 정사각         | 파비콘과 OG, 뱃지의 원본       |
-| 파비콘               | `public/favicons/favicon.ico`                 | 16, 32, 48 다중      | 브라우저 탭                    |
-| 파비콘 PNG           | `public/favicons/favicon-16x16.png`, `-32x32` | 16x16, 32x32         | 브라우저 탭 대체               |
-| 애플 터치 아이콘     | `public/favicons/apple-touch-icon.png`        | 180x180, 배경 불투명 | iOS 홈 화면                    |
-| 안드로이드 아이콘    | `public/favicons/android-chrome-192x192.png`  | 192x192              | 안드로이드 홈 화면, manifest   |
-| 안드로이드 큰 아이콘 | `public/favicons/android-chrome-512x512.png`  | 512x512              | manifest, 설치 화면            |
-| 기본 OG 이미지       | `public/images/default-og-image.png`          | 1200x630             | 목록 페이지와 썸네일 없는 공유 |
-| OG 배경              | `/og` 라우트가 그림                           | 1200x630             | 글 공유 카드 배경              |
-| 뱃지 대체 배경       | `/badge` 라우트가 그림                        | 480x270              | 썸네일 없는 글의 README 카드   |
-| 썸네일 대체          | `public/images/post-placeholder.png`          | 1600x900             | 썸네일 없는 글의 목록 카드     |
+| 자산                 | 파일                                          | 규격                 | 쓰는 곳                      |
+| -------------------- | --------------------------------------------- | -------------------- | ---------------------------- |
+| 심볼 마크            | `public/favicons/logo-mark.svg`               | 벡터, 정사각         | 파비콘과 OG, 뱃지의 원본     |
+| 파비콘               | `public/favicon.ico`                          | 16, 32, 48 다중      | 브라우저 탭                  |
+| 파비콘 PNG           | `public/favicons/favicon-16x16.png`, `-32x32` | 16x16, 32x32         | 브라우저 탭 대체             |
+| 애플 터치 아이콘     | `public/favicons/apple-touch-icon.png`        | 180x180, 배경 불투명 | iOS 홈 화면                  |
+| 안드로이드 아이콘    | `public/favicons/android-chrome-192x192.png`  | 192x192              | 안드로이드 홈 화면, manifest |
+| 안드로이드 큰 아이콘 | `public/favicons/android-chrome-512x512.png`  | 512x512              | manifest, 설치 화면          |
+| OG 배경              | `/og` 라우트가 그림                           | 1200x630             | 글 공유 카드 배경            |
+| 뱃지 대체 배경       | `/badge` 라우트가 그림                        | 480x270              | 썸네일 없는 글의 README 카드 |
+| 썸네일 대체          | `public/images/post-placeholder.png`          | 1600x900             | 썸네일 없는 글의 목록 카드   |
 
-`logo-mark.svg`와 `android-chrome-512x512.png`, `post-placeholder.png` 셋은 아직 없다. v1.3.0에서 만든다. 심볼 마크가 파비콘과 OG, 뱃지의 원본이므로 그것부터 만든다. 512 아이콘은 manifest에 등록해야 설치 화면에서 흐릿하게 나오지 않는다.
+`logo-mark.svg`와 `android-chrome-512x512.png`, `post-placeholder.png` 셋은 아직 없다. 심볼 마크가 파비콘과 OG, 뱃지의 원본이므로 그것부터 만든다. 512 아이콘은 manifest에 등록해야 설치 화면에서 흐릿하게 나오지 않는다. 기본 OG 이미지 정적 파일은 `/og?title=` 생성 이미지가 대신하게 되어 삭제했다.
 
 ## 공통 조건
 

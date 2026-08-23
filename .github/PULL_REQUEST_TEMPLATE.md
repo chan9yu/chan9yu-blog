@@ -20,7 +20,7 @@
 
 ## 검증
 
-<!-- type:check와 Vitest는 CI가 자동으로 돌린다 (.github/workflows/ci.yaml). 아래는 CI가 보지 않는 것들 -->
+<!-- FSD 경계 검사(Steiger)와 type:check, Vitest는 CI가 자동으로 돌린다 (.github/workflows/ci.yaml). 아래는 CI가 보지 않는 것들 -->
 
 - [ ] `pnpm lint` 통과
 - [ ] `pnpm format:check` 통과

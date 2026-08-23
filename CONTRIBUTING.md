@@ -53,18 +53,26 @@ git submodule update --init --recursive
 | `pnpm test`          | Vitest 단위 테스트와 통합 테스트       |
 | `pnpm test:watch`    | Vitest 감시 모드                       |
 | `pnpm test:coverage` | 커버리지 리포트                        |
+| `pnpm test:e2e`      | Playwright 브라우저 테스트             |
 | `pnpm validate:seo`  | 빌드 없이 frontmatter SEO 규칙만 검사  |
 | `pnpm link:agents`   | `.agents/` 본문을 도구 디렉토리에 링크 |
 
 ## 프로젝트 구조
 
-세 층으로 나뉘고 의존은 한 방향으로만 흐릅니다.
+Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구현을 재노출만 합니다. 루트 `pages/`는 README 하나만 두는 폴더입니다. 지우면 Next.js가 `src/pages`를 Pages Router로 잡아 빌드가 멈추므로 그대로 둡니다.
+
+`src/`는 FSD(Feature-Sliced Design) 여섯 레이어로 나뉩니다.
 
 ```
+app/             Next.js App Router. src/의 구현을 재노출만 한다
+pages/           README 하나만 둔다. 라우팅하지 않는다
 src/
-├── app/         라우팅, metadata, providers
-├── features/    9개 도메인 (posts, tags, series, search, views, comments, theme, lightbox, about)
-└── shared/      assets, components, config, hooks, libs, seo, styles, test, types, utils
+├── app/         providers, styles, api-routes 구현, 루트 UI
+├── pages/       home, posts, post, tags, tag, series, series-detail, about
+├── widgets/     header, footer, mobile-menu, post-list, toc, mdx-content
+├── features/    search, views, comments, theme, lightbox
+├── entities/    post, tag, series
+└── shared/      assets, config, lib, seo, test, ui
 
 contents/        MDX 콘텐츠 (Git 서브모듈, 저장소 루트)
 docs/            문서 (product, design, operations, prompts)
@@ -73,11 +81,11 @@ scripts/         빌드 전 검사와 이미지 복사, 커밋 템플릿
 
 지켜야 할 규칙은 세 가지입니다.
 
-1. `app`은 `features`를 쓰고 `features`는 `shared`를 씁니다. 반대 방향으로는 참조하지 않습니다.
-2. `shared`는 `features`의 존재를 몰라야 합니다.
-3. feature끼리 직접 import하지 않습니다. 필요하면 `app`에서 조립하거나 공통 부분을 `shared`로 올립니다.
+1. 위 레이어가 아래 레이어만 참조합니다. 반대 방향 참조는 eslint의 no-restricted-imports가 막습니다.
+2. 슬라이스 밖에서는 public API(`index.ts`)로만 가져옵니다. 서버 전용 수출은 `index.server.ts`로 분리합니다.
+3. entities끼리는 import 대신 구조적 타입으로 경계를 지킵니다.
 
-각 feature는 `index.ts`로만 바깥과 연결합니다. 배럴 파일에는 re-export만 두고 타입이나 상수, 함수를 정의하지 않습니다.
+배럴 파일에는 re-export만 두고 타입이나 상수, 함수를 정의하지 않습니다.
 
 ## AI 협업 설정
 
@@ -101,7 +109,7 @@ pnpm link:agents
 
 - 식별자는 영어로, 주석과 커밋 메시지, 문서는 한국어로 씁니다.
 - 주석은 기본적으로 쓰지 않습니다. 코드가 무엇을 하는지는 이름과 타입으로 드러내고, 코드만 봐서는 알 수 없는 제약이나 회귀를 막는 이유가 있을 때만 남깁니다.
-- UI 컴포넌트는 직접 만듭니다. shadcn/ui와 Radix에 남아 있는 의존은 v1.3.0에서 걷어낼 예정이니 새로 추가하지 않습니다. 무엇을 다시 만들고 무엇을 새로 만드는지는 [DESIGN.md](./docs/design/DESIGN.md)에 정리돼 있습니다.
+- UI 컴포넌트는 직접 만듭니다. shadcn/ui와 Radix를 쓰지 않습니다. 컴포넌트 목록은 [DESIGN.md](./docs/design/DESIGN.md)에 정리돼 있습니다.
 - 아이콘은 lucide-react로 통일합니다. 브랜드 마크처럼 lucide에 없는 것만 `src/shared/assets/icons/`에 SVG로 둡니다.
 - 실패를 감추는 코드를 넣지 않습니다. try/catch로 빈 값을 돌려주거나 임시 플래그, 의미 없는 setTimeout으로 우회하는 대신 원인을 고칩니다.
 
@@ -191,7 +199,5 @@ private: false # true면 공개 목록에서 제외
 UPSTASH_REDIS_REST_URL=
 UPSTASH_REDIS_REST_TOKEN=
 ```
-
-Vercel KV 시절의 `KV_REST_API_URL`과 `KV_REST_API_TOKEN`도 그대로 읽으므로 기존 설정을 쓰던 사람은 바꾸지 않아도 됩니다.
 
 없어도 빌드와 렌더는 정상 동작하고 조회수만 0으로 표시됩니다. 조회수를 확인할 일이 없다면 설정하지 않아도 됩니다.

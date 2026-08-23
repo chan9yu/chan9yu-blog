@@ -13,13 +13,8 @@ type BuildMetadataInput = {
 	noIndex?: boolean;
 };
 
-function resolveOgImage(input: BuildMetadataInput) {
-	if (input.image) return input.image;
-	return `/og?title=${encodeURIComponent(input.title)}`;
-}
-
 export function buildMetadata(input: BuildMetadataInput) {
-	const ogImage = resolveOgImage(input);
+	const ogImage = input.image || `/og?title=${encodeURIComponent(input.title)}`;
 	const ogCommon = {
 		url: input.path,
 		title: input.title,

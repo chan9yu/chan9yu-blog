@@ -1,0 +1,109 @@
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+[data-view-swap] {
+	animation: fade-in var(--duration-exit) var(--ease-out);
+}
+
+[data-card-reveal] {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 420px;
+}
+
+@supports (animation-timeline: view()) {
+	[data-card-reveal] {
+		animation: fade-in-up var(--duration-enter) var(--ease-enter) both;
+		animation-timeline: view();
+		animation-range: entry 0% cover 20%;
+	}
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root) {
+	animation: theme-fade-out var(--duration-screen) var(--ease-move) both;
+	z-index: 1;
+}
+
+::view-transition-new(root) {
+	animation: theme-fade-in var(--duration-screen) var(--ease-move) both;
+	z-index: 2;
+}
+
+@keyframes theme-fade-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes theme-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none !important;
+	}
+}
+
+.header-scroll-border::after {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 1px;
+	background: var(--color-border-subtle);
+	pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+	@keyframes header-border-reveal {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.header-scroll-border::after {
+		animation: header-border-reveal var(--duration-color) var(--ease-out) both;
+		animation-timeline: scroll(root block);
+		animation-range: 1px 80px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.header-scroll-border::after {
+			animation: none;
+			opacity: 1;
+		}
+	}
+}

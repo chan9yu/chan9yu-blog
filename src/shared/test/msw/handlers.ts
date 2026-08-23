@@ -1,10 +1,10 @@
 import { http, HttpResponse } from "msw";
 
-import { validateSlug } from "@/shared/utils/slug";
+import { validateSlug } from "@/shared/lib/slug/slug";
 
 const viewsStore = new Map<string, number>();
 
-export const viewsHandlers = [
+export const handlers = [
 	http.get("/api/views", ({ request }) => {
 		const slug = validateSlug(new URL(request.url).searchParams.get("slug"));
 		return slug
@@ -35,8 +35,6 @@ export const viewsHandlers = [
 		return new HttpResponse(null, { status: 204 });
 	})
 ];
-
-export const handlers = [...viewsHandlers];
 
 export function seedMockView(slug: string, count: number) {
 	viewsStore.set(slug, count);

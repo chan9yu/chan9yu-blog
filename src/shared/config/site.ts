@@ -24,8 +24,11 @@ export const siteMetadata = {
 	author: "chan9yu",
 	locale: "ko_KR",
 	avatar: "https://avatars.githubusercontent.com/u/80776262?v=4",
-	themeColor: "#4f46e5"
+	themeColor: "#4f46e5",
+	backgroundColor: "#ffffff"
 } as const;
+
+export const siteHostname = new URL(siteMetadata.url).hostname;
 
 type SocialLinkConfig = {
 	label: string;

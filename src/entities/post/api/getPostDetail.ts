@@ -1,14 +1,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { splitFrontmatter } from "@/shared/lib/splitFrontmatter";
-
 import { calculateReadingTime } from "../lib/calculateReadingTime";
 import { extractTocFromMarkdown } from "../lib/extractTocFromMarkdown";
 import { parseFrontmatter } from "../lib/parseFrontmatter";
 import { POSTS_DIR } from "./paths";
 
-function preprocessMdxContent(content: string) {
+function convertBoldToStrong(content: string) {
 	const fences: string[] = [];
 	const inlines: string[] = [];
 
@@ -35,12 +33,11 @@ export function getPostDetail(slug: string) {
 
 	try {
 		const raw = readFileSync(filePath, "utf-8");
-		const frontmatter = parseFrontmatter(raw, slug);
-		const { content } = splitFrontmatter(raw);
+		const { frontmatter, content } = parseFrontmatter(raw, slug);
 
 		const toc = extractTocFromMarkdown(content);
-		const processedContent = preprocessMdxContent(content);
-		const readingTimeMinutes = calculateReadingTime(processedContent);
+		const readingTimeMinutes = calculateReadingTime(content);
+		const processedContent = convertBoldToStrong(content);
 
 		return {
 			...frontmatter,
@@ -48,7 +45,8 @@ export function getPostDetail(slug: string) {
 			contentMdx: processedContent,
 			toc
 		};
-	} catch {
+	} catch (error) {
+		console.warn(`[getPostDetail] "${slug}" 실패: ${error instanceof Error ? error.message : String(error)}`);
 		return null;
 	}
 }

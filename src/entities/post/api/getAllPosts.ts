@@ -1,8 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { splitFrontmatter } from "@/shared/lib/splitFrontmatter";
-
 import { calculateReadingTime } from "../lib/calculateReadingTime";
 import { parseFrontmatter } from "../lib/parseFrontmatter";
 import { sortPostsByDateDescending } from "../lib/sortPostsByDateDescending";
@@ -27,11 +25,10 @@ export function getAllPosts(options: GetAllPostsOptions = {}) {
 		try {
 			const filePath = join(POSTS_DIR, slug, "index.mdx");
 			const raw = readFileSync(filePath, "utf-8");
-			const frontmatter = parseFrontmatter(raw, slug);
+			const { frontmatter, content } = parseFrontmatter(raw, slug);
 
 			if (!includePrivate && frontmatter.private) continue;
 
-			const { content } = splitFrontmatter(raw);
 			const readingTimeMinutes = calculateReadingTime(content);
 
 			posts.push({ ...frontmatter, readingTimeMinutes });

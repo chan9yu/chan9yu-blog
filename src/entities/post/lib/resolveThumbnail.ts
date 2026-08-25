@@ -35,6 +35,7 @@ export function resolveThumbnailSrc(thumbnail: string | null, slug?: string) {
 		return thumbnail;
 	}
 
+	console.warn(`[resolveThumbnailSrc] "${thumbnail}" 파일이 public에 없어 placeholder로 대체합니다`);
 	return slug ? placeholderForSlug(slug) : DEFAULT_FALLBACK;
 }
 

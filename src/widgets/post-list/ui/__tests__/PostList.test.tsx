@@ -78,6 +78,17 @@ describe("PostList", () => {
 		expect(img).toHaveAttribute("alt", "");
 	});
 
+	it("첫 카드 썸네일만 eager로 받는다 (LCP 이미지가 lazy면 늦게 요청된다)", () => {
+		const posts = Array.from({ length: 3 }, (_, i) =>
+			makePost({ slug: `post-${i}`, title: `포스트 ${i}`, thumbnail: `/posts/post-${i}/images/thumb.png` })
+		);
+		const { container } = render(<PostList posts={posts} />);
+
+		const loadings = [...container.querySelectorAll("img")].map((img) => img.getAttribute("loading"));
+		expect(loadings[0]).toBe("eager");
+		expect(loadings.slice(1)).toEqual(loadings.slice(1).map(() => "lazy"));
+	});
+
 	it("최초 12개까지만 표시 (페이지 크기, 무한 스크롤 전)", () => {
 		const posts = Array.from({ length: 20 }, (_, i) =>
 			makePost({ slug: `post-${i}`, title: `포스트 ${i}`, description: `설명 ${i}` })
@@ -96,5 +107,13 @@ describe("PostList", () => {
 		const toolbar = screen.getByRole("toolbar", { name: "뷰 모드" });
 		expect(within(toolbar).getByRole("button", { name: "리스트 보기" })).toBeInTheDocument();
 		expect(within(toolbar).getByRole("button", { name: "격자 보기" })).toBeInTheDocument();
+	});
+
+	it("처음에는 격자 보기이고 저장된 값을 읽지 않는다", () => {
+		window.localStorage.setItem("blog:posts:view", "list");
+		render(<PostList posts={[makePost()]} />);
+
+		expect(screen.getByRole("button", { name: "격자 보기" })).toHaveAttribute("aria-pressed", "true");
+		expect(screen.getByRole("button", { name: "리스트 보기" })).toHaveAttribute("aria-pressed", "false");
 	});
 });

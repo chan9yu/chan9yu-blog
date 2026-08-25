@@ -88,7 +88,7 @@ describe("SearchModal", () => {
 		await screen.findByRole("link", { name: /React 19 새로운 기능/ }, { timeout: 1000 });
 	});
 
-	it("결과가 없을 때 '검색 결과가 없습니다' 메시지를 보여준다", async () => {
+	it("결과가 없을 때 검색어를 되짚어 안내한다", async () => {
 		const user = userEvent.setup();
 		render(<SearchModal open={true} onOpenChange={vi.fn()} posts={posts} />);
 
@@ -97,7 +97,7 @@ describe("SearchModal", () => {
 
 		await waitFor(
 			() => {
-				expect(screen.getByText(/검색 결과가 없습니다/)).toBeInTheDocument();
+				expect(screen.getByText(/"zzzzzzzzzz"에 해당하는 글이 없습니다/)).toBeInTheDocument();
 			},
 			{ timeout: 1000 }
 		);

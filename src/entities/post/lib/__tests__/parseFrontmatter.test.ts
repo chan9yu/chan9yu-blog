@@ -20,19 +20,21 @@ seriesOrder: null
 
 describe("parseFrontmatter", () => {
 	it("정상 frontmatter 파싱", () => {
-		const result = parseFrontmatter(VALID_RAW, "test-post");
-		expect(result.title).toBe("테스트 포스트");
-		expect(result.slug).toBe("test-post");
-		expect(result.tags).toEqual(["react", "nextjs"]);
-		expect(result.private).toBe(false);
-		expect(result.thumbnail).toBeNull();
-		expect(result.series).toBeNull();
-		expect(result.seriesOrder).toBeNull();
+		const { frontmatter, content } = parseFrontmatter(VALID_RAW, "test-post");
+		expect(frontmatter.title).toBe("테스트 포스트");
+		expect(frontmatter.slug).toBe("test-post");
+		expect(frontmatter.tags).toEqual(["react", "nextjs"]);
+		expect(frontmatter.private).toBe(false);
+		expect(frontmatter.thumbnail).toBeNull();
+		expect(frontmatter.series).toBeNull();
+		expect(frontmatter.seriesOrder).toBeNull();
+		expect(content).toContain("본문 내용");
+		expect(content).not.toContain("title:");
 	});
 
 	it("date ISO 형식 파싱", () => {
-		const result = parseFrontmatter(VALID_RAW, "test-post");
-		expect(result.date).toBe("2026-04-15");
+		const { frontmatter } = parseFrontmatter(VALID_RAW, "test-post");
+		expect(frontmatter.date).toBe("2026-04-15");
 	});
 
 	it("-- → --- 보정 (두 대시 구분자)", () => {
@@ -49,8 +51,9 @@ seriesOrder: null
 --
 본문
 `;
-		const result = parseFrontmatter(raw, "fix-test");
-		expect(result.slug).toBe("fix-test");
+		const { frontmatter, content } = parseFrontmatter(raw, "fix-test");
+		expect(frontmatter.slug).toBe("fix-test");
+		expect(content).not.toContain("title:");
 	});
 
 	it("slug/디렉토리명 불일치 시 에러", () => {
@@ -96,9 +99,9 @@ series: "my-series"
 seriesOrder: 1
 ---
 `;
-		const result = parseFrontmatter(raw, "series-ok");
-		expect(result.series).toBe("my-series");
-		expect(result.seriesOrder).toBe(1);
+		const { frontmatter } = parseFrontmatter(raw, "series-ok");
+		expect(frontmatter.series).toBe("my-series");
+		expect(frontmatter.seriesOrder).toBe(1);
 	});
 
 	it("private: true 파싱", () => {
@@ -114,7 +117,7 @@ series: null
 seriesOrder: null
 ---
 `;
-		const result = parseFrontmatter(raw, "private-post");
-		expect(result.private).toBe(true);
+		const { frontmatter } = parseFrontmatter(raw, "private-post");
+		expect(frontmatter.private).toBe(true);
 	});
 });

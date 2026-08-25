@@ -33,7 +33,7 @@ export function ScrollToTop() {
 			aria-label="맨 위로 이동"
 			inert={!visible ? true : undefined}
 			className={cn(
-				"bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-ring z-floating short:bottom-12 fixed right-8 bottom-8 inline-flex cursor-pointer items-center justify-center rounded-full p-3 transition-[opacity,transform,background-color] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
+				"bg-accent text-accent-foreground hover:bg-accent/90 focus-visible:ring-ring z-floating shadow-floating fixed right-4 bottom-4 inline-flex size-11 cursor-pointer items-center justify-center rounded-full transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none print:hidden",
 				visible
 					? "ease-enter translate-y-0 opacity-100 duration-250"
 					: "ease-exit pointer-events-none translate-y-16 opacity-0 duration-200"

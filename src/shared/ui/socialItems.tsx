@@ -1,4 +1,4 @@
-import { Mail, Rss } from "lucide-react";
+import { Mail } from "lucide-react";
 
 import GithubIcon from "@/shared/assets/icons/github.svg";
 import LinkedinIcon from "@/shared/assets/icons/linkedin.svg";
@@ -9,8 +9,7 @@ type SocialIconName = (typeof siteSocials)[number]["iconName"];
 const ICON_MAP = {
 	Github: GithubIcon,
 	Linkedin: LinkedinIcon,
-	Mail,
-	Rss
+	Mail
 } satisfies Record<SocialIconName, unknown>;
 
 export const socialItems = siteSocials.map(({ label, href, iconName }) => {

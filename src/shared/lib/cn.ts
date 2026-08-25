@@ -6,7 +6,17 @@ import { extendTailwindMerge } from "tailwind-merge";
 const twMerge = extendTailwindMerge({
 	extend: {
 		classGroups: {
-			"font-size": ["text-chip", "text-subtitle"]
+			"font-size": [
+				"text-chip",
+				"text-subtitle",
+				"text-11",
+				"text-12",
+				"text-13",
+				"text-14",
+				"text-15",
+				"text-16",
+				"text-17"
+			]
 		}
 	}
 });

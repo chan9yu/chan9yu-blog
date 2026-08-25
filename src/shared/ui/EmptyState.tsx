@@ -16,7 +16,7 @@ export function EmptyState({ title, description, action, variant = "default", cl
 			role="status"
 			className={cn(
 				"flex flex-col items-center gap-2 rounded-lg px-6 py-12 text-center",
-				variant === "dashed" ? "border-border-default border border-dashed" : "border-border-subtle bg-card border",
+				variant === "dashed" ? "border-border border border-dashed" : "border-border-subtle bg-card border",
 				className
 			)}
 		>

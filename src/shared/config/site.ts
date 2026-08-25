@@ -2,7 +2,7 @@ import packageJson from "../../../package.json" with { type: "json" };
 
 export const APP_VERSION = packageJson.version;
 
-export type NavItem = {
+type NavItem = {
 	href: string;
 	label: string;
 };
@@ -33,7 +33,7 @@ export const siteHostname = new URL(siteMetadata.url).hostname;
 type SocialLinkConfig = {
 	label: string;
 	href: string;
-	iconName: "Github" | "Linkedin" | "Mail" | "Rss";
+	iconName: "Github" | "Linkedin" | "Mail";
 };
 
 export const siteSocials: SocialLinkConfig[] = [
@@ -52,7 +52,10 @@ export function getSiteUrl() {
 			}
 			return explicit.replace(/\/+$/, "");
 		} catch (error) {
-			if (process.env.NODE_ENV === "production") throw error;
+			if (process.env.NODE_ENV === "production") {
+				throw error;
+			}
+			console.warn(`[getSiteUrl] NEXT_PUBLIC_SITE_URL="${explicit}"이 URL로 파싱되지 않아 무시합니다`);
 		}
 	}
 

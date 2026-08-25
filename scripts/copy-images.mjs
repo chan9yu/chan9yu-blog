@@ -8,13 +8,7 @@ const PUBLIC_DIR = join(process.cwd(), "public", "posts");
 
 function collectFiles(dir) {
 	const result = [];
-	let entries;
-
-	try {
-		entries = readdirSync(dir, { withFileTypes: true });
-	} catch {
-		return result;
-	}
+	const entries = readdirSync(dir, { withFileTypes: true });
 
 	for (const entry of entries) {
 		const fullPath = join(dir, entry.name);
@@ -86,7 +80,7 @@ function main() {
 				mkdirSync(dirname(destFile), { recursive: true });
 				cpSync(srcFile, destFile);
 				copied++;
-				console.log(`  ✓ ${slug}/images/${relPath}`);
+				console.log(`  복사 ${slug}/images/${relPath}`);
 			}
 		}
 	}
@@ -108,10 +102,10 @@ function main() {
 
 		rmSync(destImagesDir, { recursive: true, force: true });
 		pruned++;
-		console.log(`  ✗ pruned public/posts/${destSlug}/images`);
+		console.log(`  제거 public/posts/${destSlug}/images`);
 	}
 
-	console.log(`\n[copy-images] 완료 — 복사: ${copied}개, 스킵: ${skipped}개, 제거: ${pruned}개`);
+	console.log(`\n[copy-images] 완료. 복사 ${copied}개, 스킵 ${skipped}개, 제거 ${pruned}개`);
 }
 
 main();

@@ -7,27 +7,25 @@ import type { PostSummary } from "@/entities/post";
 
 import type { SearchResult } from "../model/SearchResult";
 
-const DEFAULT_THRESHOLD = 0.4;
+const SEARCH_THRESHOLD = 0.4;
 const DEFAULT_LIMIT = 10;
-const DEFAULT_DEBOUNCE_MS = 200;
+const DEBOUNCE_MS = 200;
 
-const fuseBaseOptions: IFuseOptions<PostSummary> = {
+const fuseOptions: IFuseOptions<PostSummary> = {
 	keys: [
 		{ name: "title", weight: 0.5 },
 		{ name: "description", weight: 0.3 },
 		{ name: "tags", weight: 0.2 }
 	],
-	includeScore: true,
 	includeMatches: true,
 	ignoreLocation: true,
-	minMatchCharLength: 2
+	minMatchCharLength: 2,
+	threshold: SEARCH_THRESHOLD
 };
 
 type UseSearchOptions = {
 	posts: PostSummary[];
-	threshold?: number;
 	limit?: number;
-	debounceMs?: number;
 };
 
 type UseSearchReturn = {
@@ -37,18 +35,13 @@ type UseSearchReturn = {
 	results: SearchResult[];
 };
 
-export function useSearch({
-	posts,
-	threshold = DEFAULT_THRESHOLD,
-	limit = DEFAULT_LIMIT,
-	debounceMs = DEFAULT_DEBOUNCE_MS
-}: UseSearchOptions): UseSearchReturn {
+export function useSearch({ posts, limit = DEFAULT_LIMIT }: UseSearchOptions): UseSearchReturn {
 	const [query, setQueryState] = useState("");
 	const [debouncedQuery, setDebouncedQuery] = useState("");
 
 	const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const fuse = useMemo(() => new Fuse(posts, { ...fuseBaseOptions, threshold }), [posts, threshold]);
+	const fuse = useMemo(() => new Fuse(posts, fuseOptions), [posts]);
 
 	const setQuery = (next: string) => {
 		setQueryState(next);
@@ -65,7 +58,7 @@ export function useSearch({
 		timerRef.current = setTimeout(() => {
 			setDebouncedQuery(next);
 			timerRef.current = null;
-		}, debounceMs);
+		}, DEBOUNCE_MS);
 	};
 
 	useEffect(() => {
@@ -81,9 +74,8 @@ export function useSearch({
 		const trimmed = debouncedQuery.trim();
 		if (trimmed === "") return [];
 
-		return fuse.search(trimmed, { limit }).map(({ item, score, matches }) => ({
+		return fuse.search(trimmed, { limit }).map(({ item, matches }) => ({
 			post: item,
-			score: score ?? 1,
 			matches
 		}));
 	}, [debouncedQuery, fuse, limit]);

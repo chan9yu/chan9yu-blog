@@ -26,13 +26,13 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
 					return (
 						<li key={item.href ?? item.label} className="flex min-w-0 items-center gap-2">
 							{isLast || !item.href ? (
-								<span aria-current="page" className="text-foreground truncate">
+								<span aria-current={isLast ? "page" : undefined} className="text-foreground truncate">
 									{item.label}
 								</span>
 							) : (
 								<Link
 									href={item.href}
-									className="hover:text-accent focus-visible:ring-ring truncate rounded transition-colors focus-visible:ring-2 focus-visible:outline-none"
+									className="hover:text-accent focus-visible:ring-ring -my-1 truncate rounded py-1 transition-colors focus-visible:ring-2 focus-visible:outline-none"
 								>
 									{item.label}
 								</Link>

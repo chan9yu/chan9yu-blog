@@ -15,7 +15,7 @@ export function useTheme() {
 	const applyWithTransition = (theme: Theme) => {
 		const apply = () => setNextTheme(theme);
 
-		if (typeof document === "undefined" || typeof document.startViewTransition !== "function") {
+		if (typeof document.startViewTransition !== "function") {
 			apply();
 			return;
 		}
@@ -28,14 +28,12 @@ export function useTheme() {
 	};
 
 	const toggleTheme = () => {
-		if (!mounted || currentTheme === null) return;
+		if (currentTheme === null) return;
 		applyWithTransition(currentTheme === "dark" ? "light" : "dark");
 	};
 
 	return {
 		resolvedTheme: currentTheme,
-		toggleTheme,
-		setTheme: applyWithTransition,
-		mounted
+		toggleTheme
 	};
 }

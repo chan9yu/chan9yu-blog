@@ -4,11 +4,12 @@ import { ChevronLeft, X } from "lucide-react";
 import { useState } from "react";
 
 import type { TocItem } from "@/entities/post";
+import { cn } from "@/shared/lib/cn";
 
 import { Toc } from "./Toc";
 
 const TOC_TOGGLE_CLASS =
-	"text-muted-foreground hover:text-foreground hover:bg-bg-subtle focus-visible:ring-ring flex size-11 cursor-pointer items-center justify-center rounded-full transition-[background-color,color,transform] duration-100 focus-visible:ring-2 focus-visible:outline-none motion-safe:active:scale-[0.98]";
+	"text-muted-foreground hover:text-foreground hover:bg-bg-subtle focus-visible:ring-ring flex size-11 cursor-pointer items-center justify-center rounded-full transition duration-100 focus-visible:ring-2 focus-visible:outline-none motion-safe:active:scale-98";
 
 type PostTocAsideProps = {
 	items: TocItem[];
@@ -20,12 +21,15 @@ export function PostTocAside({ items }: PostTocAsideProps) {
 	if (items.length === 0) return null;
 
 	return (
-		<aside
+		<div
 			id="post-toc"
-			aria-label="목차"
-			className="hidden lg:sticky lg:top-24 lg:ml-12 lg:grid lg:w-64 lg:flex-none lg:self-start"
+			className={cn(
+				"relative hidden lg:sticky lg:top-(--sticky-offset) lg:block lg:self-start",
+				"lg:transition-rail lg:duration-300",
+				isOpen ? "lg:ml-14 lg:w-58" : "lg:ml-0 lg:w-13 lg:overflow-hidden"
+			)}
 		>
-			<div data-toc-panel="" data-open={isOpen} className="col-start-1 row-start-1 space-y-3">
+			<div data-toc-panel="" data-open={isOpen} className={cn("w-58 space-y-3", !isOpen && "absolute top-0 right-0")}>
 				<div className="flex justify-end">
 					<button
 						type="button"
@@ -41,7 +45,7 @@ export function PostTocAside({ items }: PostTocAsideProps) {
 				<Toc items={items} />
 			</div>
 
-			<div data-toc-opener="" data-open={!isOpen} className="col-start-1 row-start-1 flex justify-end self-start">
+			<div data-toc-opener="" data-open={!isOpen} className="flex w-13 justify-center">
 				<button
 					type="button"
 					onClick={() => setIsOpen(true)}
@@ -53,6 +57,6 @@ export function PostTocAside({ items }: PostTocAsideProps) {
 					<ChevronLeft className="size-5" aria-hidden />
 				</button>
 			</div>
-		</aside>
+		</div>
 	);
 }

@@ -18,6 +18,10 @@ const post = (slug: string, date: string): PostSummary => ({
 
 const mgetMock = vi.fn();
 
+vi.mock("next/cache", () => ({
+	unstable_cache: <T>(fn: T) => fn
+}));
+
 vi.mock("@upstash/redis", () => ({
 	Redis: {
 		fromEnv: () => ({

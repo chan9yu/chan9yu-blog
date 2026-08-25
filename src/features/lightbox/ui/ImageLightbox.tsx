@@ -11,7 +11,7 @@ import { Dialog } from "@/shared/ui/Dialog";
 import type { LightboxImage } from "../model/LightboxContext";
 
 const CONTROL_CLASS =
-	"focus-visible:ring-ring absolute inline-flex size-12 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-[background-color] hover:bg-white/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none";
+	"focus-visible:ring-ring absolute inline-flex size-12 cursor-pointer items-center justify-center rounded-full bg-white/15 text-white transition-colors hover:bg-white/25 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none";
 
 type ImageLightboxProps = {
 	open: boolean;

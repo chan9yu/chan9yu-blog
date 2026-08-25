@@ -5,9 +5,10 @@ import rehypeSlug from "rehype-slug";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 
-import { getShikiHighlighter } from "@/shared/lib/shiki";
+import { getShikiHighlighter, SHIKI_THEMES } from "@/shared/lib/shiki";
 
 import { Callout } from "./Callout";
+import { ImageRow } from "./ImageRow";
 import { MdxHeading } from "./MdxHeading";
 import { MdxImage } from "./MdxImage";
 import { MdxLink } from "./MdxLink";
@@ -18,7 +19,7 @@ type CustomMDXProps = {
 	source: string;
 };
 
-function MdxH1(props: ComponentProps<"h2">) {
+function MdxH1(props: ComponentProps<"h1">) {
 	return <MdxHeading level={2} {...props} />;
 }
 
@@ -26,7 +27,7 @@ function MdxH2(props: ComponentProps<"h2">) {
 	return <MdxHeading level={3} {...props} />;
 }
 
-function MdxH3(props: ComponentProps<"h2">) {
+function MdxH3(props: ComponentProps<"h3">) {
 	return <MdxHeading level={4} {...props} />;
 }
 
@@ -47,7 +48,9 @@ const MDX_COMPONENTS = {
 	img: MdxImage,
 	a: MdxLink,
 	table: MdxTable,
-	Callout
+	Callout,
+	Figure: MdxImage,
+	ImageRow
 } as const;
 
 export async function CustomMDX({ source }: CustomMDXProps) {
@@ -64,7 +67,7 @@ export async function CustomMDX({ source }: CustomMDXProps) {
 						rehypeSlug,
 						() =>
 							rehypeShikiFromHighlighter(highlighter, {
-								themes: { light: "github-light", dark: "github-dark" },
+								themes: SHIKI_THEMES,
 								defaultColor: false
 							})
 					]

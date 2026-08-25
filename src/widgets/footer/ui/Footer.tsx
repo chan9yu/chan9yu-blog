@@ -42,7 +42,7 @@ export function Footer() {
 									href={link.href}
 									target={link.external ? "_blank" : undefined}
 									rel={link.external ? "noopener noreferrer" : undefined}
-									className="text-muted-foreground hover:text-accent focus-visible:ring-ring inline-flex items-center gap-1.5 rounded text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									className="text-muted-foreground hover:text-accent focus-visible:ring-ring -my-1 inline-flex items-center gap-1.5 rounded py-1 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 								>
 									{link.icon}
 									{link.label}
@@ -62,7 +62,7 @@ export function Footer() {
 				href={`https://github.com/chan9yu/dev-blog/releases/tag/v${APP_VERSION}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="text-muted-foreground hover:text-accent focus-visible:ring-ring z-raised fixed bottom-4 left-4 hidden rounded text-xs opacity-50 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none md:inline-block"
+				className="text-muted-foreground hover:text-accent focus-visible:ring-ring z-raised fixed bottom-3 left-2 hidden rounded py-1 text-xs opacity-80 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:inline-block xl:left-4 print:hidden"
 				aria-label={`현재 배포 버전 v${APP_VERSION} (GitHub Release 보기)`}
 			>
 				v{APP_VERSION}

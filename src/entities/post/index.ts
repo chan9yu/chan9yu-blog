@@ -4,3 +4,4 @@ export type { AdjacentPosts, PostSummary, RelatedPost, TocItem } from "./model/p
 export { PostCard } from "./ui/PostCard";
 export { PostMetaHeader } from "./ui/PostMetaHeader";
 export { PostRow } from "./ui/PostRow";
+export { Thumbnail } from "./ui/Thumbnail";

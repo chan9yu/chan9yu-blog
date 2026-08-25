@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import { getPublicPosts, resolvePostThumbnails } from "@/entities/post/index.server";
 import { getTagCounts } from "@/entities/tag";
 import { buildMetadata } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
-import { PostList } from "@/widgets/post-list";
 
-import { TagFilter } from "./TagFilter";
+import { PostsSkeleton } from "./PostsSkeleton";
+import { TagFilteredPosts } from "./TagFilteredPosts";
 
 export const metadata: Metadata = buildMetadata({
 	title: "포스트",
@@ -22,21 +23,17 @@ export function PostsPage() {
 
 	return (
 		<Container>
-			<div className="space-y-8 py-8 lg:py-10">
-				<header className="space-y-3">
-					<h1 className="text-foreground tracking-heading text-2xl leading-tight font-bold">포스트</h1>
-					<p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
-						개발하면서 배운 것들을 기록합니다
-					</p>
+			<div className="short:pt-6 w420:pt-16 pt-10">
+				<header className="mb-8">
+					<h1 className="text-foreground tracking-heading border-border-subtle mb-2.5 inline-block border-b-2 pb-2 text-2xl leading-tight font-bold">
+						포스트
+					</h1>
+					<p className="text-muted-foreground text-subtitle leading-prose">개발하면서 배운 것들을 기록합니다</p>
 				</header>
 
-				<div className="flex flex-col lg:flex-row lg:gap-8">
-					<TagFilter tags={allTags} />
-
-					<div className="min-w-0 flex-1">
-						<PostList posts={resolvedPosts} />
-					</div>
-				</div>
+				<Suspense fallback={<PostsSkeleton />}>
+					<TagFilteredPosts posts={resolvedPosts} tags={allTags} />
+				</Suspense>
 			</div>
 		</Container>
 	);

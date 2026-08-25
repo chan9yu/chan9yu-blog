@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
+import { Thumbnail } from "@/entities/post";
 import { getPublicPosts } from "@/entities/post/index.server";
 import { getAllSeries, getSeriesDetail, stripSeriesPrefix } from "@/entities/series";
 import { getAllSeriesMeta } from "@/entities/series/index.server";
@@ -17,6 +18,8 @@ type SeriesDetailPageProps = {
 };
 
 const findSeriesBySlug = cache((slug: string) => getSeriesDetail(getPublicPosts(), slug, getAllSeriesMeta()));
+
+const EAGER_THUMBNAIL_COUNT = 3;
 
 export async function generateStaticParams() {
 	return getAllSeries(getPublicPosts(), getAllSeriesMeta()).map((series) => ({ slug: series.slug }));
@@ -53,7 +56,7 @@ export async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 		<>
 			<JsonLdScript id="series-breadcrumb-json-ld" data={breadcrumbLd} />
 			<Container>
-				<div className="py-8 lg:py-10">
+				<div className="short:pt-6 w420:pt-16 pt-10 pb-8 lg:pb-10">
 					<header className="mb-12 space-y-6">
 						<Breadcrumb items={[{ label: "시리즈", href: "/series" }, { label: series.name }]} />
 						<div className="space-y-4">
@@ -61,7 +64,7 @@ export async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 								{series.name}
 							</h1>
 							{series.description && (
-								<p className="text-muted-foreground max-w-prose leading-relaxed break-keep">{series.description}</p>
+								<p className="text-muted-foreground leading-relaxed break-keep">{series.description}</p>
 							)}
 							<div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
 								<span className="inline-flex items-center gap-2">
@@ -73,7 +76,7 @@ export async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 					</header>
 
 					<ol className="space-y-4" aria-label="시리즈 포스트">
-						{series.posts.map((post) => (
+						{series.posts.map((post, index) => (
 							<li key={post.slug} className="flex gap-4">
 								<span
 									className="bg-muted text-muted-foreground mt-3 flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold tabular-nums"
@@ -83,19 +86,31 @@ export async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 								</span>
 								<Link
 									href={`/posts/${post.slug}`}
-									className="group bg-card border-border-subtle focus-visible:ring-ring hover:border-accent/40 block flex-1 rounded-lg border p-5 transition-[border-color] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									className="group bg-card border-border-subtle focus-visible:ring-ring hover:border-accent/40 grid-post-row grid flex-1 items-stretch gap-4 rounded-lg border p-5 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none lg:gap-5"
 								>
-									<h2 className="text-card-foreground group-hover:text-accent line-clamp-2 text-base leading-snug font-semibold transition-colors sm:text-lg">
-										{stripSeriesPrefix(post.title, series.name)}
-									</h2>
-									<p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-relaxed">{post.description}</p>
-									<time
-										className="text-muted-foreground mt-2 inline-flex items-center gap-1.5 text-xs tabular-nums"
-										dateTime={post.date}
-									>
-										<Calendar className="size-3.5" aria-hidden />
-										{formatDate(post.date)}
-									</time>
+									<Thumbnail
+										src={post.thumbnail}
+										sizes="(max-width: 1023px) 100vw, 260px"
+										priority={index < EAGER_THUMBNAIL_COUNT}
+										rounded
+										className="lg:aspect-auto lg:h-full"
+									/>
+
+									<div className="min-w-0">
+										<h2 className="text-card-foreground group-hover:text-accent line-clamp-2 text-base leading-snug font-semibold transition-colors sm:text-lg">
+											{stripSeriesPrefix(post.title, series.name)}
+										</h2>
+										<p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-relaxed">
+											{post.description}
+										</p>
+										<time
+											className="text-muted-foreground mt-2 inline-flex items-center gap-1.5 text-xs tabular-nums"
+											dateTime={post.date}
+										>
+											<Calendar className="size-3.5" aria-hidden />
+											{formatDate(post.date)}
+										</time>
+									</div>
 								</Link>
 							</li>
 						))}

@@ -1,11 +1,16 @@
 import { createHighlighter } from "shiki";
 
+export const SHIKI_THEMES = {
+	light: "github-light-high-contrast",
+	dark: "github-dark-high-contrast"
+} as const;
+
 let highlighterPromise: ReturnType<typeof createHighlighter> | null = null;
 
 export async function getShikiHighlighter() {
 	if (!highlighterPromise) {
 		highlighterPromise = createHighlighter({
-			themes: ["github-light", "github-dark"],
+			themes: Object.values(SHIKI_THEMES),
 			langs: [
 				"javascript",
 				"typescript",

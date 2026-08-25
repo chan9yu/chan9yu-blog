@@ -20,7 +20,7 @@ export function MobileMenu() {
 				onClick={() => setOpen(true)}
 				aria-label="메뉴 열기"
 				aria-expanded={open}
-				className="text-muted-foreground hover:text-foreground focus-visible:ring-ring/50 inline-flex size-11 cursor-pointer items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+				className="text-muted-foreground hover:text-foreground focus-visible:ring-ring inline-flex size-11 cursor-pointer items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 			>
 				<Menu className="size-5" aria-hidden />
 			</button>
@@ -30,7 +30,7 @@ export function MobileMenu() {
 				onClose={close}
 				side="right"
 				aria-labelledby={titleId}
-				panelClassName="flex w-72 max-w-[85vw] flex-col sm:max-w-sm"
+				panelClassName="flex w-72 max-w-drawer flex-col sm:max-w-sm"
 			>
 				<div className="border-border-subtle flex items-center justify-between border-b px-4 py-4">
 					<h2 id={titleId} className="text-lg font-bold">
@@ -40,7 +40,7 @@ export function MobileMenu() {
 						type="button"
 						onClick={close}
 						aria-label="메뉴 닫기"
-						className="text-muted-foreground hover:bg-bg-subtle hover:text-foreground focus-visible:ring-ring inline-flex size-11 cursor-pointer items-center justify-center rounded-lg transition-[background-color,color] focus-visible:ring-2 focus-visible:outline-none"
+						className="text-muted-foreground hover:bg-bg-subtle hover:text-foreground focus-visible:ring-ring inline-flex size-11 cursor-pointer items-center justify-center rounded-lg transition-colors focus-visible:ring-2 focus-visible:outline-none"
 					>
 						<X className="size-5" aria-hidden />
 					</button>

@@ -4,7 +4,7 @@ export const PostFrontmatterSchema = z
 	.object({
 		title: z.string().min(1),
 		description: z.string().min(1),
-		slug: z.string().regex(/^[a-z0-9-]+$/, "slug는 영문 소문자·숫자·하이픈만 허용"),
+		slug: z.string().regex(/^[a-z0-9-]+$/, "slug는 영문 소문자와 숫자, 하이픈만 허용"),
 		date: z.string().regex(/^\d{4}-\d{2}-\d{2}(T.*)?$/, "date는 ISO 8601 형식이어야 합니다"),
 		updated: z
 			.string()

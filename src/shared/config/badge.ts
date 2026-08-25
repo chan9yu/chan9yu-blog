@@ -1,7 +1,7 @@
 export const BADGE_RECENT_COUNT = 6;
 
 export const BADGE_THEMES = ["dark", "light"] as const;
-export type BadgeTheme = (typeof BADGE_THEMES)[number];
+type BadgeTheme = (typeof BADGE_THEMES)[number];
 
 export const BADGE_CARD = {
 	width: 480,

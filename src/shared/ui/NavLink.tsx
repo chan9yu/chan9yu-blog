@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/shared/lib/cn";
+import { NavigationHint } from "@/shared/ui/NavigationHint";
 
 const NAV_LINK_BASE_CLASS =
-	"focus-visible:ring-ring/50 inline-flex min-h-11 items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none hover:bg-muted";
+	"focus-visible:ring-ring hover:bg-bg-subtle rounded-control relative inline-flex min-h-11 items-center px-3 text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none";
 
 const NAV_LINK_STATE_CLASS: Record<"active" | "inactive", string> = {
-	active: "bg-muted text-accent",
+	active: "bg-bg-subtle text-accent underline decoration-2 underline-offset-4",
 	inactive: "text-muted-foreground"
 };
 
@@ -38,6 +39,7 @@ export function NavLink({ href, exact = false, className, children, ...rest }: N
 			{...rest}
 		>
 			{children}
+			<NavigationHint />
 		</Link>
 	);
 }

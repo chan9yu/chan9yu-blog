@@ -70,7 +70,7 @@ export function SearchSuggestions({ posts, onSelect }: SearchSuggestionsProps) {
 								<Link
 									href={`/posts/${post.slug}`}
 									onClick={onSelect}
-									className="hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring block rounded-md px-3 py-2 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+									className="hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring flex min-h-14 flex-col justify-center rounded-md px-4 py-3 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
 								>
 									<p className="text-foreground line-clamp-1 text-sm font-medium">{post.title}</p>
 									<p className="text-muted-foreground line-clamp-1 text-xs tabular-nums">{formatDate(post.date)}</p>

@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import type { PostSummary } from "@/entities/post";
@@ -13,19 +14,25 @@ export function PopularPosts({ posts }: PopularPostsProps) {
 	}
 
 	return (
-		<ul className="space-y-4">
+		<ul>
 			{posts.map((post) => (
 				<li key={post.slug}>
 					<Link
 						href={`/posts/${post.slug}`}
-						className="group focus-visible:ring-ring block space-y-1 rounded transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+						className="group focus-visible:ring-ring relative flex min-h-11 flex-col justify-center rounded py-2 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 					>
-						<h3 className="text-card-foreground group-hover:text-accent group-focus-visible:text-accent line-clamp-2 text-sm leading-tight font-medium transition-colors">
-							{post.title}
-						</h3>
-						<time className="text-muted-foreground block text-xs tabular-nums" dateTime={post.date}>
-							{formatDate(post.date)}
-						</time>
+						<ChevronRight
+							className="text-accent absolute top-1/2 left-0 size-3.5 -translate-y-1/2 opacity-0 transition duration-200 group-hover:opacity-100 group-focus-visible:opacity-100 motion-safe:-translate-x-1.5 motion-safe:group-hover:translate-x-0 motion-safe:group-focus-visible:translate-x-0"
+							aria-hidden
+						/>
+						<div className="flex flex-col gap-1.25 transition-transform duration-200 motion-safe:group-hover:translate-x-5 motion-safe:group-focus-visible:translate-x-5">
+							<h3 className="text-card-foreground group-hover:text-accent group-focus-visible:text-accent text-13 line-clamp-2 leading-snug font-semibold transition-colors">
+								{post.title}
+							</h3>
+							<time className="text-muted-foreground text-chip block tabular-nums" dateTime={post.date}>
+								{formatDate(post.date)}
+							</time>
+						</div>
 					</Link>
 				</li>
 			))}

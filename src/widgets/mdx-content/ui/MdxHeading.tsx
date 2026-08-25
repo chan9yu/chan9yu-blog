@@ -13,6 +13,7 @@ export function MdxHeading({ level, id, children, className, ...rest }: HeadingP
 		`h${level}`,
 		{
 			id,
+			tabIndex: -1,
 			className: cn("group relative", className),
 			...rest
 		},
@@ -21,7 +22,7 @@ export function MdxHeading({ level, id, children, className, ...rest }: HeadingP
 				key="anchor"
 				href={`#${id}`}
 				aria-label={`${typeof children === "string" ? children : id.replace(/-/g, " ")} 앵커 링크`}
-				className="text-muted-foreground hover:text-accent focus-visible:text-accent absolute top-1/2 -left-6 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
+				className="text-muted-foreground hover:text-accent focus-visible:text-accent absolute top-1/2 -left-6 -translate-y-1/2 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-none pointer-coarse:hidden"
 			>
 				<Link className="size-4" aria-hidden />
 			</a>

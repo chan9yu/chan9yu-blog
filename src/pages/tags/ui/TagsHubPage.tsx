@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 
 import { getPublicPosts } from "@/entities/post/index.server";
-import { getTagCounts } from "@/entities/tag";
-import { TagCard } from "@/entities/tag";
+import { getTagCounts, TagCard } from "@/entities/tag";
 import { buildMetadata } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
 import { EmptyState } from "@/shared/ui/EmptyState";
@@ -19,7 +18,7 @@ export function TagsHubPage() {
 
 	return (
 		<Container>
-			<div className="space-y-8 py-8 lg:py-10">
+			<div className="short:pt-6 w420:pt-16 space-y-8 pt-10 pb-8 lg:pb-10">
 				<header className="space-y-3">
 					<h1 className="text-foreground tracking-heading text-2xl leading-tight font-bold">태그</h1>
 					<p className="text-muted-foreground text-sm leading-relaxed sm:text-base">모든 태그를 한눈에 확인하세요</p>

@@ -8,10 +8,10 @@ type ButtonVariantName = "outline" | "accent" | "ghost";
 const BUTTON_DEFAULT_VARIANT: ButtonVariantName = "outline";
 
 const BUTTON_BASE_CLASS =
-	"inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 text-sm leading-none font-semibold whitespace-nowrap transition-[background-color,border-color,color,transform] outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 motion-safe:active:scale-[0.98]";
+	"rounded-control inline-flex h-11 shrink-0 cursor-pointer items-center justify-center gap-2 border px-4 text-sm leading-none font-semibold whitespace-nowrap transition duration-100 outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 motion-safe:active:scale-98";
 
 const BUTTON_VARIANT_CLASS: Record<ButtonVariantName, string> = {
-	outline: "bg-card border-border-default text-foreground hover:border-accent/40 hover:bg-bg-subtle",
+	outline: "bg-card border-border-control text-foreground hover:border-accent/40 hover:bg-bg-subtle",
 	accent: "bg-accent border-accent text-accent-foreground hover:bg-accent-hover hover:border-accent-hover",
 	ghost: "text-muted-foreground hover:text-foreground hover:bg-bg-subtle border-transparent"
 };

@@ -17,11 +17,11 @@ export function SectionTitle({ children, id, action, size = "md", className }: S
 				id={id}
 				className={cn(
 					"text-foreground tracking-heading flex items-center gap-3 font-bold",
-					size === "sm" ? "text-[17px]" : "text-xl"
+					size === "sm" ? "text-17" : "text-xl"
 				)}
 			>
 				<span
-					className={cn("bg-accent w-accent-bar shrink-0 rounded-[2px]", size === "sm" ? "h-[18px]" : "h-5")}
+					className={cn("bg-accent w-accent-bar shrink-0 rounded-xs", size === "sm" ? "h-4.5" : "h-5")}
 					aria-hidden
 				/>
 				<span>{children}</span>

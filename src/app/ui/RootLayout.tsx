@@ -87,13 +87,16 @@ export function RootLayout({ children }: PropsWithChildren) {
 					<ScrollReset />
 					<a
 						href="#main-content"
-						className="focus-visible:ring-ring bg-card border-border-default text-foreground z-floating fixed -top-16 left-4 inline-flex h-11 items-center rounded-md border px-4 text-sm font-medium transition-[top] focus-visible:top-4 focus-visible:ring-2 focus-visible:outline-none"
+						className="focus-visible:ring-ring bg-card border-border text-foreground z-floating transition-position fixed -top-16 left-4 inline-flex h-11 items-center rounded-md border px-4 text-sm font-medium focus-visible:top-4 focus-visible:ring-2 focus-visible:outline-none print:hidden"
 					>
 						본문 바로가기
 					</a>
 					<Suspense
 						fallback={
-							<div aria-hidden className="border-border-subtle bg-background z-sticky sticky top-0 h-16 border-b" />
+							<div
+								aria-hidden
+								className="border-border-subtle bg-background z-sticky sticky top-0 h-(--header-height) border-b"
+							/>
 						}
 					>
 						<Header

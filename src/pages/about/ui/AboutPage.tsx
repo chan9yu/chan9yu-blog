@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 
 import { getSiteUrl, siteMetadata, siteSocials } from "@/shared/config/site";
-import { buildPersonJsonLd, JsonLdScript } from "@/shared/seo";
-import { buildMetadata } from "@/shared/seo";
+import { buildMetadata, buildPersonJsonLd, JsonLdScript } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
 
 import { AboutProfile } from "./AboutProfile";
@@ -25,7 +24,7 @@ export function AboutPage() {
 		<>
 			<JsonLdScript id="about-person-json-ld" data={personJsonLd} />
 			<Container>
-				<div className="py-10 lg:py-14">
+				<div className="short:pt-6 w420:pt-16 pt-10 pb-10 lg:pb-14">
 					<AboutProfile />
 				</div>
 			</Container>

@@ -21,7 +21,7 @@ afterEach(() => {
 describe("ViewCounter", () => {
 	it("초기 렌더는 로딩 placeholder 표시", () => {
 		render(<ViewCounter slug="react-19-use" />);
-		expect(screen.getByLabelText("조회수 불러오는 중")).toBeInTheDocument();
+		expect(screen.getByText("조회수 불러오는 중")).toBeInTheDocument();
 	});
 
 	it("마운트 후 POST +1 + GET으로 실 숫자 표시 (seeded 42 → 43)", async () => {
@@ -78,7 +78,7 @@ describe("ViewCounter", () => {
 
 		render(<ViewCounter slug="broken" />);
 		await waitFor(() => {
-			expect(screen.getByLabelText("조회수를 불러오지 못했습니다")).toBeInTheDocument();
+			expect(screen.getByText("조회수를 불러오지 못했습니다")).toBeInTheDocument();
 		});
 		expect(screen.getByText("조회 –")).toBeInTheDocument();
 	});

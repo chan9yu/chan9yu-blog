@@ -18,14 +18,19 @@ export function SearchResultItem({ result, onSelect }: SearchResultItemProps) {
 		<Link
 			href={`/posts/${result.post.slug}`}
 			onClick={onSelect}
-			className="hover:bg-muted focus-visible:bg-muted focus-visible:ring-ring block rounded-md px-3 py-2 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
+			className="hover:bg-bg-subtle focus-visible:bg-bg-subtle focus-visible:ring-ring border-border-subtle grid-content-aside grid min-h-14 items-center gap-4 border-b px-4 py-3 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
 		>
-			<p className="text-foreground line-clamp-1 text-sm font-medium">
-				{renderHighlighted(result.post.title, titleIndices)}
-			</p>
-			<p className="text-muted-foreground line-clamp-1 text-xs">
-				{renderHighlighted(result.post.description, descriptionIndices)}
-			</p>
+			<span className="min-w-0">
+				<span className="text-foreground text-14 line-clamp-2 block leading-normal font-semibold">
+					{renderHighlighted(result.post.title, titleIndices)}
+				</span>
+				<span className="text-muted-foreground text-chip mt-1 line-clamp-1 block">
+					{renderHighlighted(result.post.description, descriptionIndices)}
+				</span>
+			</span>
+			<span className="bg-accent-subtle text-accent text-11 inline-flex h-6 shrink-0 items-center rounded-sm px-2 whitespace-nowrap">
+				포스트
+			</span>
 		</Link>
 	);
 }
@@ -51,7 +56,7 @@ function renderHighlighted(source: string, indices: ReadonlyArray<readonly [numb
 			chunks.push(source.slice(cursor, effectiveStart));
 		}
 		chunks.push(
-			<mark key={effectiveStart} className="bg-primary/20 text-foreground rounded-sm px-0.5">
+			<mark key={effectiveStart} className="bg-accent/20 text-foreground rounded-sm px-0.5">
 				{source.slice(effectiveStart, sliceEnd)}
 			</mark>
 		);

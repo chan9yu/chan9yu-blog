@@ -21,15 +21,14 @@ function wasIncrementedThisSession(slug: string) {
 function markIncrementedThisSession(slug: string) {
 	try {
 		sessionStorage.setItem(sessionKey(slug), "1");
-	} catch {}
+	} catch (error) {
+		console.warn(`[views] sessionStorage unavailable for ${slug}`, error);
+	}
 }
 
-type UseViewsState = {
-	views: number | null;
-	failed: boolean;
-};
+type UseViewsState = { status: "loading" } | { status: "failed" } | { status: "loaded"; views: number };
 
-const INITIAL_STATE: UseViewsState = { views: null, failed: false };
+const INITIAL_STATE: UseViewsState = { status: "loading" };
 
 export function useViews(slug: string) {
 	const [state, setState] = useState<UseViewsState>(INITIAL_STATE);
@@ -46,7 +45,7 @@ export function useViews(slug: string) {
 			const value = await fetchPostViewsOrNull(slug);
 			if (cancelled) return;
 
-			setState(value === null ? { views: null, failed: true } : { views: value, failed: false });
+			setState(value === null ? { status: "failed" } : { status: "loaded", views: value });
 		};
 
 		void load();

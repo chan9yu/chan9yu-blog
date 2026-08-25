@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type CommentsSectionProps = {
 	slug: string;
@@ -38,7 +38,7 @@ export function CommentsSection({ slug, isPrivate = false }: CommentsSectionProp
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [shouldLoad, setShouldLoad] = useState(false);
 	const { resolvedTheme } = useTheme();
-	const config = readGiscusConfig();
+	const config = useMemo(() => readGiscusConfig(), []);
 
 	useEffect(() => {
 		const container = containerRef.current;

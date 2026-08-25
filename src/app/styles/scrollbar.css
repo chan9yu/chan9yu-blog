@@ -9,17 +9,17 @@
 
 ::-webkit-scrollbar-thumb {
 	transition: background-color var(--duration-color) var(--ease-out);
-	background-color: var(--color-border-default);
+	background-color: var(--color-text-tertiary);
 	border-radius: var(--radius-full);
-	border: 2px solid transparent;
-	background-clip: padding-box;
+	border: 3px solid transparent;
+	background-clip: content-box;
 }
 
-::-webkit-scrollbar-thumb:hover {
-	background-color: var(--color-border-strong);
+::-webkit-scrollbar-corner {
+	background-color: transparent;
 }
 
 * {
 	scrollbar-width: thin;
-	scrollbar-color: var(--color-border-default) transparent;
+	scrollbar-color: var(--color-text-tertiary) transparent;
 }

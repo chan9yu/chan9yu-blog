@@ -2,10 +2,14 @@ html[data-modal-open] {
 	overflow: hidden;
 }
 
+/* 정렬과 여백은 [open]에 두지 않는다. 퇴장 전환 동안 [open]이 떨어지면
+   패널이 좌상단으로 튀었다가 사라진다 */
 [data-dialog] {
 	position: fixed;
 	inset: 0;
 	display: none;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
 	max-width: none;
 	height: 100%;
@@ -22,13 +26,17 @@ html[data-modal-open] {
 
 [data-dialog][open] {
 	display: flex;
-	align-items: center;
-	justify-content: center;
 	transition-duration: var(--duration-screen);
 }
 
+/* 결과 개수에 따라 패널 높이가 바뀌어도 위치가 흔들리지 않게 위로 붙인다 */
+[data-dialog][data-align="start"] {
+	align-items: flex-start;
+	padding: 12vh 20px 20px;
+}
+
 [data-dialog]::backdrop {
-	background-color: rgb(0 0 0 / 0.5);
+	background-color: rgb(0 0 0 / 0.62);
 	opacity: 0;
 	transition-property: opacity, display, overlay;
 	transition-duration: var(--duration-exit);
@@ -97,8 +105,11 @@ html[data-modal-open] {
 	}
 }
 
+/* hidden은 스크롤 컨테이너라 showModal()의 포커스 이동이 100% 밀려 있는 패널을
+   scroll-into-view로 제자리에 끌어와 등장 애니메이션이 사라진다. clip은 스크롤되지 않는다 */
 [data-drawer] {
 	padding: 0;
+	overflow: clip;
 }
 
 [data-drawer][data-side="bottom"] {
@@ -114,13 +125,19 @@ html[data-modal-open] {
 	background-color: var(--color-bg-default);
 	opacity: 1;
 	overflow-y: auto;
+	transition-property: transform;
+	transition-timing-function: var(--ease-exit);
+}
+
+[data-drawer][open] [data-dialog-panel] {
+	transition-timing-function: var(--ease-out);
 }
 
 [data-drawer][data-side="bottom"] [data-dialog-panel] {
 	width: 100%;
 	max-height: 72vh;
-	border-start-start-radius: var(--radius-xl);
-	border-start-end-radius: var(--radius-xl);
+	border-start-start-radius: var(--radius-sheet);
+	border-start-end-radius: var(--radius-sheet);
 	transform: translateY(100%);
 }
 
@@ -137,18 +154,22 @@ html[data-modal-open] {
 
 [data-drawer][data-side="bottom"][open] [data-dialog-panel] {
 	transform: translateY(0);
+	animation: drawer-in-bottom var(--duration-screen) var(--ease-out);
 }
 
 [data-drawer][data-side="right"][open] [data-dialog-panel] {
 	transform: translateX(0);
+	animation: drawer-in-right var(--duration-screen) var(--ease-out);
 }
 
-@starting-style {
-	[data-drawer][data-side="bottom"][open] [data-dialog-panel] {
+@keyframes drawer-in-bottom {
+	from {
 		transform: translateY(100%);
 	}
+}
 
-	[data-drawer][data-side="right"][open] [data-dialog-panel] {
+@keyframes drawer-in-right {
+	from {
 		transform: translateX(100%);
 	}
 }

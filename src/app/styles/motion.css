@@ -4,26 +4,20 @@
 	--ease-exit: cubic-bezier(0.3, 0, 1, 1);
 	--ease-move: cubic-bezier(0.2, 0, 0, 1);
 
-	--duration-feedback: 100ms;
 	--duration-color: 150ms;
 	--duration-enter: 250ms;
 	--duration-exit: 200ms;
 	--duration-screen: 300ms;
-	--duration-zoom: 500ms;
 
-	--header-height: 76px;
-	--scroll-offset: calc(var(--header-height) + 8px);
+	--header-height: 64px;
+	--sticky-offset: 96px;
+	--scroll-offset: calc(var(--header-height) + 24px);
 }
 
-@media (min-width: 768px) {
+@media (max-height: 420px) {
 	:root {
-		--header-height: 92px;
-	}
-}
-
-@media (max-height: 480px) {
-	:root {
-		--scroll-offset: 8px;
+		--header-height: 44px;
+		--sticky-offset: 68px;
 	}
 }
 
@@ -54,6 +48,7 @@
 	*::before,
 	*::after {
 		animation-duration: 0.01ms !important;
+		animation-delay: -1ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 0.01ms !important;
 		scroll-behavior: auto !important;

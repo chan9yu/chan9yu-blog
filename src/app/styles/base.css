@@ -14,6 +14,7 @@
 		-webkit-text-size-adjust: 100%;
 		text-size-adjust: 100%;
 		scroll-behavior: smooth;
+		scroll-padding-top: var(--scroll-offset);
 		tab-size: 4;
 		/* 모달이 스크롤을 잠글 때 클래식 스크롤바가 사라지며 화면이 가로로 튀는 것을 막는다 */
 		scrollbar-gutter: stable;
@@ -56,6 +57,7 @@
 	}
 
 	p,
+	li,
 	h1,
 	h2,
 	h3,

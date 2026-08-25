@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -6,12 +7,12 @@ import { getTrendingSeries } from "@/entities/series";
 import { getTrendingTags } from "@/entities/tag";
 import { buildMetadata } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
-import { SectionTitle } from "@/shared/ui/SectionTitle";
 import { RecentPostsList } from "@/widgets/post-list";
 
 import { HomeHero } from "./HomeHero";
 import { HomeSidebar } from "./HomeSidebar";
 import { PopularPosts } from "./PopularPosts";
+import { SidebarSection } from "./SidebarSection";
 import { TrendingSeries } from "./TrendingSeries";
 import { TrendingTags } from "./TrendingTags";
 
@@ -39,48 +40,42 @@ export async function HomePage() {
 
 	return (
 		<Container>
-			<div className="flex flex-col gap-10 py-8 lg:flex-row lg:py-10">
-				<div className="min-w-0 flex-1 space-y-10 sm:space-y-14">
+			<div className="short:pt-6 w420:pt-16 lg:grid-home grid gap-12 pt-10 lg:gap-14">
+				<div className="min-w-0 space-y-14">
 					<HomeHero />
 
-					<section aria-labelledby="recent-posts-title" className="space-y-4 sm:space-y-6">
-						<SectionTitle
-							id="recent-posts-title"
-							action={
+					<section aria-labelledby="recent-posts-title">
+						<RecentPostsList
+							posts={recentPosts}
+							title="최근 포스트"
+							titleId="recent-posts-title"
+							footer={
 								<Link
 									href="/posts"
-									aria-label="최근 포스트 전체 보기"
-									className="text-accent focus-visible:ring-ring shrink-0 rounded text-sm font-medium transition-colors hover:underline focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+									className="group bg-card border-border-subtle text-muted-foreground hover:border-accent/40 hover:text-accent focus-visible:ring-ring flex h-12 items-center justify-center gap-2 rounded-lg border text-sm font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 								>
-									전체 보기 <span aria-hidden>&rarr;</span>
+									전체 포스트 보기
+									<ArrowRight
+										className="size-4 transition-transform duration-200 motion-safe:group-hover:translate-x-1"
+										aria-hidden
+									/>
 								</Link>
 							}
-						>
-							최근 포스트
-						</SectionTitle>
-						<RecentPostsList posts={recentPosts} />
+						/>
 					</section>
 				</div>
 
-				<HomeSidebar
-					sections={[
-						{
-							title: "Popular Posts",
-							titleId: "popular-posts-title",
-							content: <PopularPosts posts={popularPosts} />
-						},
-						{
-							title: "Popular Series",
-							titleId: "trending-series-title",
-							content: <TrendingSeries series={trendingSeries} />
-						},
-						{
-							title: "Popular Tags",
-							titleId: "trending-tags-title",
-							content: <TrendingTags tags={trendingTags} />
-						}
-					]}
-				/>
+				<HomeSidebar>
+					<SidebarSection title="Popular Posts" titleId="popular-posts-title">
+						<PopularPosts posts={popularPosts} />
+					</SidebarSection>
+					<SidebarSection title="Popular Series" titleId="trending-series-title">
+						<TrendingSeries series={trendingSeries} />
+					</SidebarSection>
+					<SidebarSection title="Popular Tags" titleId="trending-tags-title">
+						<TrendingTags tags={trendingTags} />
+					</SidebarSection>
+				</HomeSidebar>
 			</div>
 		</Container>
 	);

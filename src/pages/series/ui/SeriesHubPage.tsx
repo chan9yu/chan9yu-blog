@@ -19,7 +19,7 @@ export function SeriesHubPage() {
 
 	return (
 		<Container>
-			<div className="space-y-8 py-8 lg:py-10">
+			<div className="short:pt-6 w420:pt-16 space-y-8 pt-10 pb-8 lg:pb-10">
 				<header className="space-y-3">
 					<h1 className="text-foreground tracking-heading text-2xl leading-tight font-bold">시리즈</h1>
 					<p className="text-muted-foreground text-sm leading-relaxed sm:text-base">
@@ -30,9 +30,9 @@ export function SeriesHubPage() {
 				{series.length === 0 ? (
 					<EmptyState title="아직 시리즈가 없습니다." description="연재를 시작하면 여기에 모아 보여드립니다." />
 				) : (
-					<ul className="grid-series grid gap-6" aria-label="시리즈 목록">
+					<ul className="grid-series grid gap-3.5 lg:gap-4" aria-label="시리즈 목록">
 						{series.map((item) => (
-							<li key={item.slug} className="flex">
+							<li key={item.slug} className="row-span-3 grid grid-rows-subgrid">
 								<SeriesCard name={item.name} slug={item.slug} description={item.description} posts={item.posts} />
 							</li>
 						))}

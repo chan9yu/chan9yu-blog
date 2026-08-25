@@ -61,7 +61,7 @@ export async function TagDetailPage({ params }: TagDetailPageProps) {
 		<>
 			<JsonLdScript id="tag-breadcrumb-json-ld" data={breadcrumbLd} />
 			<Container>
-				<div className="py-8 lg:py-10">
+				<div className="short:pt-6 w420:pt-16 pt-10 pb-8 lg:pb-10">
 					<header className="mb-12 space-y-6">
 						<Breadcrumb items={[{ label: "태그", href: "/tags" }, { label: `#${display}` }]} />
 						<div className="space-y-4">

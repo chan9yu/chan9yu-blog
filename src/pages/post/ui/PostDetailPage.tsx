@@ -105,8 +105,8 @@ export async function PostDetailPage({ params }: PostDetailPageProps) {
 			{breadcrumbLd && <JsonLdScript id="breadcrumb-json-ld" data={breadcrumbLd} />}
 			<ReadingProgress />
 			<Container>
-				<div className="flex flex-col py-8 lg:flex-row lg:py-10">
-					<article className="min-w-0 flex-1 space-y-10 pb-12 sm:pb-16">
+				<div className="short:pt-6 w420:pt-16 lg:grid-content-aside grid pt-10">
+					<article className="min-w-0 space-y-10 pb-12 sm:pb-16">
 						<PostMetaHeader
 							post={detail}
 							shareSlot={<ShareButtons title={detail.title} url={shareUrl} />}

@@ -1,10 +1,9 @@
 "use client";
 
-import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 
 function calculateScrollProgress() {
-	const scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+	const scrollTop = window.scrollY;
 	const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
 	return scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
@@ -32,11 +31,12 @@ export function ReadingProgress() {
 
 			if (rafIdRef.current !== null) {
 				cancelAnimationFrame(rafIdRef.current);
+				rafIdRef.current = null;
 			}
 		};
 	}, []);
 
-	const progressStyle = { "--progress": progress / 100 } as CSSProperties & { "--progress": number };
+	const progressStyle = { transform: `scaleX(${progress / 100})` };
 
 	return (
 		<div
@@ -47,9 +47,14 @@ export function ReadingProgress() {
 			aria-valuemin={0}
 			aria-valuemax={100}
 		>
+			<div
+				className="bg-accent h-1 w-full origin-left transition-transform will-change-transform"
+				style={progressStyle}
+			/>
 			{progress > 0 && (
 				<div
-					className="reading-progress-bar bg-accent h-1 w-full origin-left transition-transform will-change-transform"
+					aria-hidden
+					className="bg-accent pointer-events-none absolute inset-x-0 top-0 h-1 w-full origin-left opacity-50 blur-md transition-transform will-change-transform"
 					style={progressStyle}
 				/>
 			)}

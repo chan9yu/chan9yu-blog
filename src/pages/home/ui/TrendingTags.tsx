@@ -13,7 +13,7 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
 	}
 
 	return (
-		<ul className="flex flex-wrap gap-2">
+		<ul className="flex flex-wrap gap-1.5">
 			{tags.map((tag) => {
 				const display = formatLocalizedSlug(tag.tag);
 				return (
@@ -21,10 +21,10 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
 						<Link
 							href={`/tags/${tag.slug}`}
 							aria-label={`${display} 태그, ${tag.count}개 글`}
-							className="bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground focus-visible:ring-ring focus-visible:bg-accent focus-visible:text-accent-foreground inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+							className="bg-bg-subtle border-border-subtle text-muted-foreground hover:border-accent hover:text-accent focus-visible:ring-ring focus-visible:border-accent focus-visible:text-accent text-chip inline-flex h-7 items-center gap-1.5 rounded-sm border px-2.25 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 						>
-							<span>{display}</span>
-							<span className="text-xs opacity-70" aria-hidden>
+							<span className="max-w-tag truncate">{display}</span>
+							<span className="text-text-tertiary shrink-0" aria-hidden>
 								{tag.count}
 							</span>
 						</Link>

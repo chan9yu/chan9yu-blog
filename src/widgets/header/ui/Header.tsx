@@ -13,13 +13,16 @@ type HeaderProps = {
 
 export function Header({ searchSlot, themeSlot, mobileMenuSlot }: HeaderProps) {
 	return (
-		<header className="bg-background/88 header-scroll-border z-sticky short:static sticky top-0 backdrop-blur-[10px] md:mt-12">
+		<header className="bg-background/88 header-scroll-border z-sticky short:static backdrop-blur-header sticky top-0 print:static">
 			<Container>
-				<nav className="flex items-center justify-between gap-4 py-4 md:py-6" aria-label="주요 메뉴">
+				<nav
+					className="short:min-h-11 short:py-0 flex min-h-16 items-center justify-between gap-2 py-2"
+					aria-label="주요 메뉴"
+				>
 					<Link
 						href="/"
 						aria-label="chan9yu 홈"
-						className="text-foreground flex min-h-11 items-center text-lg font-bold tracking-tight transition-colors md:text-xl"
+						className="text-foreground text-16 tracking-flat flex min-h-11 items-center font-bold transition-colors"
 					>
 						{"<chan9yu />"}
 					</Link>

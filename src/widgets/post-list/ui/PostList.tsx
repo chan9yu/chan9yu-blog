@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { PostSummary } from "@/entities/post";
 import { EmptyState } from "@/shared/ui/EmptyState";
 
-import { useViewMode } from "../model/useViewMode";
+import type { ViewMode } from "./PostViewSwap";
 import { PostViewSwap } from "./PostViewSwap";
 import { ViewToggle } from "./ViewToggle";
 
@@ -13,13 +13,13 @@ const PAGE_SIZE = 12;
 
 type PostListProps = {
 	posts: PostSummary[];
+	countLabel?: string;
 };
 
-export function PostList({ posts }: PostListProps) {
-	const { view } = useViewMode();
+export function PostList({ posts, countLabel }: PostListProps) {
+	const [view, setView] = useState<ViewMode>("grid");
 	const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
 	const sentinelRef = useRef<HTMLDivElement>(null);
-	const rafRef = useRef<number | undefined>(undefined);
 
 	const visiblePosts = posts.slice(0, displayCount);
 	const hasMore = visiblePosts.length < posts.length;
@@ -31,13 +31,7 @@ export function PostList({ posts }: PostListProps) {
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (entries[0]?.isIntersecting) {
-					if (rafRef.current !== undefined) {
-						cancelAnimationFrame(rafRef.current);
-					}
-					rafRef.current = requestAnimationFrame(() => {
-						setDisplayCount((prev) => prev + PAGE_SIZE);
-						rafRef.current = undefined;
-					});
+					setDisplayCount((prev) => prev + PAGE_SIZE);
 				}
 			},
 			{ rootMargin: "200px" }
@@ -47,9 +41,6 @@ export function PostList({ posts }: PostListProps) {
 
 		return () => {
 			observer.disconnect();
-			if (rafRef.current !== undefined) {
-				cancelAnimationFrame(rafRef.current);
-			}
 		};
 	}, [hasMore]);
 
@@ -58,9 +49,15 @@ export function PostList({ posts }: PostListProps) {
 	}
 
 	return (
-		<div className="space-y-6">
-			<div className="flex justify-end">
-				<ViewToggle />
+		<div>
+			<h2 className="sr-only">포스트 목록</h2>
+			<div className="mb-3.5 flex items-center justify-between gap-4">
+				<p aria-hidden className="text-text-tertiary text-xs">
+					{countLabel ?? `${posts.length}개의 포스트`}
+				</p>
+				<div className="hidden lg:block">
+					<ViewToggle value={view} onChange={setView} />
+				</div>
 			</div>
 
 			<PostViewSwap posts={visiblePosts} view={view} />

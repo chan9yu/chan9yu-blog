@@ -13,9 +13,10 @@ type MdxImageProps = ComponentProps<"img"> & {
 export function MdxImage({ alt, caption, className, src, ...rest }: MdxImageProps) {
 	const { openMany } = useLightbox();
 	const captionId = useId();
+	const imageSrc = typeof src === "string" ? src : undefined;
 
 	const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
-		if (typeof src !== "string" || !src) return;
+		if (!imageSrc) return;
 
 		const article = event.currentTarget.closest("article");
 		const root: ParentNode = article ?? document;
@@ -39,7 +40,7 @@ export function MdxImage({ alt, caption, className, src, ...rest }: MdxImageProp
 			<button
 				type="button"
 				onClick={handleOpen}
-				aria-label={`${alt} — 확대 보기`}
+				aria-label={`${alt} 확대 보기`}
 				aria-describedby={caption ? captionId : undefined}
 				className="mx-auto block w-fit cursor-zoom-in rounded-lg border-0 bg-transparent p-0"
 			>
@@ -47,7 +48,7 @@ export function MdxImage({ alt, caption, className, src, ...rest }: MdxImageProp
 					alt={alt}
 					loading="lazy"
 					decoding="async"
-					src={typeof src === "string" ? src : undefined}
+					src={imageSrc}
 					className={cn("block h-auto max-w-full rounded-lg", className)}
 					{...rest}
 				/>

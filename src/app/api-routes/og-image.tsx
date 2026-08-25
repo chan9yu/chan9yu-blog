@@ -11,32 +11,30 @@ function truncate(input: string, max: number) {
 	return `${input.slice(0, max - 1).trimEnd()}…`;
 }
 
-function isAllowedThumbnailUrl(thumbnail: string, requestOrigin: string): boolean {
+function isAllowedThumbnailUrl(thumbnail: string, requestHostname: string): boolean {
 	try {
 		const target = new URL(thumbnail);
 		if (target.protocol !== "https:" && target.protocol !== "http:") return false;
-		const requestHost = new URL(requestOrigin).hostname;
-		return target.hostname === requestHost || target.hostname === siteHostname;
+		return target.hostname === requestHostname || target.hostname === siteHostname;
 	} catch {
 		return false;
 	}
 }
 
 export function renderOgImage(req: Request) {
-	const { searchParams } = new URL(req.url);
+	const { searchParams, origin, hostname } = new URL(req.url);
 	const rawTitle = searchParams.get("title")?.trim();
-	const title = truncate(rawTitle && rawTitle.length > 0 ? rawTitle : siteMetadata.name, MAX_TITLE);
+	const title = truncate(rawTitle || siteMetadata.name, MAX_TITLE);
 	const tagParam = searchParams.get("tag")?.trim();
 	const tag = tagParam ? truncate(tagParam, MAX_TAG) : null;
 	const thumbnail = searchParams.get("thumbnail");
-	const origin = new URL(req.url).origin;
 
 	if (thumbnail) {
 		if (thumbnail.startsWith("/") && !thumbnail.startsWith("//")) {
 			return Response.redirect(`${origin}${thumbnail}`, 302);
 		}
 
-		if (/^https?:\/\//i.test(thumbnail) && isAllowedThumbnailUrl(thumbnail, origin)) {
+		if (isAllowedThumbnailUrl(thumbnail, hostname)) {
 			return Response.redirect(thumbnail, 302);
 		}
 	}

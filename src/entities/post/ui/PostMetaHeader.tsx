@@ -25,7 +25,7 @@ export function PostMetaHeader({ post, shareSlot, viewCounterSlot }: PostMetaHea
 			<div className="text-muted-foreground flex flex-wrap items-center gap-x-3.5 gap-y-2 text-xs">
 				<time dateTime={post.date} className="flex items-center gap-1.5 tabular-nums">
 					<Calendar className="size-3.25" aria-hidden />
-					{formatDate(post.date)}
+					발행일 {formatDate(post.date)}
 				</time>
 				<span className="flex items-center gap-1.5 tabular-nums">
 					<Clock className="size-3.25" aria-hidden />

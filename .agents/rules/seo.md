@@ -10,7 +10,20 @@ description: 메타데이터와 JSON-LD, sitemap, RSS, OG 이미지를 코드에
 
 **모든 페이지의 metadata는 `src/shared/seo`의 `buildMetadata`로 만든다.** title과 description, canonical, OG, twitter 카드(summary_large_image)를 한 번에 만든다. Metadata 객체를 손으로 조립하지 않는다. image를 주지 않으면 `/og?title=` 이미지가 자동으로 붙는다.
 
-헬퍼는 호출부가 주지 않아도 세 가지를 항상 낸다. `openGraph.siteName`(`siteMetadata.name`)과 `openGraph.locale`(`siteMetadata.locale`), 그리고 `alternates.types`의 RSS 링크(`application/rss+xml`, `/rss`)다. 페이지에서 이 셋을 다시 적지 않는다. Next.js의 metadata 병합은 필드 단위 얕은 덮어쓰기라, 페이지가 `openGraph`나 `alternates`를 주는 순간 루트 layout의 값이 통째로 사라진다. 루트에만 두면 실제 페이지 어디에도 안 실린다.
+헬퍼는 호출부가 주지 않아도 세 가지를 항상 낸다. `openGraph.siteName`(`siteMetadata.siteName`)과 `openGraph.locale`(`siteMetadata.locale`), 그리고 `alternates.types`의 RSS 링크(`application/rss+xml`, `/rss`)다. 페이지에서 이 셋을 다시 적지 않는다. Next.js의 metadata 병합은 필드 단위 얕은 덮어쓰기라, 페이지가 `openGraph`나 `alternates`를 주는 순간 루트 layout의 값이 통째로 사라진다. 루트에만 두면 실제 페이지 어디에도 안 실린다.
+
+### 이름 필드가 둘이다
+
+`siteMetadata`에 이름이 둘 있고 서로 바꿔 쓰면 안 된다.
+
+| 필드       | 값                 | 어디에 쓰는가                                                                |
+| ---------- | ------------------ | ---------------------------------------------------------------------------- |
+| `siteName` | chan9yu 기술블로그 | 검색결과에 뜨는 사이트 이름. `og:site_name`과 WebSite JSON-LD의 `name`       |
+| `name`     | chan9yu            | 제목 접미사와 OG 이미지 브랜드 표기, manifest `short_name`, 탐색경로 첫 항목 |
+
+구글이 사이트 이름을 고르는 순서는 WebSite 구조화 데이터, `og:site_name`, 홈 `<title>`, 홈의 heading이다. 앞의 둘을 `siteName`이 대고 WebSite JSON-LD에 `alternateName`으로 `name`을 함께 실어, 구글이 긴 이름을 고르지 않으면 짧은 쪽으로 떨어지게 한다.
+
+`name`을 긴 이름으로 바꾸면 세 곳이 함께 망가진다. 제목 접미사가 길어져 60자 제한을 밀어내고, OG 이미지의 `${name}.dev` 표기가 "chan9yu 기술블로그.dev"가 되며, manifest `short_name`이 홈 화면 라벨 권장 길이를 넘는다.
 
 og:image 치수는 기본 이미지일 때만 적는다. `image`를 주지 않아 `/og`가 그리는 경우에만 `width` 1200과 `height` 630을 붙이고, 호출부가 `image`를 넘기면 크기를 모르므로 url과 alt만 낸다. 썸네일 크기를 추측해서 채우지 않는다.
 

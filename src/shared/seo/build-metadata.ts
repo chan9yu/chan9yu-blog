@@ -24,7 +24,7 @@ export function buildMetadata(input: BuildMetadataInput) {
 
 	const ogCommon = {
 		url: input.path,
-		siteName: siteMetadata.name,
+		siteName: siteMetadata.siteName,
 		locale: siteMetadata.locale,
 		title: input.title,
 		description: input.description,

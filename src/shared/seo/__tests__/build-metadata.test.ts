@@ -59,7 +59,7 @@ describe("buildMetadata", () => {
 
 		for (const meta of [website, article]) {
 			const og = meta.openGraph as AnyRecord | undefined;
-			expect(og?.siteName).toBe(siteMetadata.name);
+			expect(og?.siteName).toBe(siteMetadata.siteName);
 			expect(og?.locale).toBe(siteMetadata.locale);
 		}
 	});

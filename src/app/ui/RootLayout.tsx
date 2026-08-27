@@ -55,7 +55,7 @@ export const rootMetadata: Metadata = {
 	},
 	openGraph: {
 		type: "website",
-		siteName: siteMetadata.name,
+		siteName: siteMetadata.siteName,
 		locale: siteMetadata.locale,
 		url: "/",
 		title: siteMetadata.title,
@@ -87,7 +87,8 @@ export const rootViewport: Viewport = {
 
 const websiteJsonLd = buildWebSiteJsonLd({
 	siteUrl: getSiteUrl(),
-	siteName: siteMetadata.name,
+	siteName: siteMetadata.siteName,
+	alternateName: siteMetadata.name,
 	description: siteMetadata.description,
 	authorName: siteMetadata.author
 });

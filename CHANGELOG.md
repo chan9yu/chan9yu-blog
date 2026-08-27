@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.0] - 2026-08-27
 
 v1.3.0 전면 재작성과 그 위의 기술 SEO 개선, 문서 정비다.
 
@@ -153,7 +153,8 @@ v1.3.0 전면 재작성과 그 위의 기술 SEO 개선, 문서 정비다.
 - 검색 노출을 위해 페이지마다 메타데이터와 구조화 데이터를 넣고 sitemap과 RSS, robots.txt를 자동으로 만든다. 공유 카드 이미지도 글마다 자동 생성한다.
 - 키보드만으로 전체를 쓸 수 있다. 본문 바로가기 링크와 초점 이동을 갖췄고 접근성 검사에서 심각한 문제가 없다.
 
-[Unreleased]: https://github.com/chan9yu/dev-blog/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/chan9yu/dev-blog/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/chan9yu/dev-blog/releases/tag/v1.3.0
 [1.2.0]: https://github.com/chan9yu/dev-blog/releases/tag/v1.2.0
 [1.1.8]: https://github.com/chan9yu/dev-blog/releases/tag/v1.1.8
 [1.1.7]: https://github.com/chan9yu/dev-blog/releases/tag/v1.1.7

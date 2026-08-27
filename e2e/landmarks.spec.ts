@@ -21,7 +21,7 @@ test("글 상세의 보조 영역이 스크린 리더 랜드마크 목록에서 
 					.join(" ") || null
 			);
 		};
-		return [...document.querySelectorAll("aside, [role='complementary'], nav, [role='navigation']")]
+		return [...document.querySelectorAll("aside:not([role]), [role='complementary'], nav, [role='navigation']")]
 			.filter((el) => el.getBoundingClientRect().height > 0)
 			.map((el) => ({ role: el.tagName.toLowerCase(), name: accessibleName(el) }));
 	});

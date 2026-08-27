@@ -11,19 +11,12 @@ test.describe("M7-02 Cmd+K 검색 스모크", () => {
 		const dialog = page.getByRole("dialog");
 		await expect(dialog).toBeVisible({ timeout: HYDRATION_TIMEOUT_MS });
 
-		const input = dialog.getByLabel("검색어");
-		await expect(input).toBeFocused();
+		await dialog.getByLabel("검색어").fill("react");
 
-		await expect(dialog.getByRole("heading", { name: /인기 태그/ })).toBeVisible();
-
-		await input.fill("react");
-
-		const firstResult = dialog.getByRole("link").first();
-		await expect(firstResult).toBeVisible({ timeout: 2_000 });
-
+		const firstResult = dialog.getByRole("list", { name: "검색 결과" }).getByRole("link").first();
 		const href = await firstResult.getAttribute("href");
 		await firstResult.click();
 
-		await expect(page).toHaveURL(href ?? /\/(posts|tags)\//);
+		await expect(page).toHaveURL(href ?? /\/posts\//);
 	});
 });

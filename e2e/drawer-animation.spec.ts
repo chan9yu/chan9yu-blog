@@ -35,6 +35,12 @@ test.describe("모바일 서랍 등장 애니메이션", () => {
 
 		await page.waitForTimeout(CAPTURE_MS + 300);
 
+		const drawer = page.getByRole("dialog", { name: "메뉴" });
+		await expect(drawer).toBeVisible();
+
+		const navLinkCount = await drawer.getByRole("link").count();
+		expect(navLinkCount, "서랍에 네비게이션 링크가 없다").toBeGreaterThan(0);
+
 		const frames = await page.evaluate(() => (window as unknown as { __frames: Frame[] }).__frames);
 		expect(frames.length, "프레임을 하나도 캡처하지 못했다").toBeGreaterThan(5);
 

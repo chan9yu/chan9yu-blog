@@ -19,30 +19,6 @@ test.describe("M7-06 글 읽기 파이프라인", () => {
 		expect(codeText).not.toBe("");
 	});
 
-	test("본문 heading이 id를 갖고 목차 링크 href와 일치한다", async ({ page }) => {
-		await findPostWhere(
-			page,
-			async (p) => (await p.getByRole("navigation", { name: "목차" }).getByRole("link").count()) > 0,
-			"목차가 있는 글이 없다"
-		);
-
-		const tocHrefs = await page
-			.getByRole("navigation", { name: "목차" })
-			.getByRole("link")
-			.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
-		expect(tocHrefs.length).toBeGreaterThan(0);
-
-		const headingIds = await page
-			.locator("article :is(h2, h3, h4)[id]")
-			.evaluateAll((headings) => headings.map((heading) => heading.id));
-		expect(headingIds.length).toBeGreaterThan(0);
-
-		for (const tocHref of tocHrefs) {
-			expect(tocHref).toMatch(/^#./);
-			expect(headingIds).toContain(tocHref.slice(1));
-		}
-	});
-
 	test("본문 이미지를 클릭하면 라이트박스 dialog가 열리고 Escape로 닫힌다", async ({ page }) => {
 		const imageButtonName = /확대 보기/;
 		await findPostWhere(

@@ -20,6 +20,19 @@ describe("buildWebSiteJsonLd", () => {
 		expect(ld.description).toBe("개발 블로그");
 		expect(ld.author).toEqual({ "@type": "Person", name: "chan9yu" });
 	});
+
+	it("alternateName은 siteName과 다를 때만 낸다 (구글이 고를 대안 이름)", () => {
+		const common = { siteUrl: BASE, description: "개발 블로그", authorName: "chan9yu" };
+
+		const withAlternate = buildWebSiteJsonLd({ ...common, siteName: "chan9yu 기술블로그", alternateName: "chan9yu" });
+		expect(withAlternate.alternateName).toBe("chan9yu");
+
+		const sameName = buildWebSiteJsonLd({ ...common, siteName: "chan9yu", alternateName: "chan9yu" });
+		expect(sameName).not.toHaveProperty("alternateName");
+
+		const noAlternate = buildWebSiteJsonLd({ ...common, siteName: "chan9yu 기술블로그" });
+		expect(noAlternate).not.toHaveProperty("alternateName");
+	});
 });
 
 describe("buildBlogPostingJsonLd", () => {

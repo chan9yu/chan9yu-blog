@@ -1,6 +1,7 @@
 type WebSiteInput = {
 	siteUrl: string;
 	siteName: string;
+	alternateName?: string;
 	description: string;
 	authorName: string;
 };
@@ -66,11 +67,14 @@ function toAbsolute(siteUrl: string, path: string) {
 }
 
 export function buildWebSiteJsonLd(input: WebSiteInput) {
+	const hasAlternateName = Boolean(input.alternateName) && input.alternateName !== input.siteName;
+
 	return {
 		"@context": "https://schema.org",
 		"@type": "WebSite",
 		url: input.siteUrl,
 		name: input.siteName,
+		...(hasAlternateName ? { alternateName: input.alternateName } : {}),
 		description: input.description,
 		inLanguage: "ko-KR",
 		author: { "@type": "Person", name: input.authorName }

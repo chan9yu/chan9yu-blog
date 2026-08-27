@@ -59,7 +59,7 @@ export function TagChip({ tag, slug, count, size = "md", active = false, href, c
 	const label = count !== undefined ? `${display} 태그, ${count}개 글` : `${display} 태그`;
 
 	return (
-		<Link href={href ?? `/tags/${slug ?? tag}`} aria-label={label} className={classes}>
+		<Link href={href ?? `/tags/${encodeURIComponent(slug ?? tag)}`} aria-label={label} className={classes}>
 			{body}
 		</Link>
 	);

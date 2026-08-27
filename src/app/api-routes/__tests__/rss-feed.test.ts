@@ -41,13 +41,13 @@ describe("buildRssFeed", () => {
 			siteTitle: "chan9yu",
 			siteDescription: "개발 블로그",
 			authorName: "chan9yu",
-			authorEmail: "dev.cgyeo@gmail.com",
 			locale: "ko_KR",
 			posts: []
 		});
 
 		expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
 		expect(xml).toContain('<rss version="2.0"');
+		expect(xml).toContain('xmlns:dc="http://purl.org/dc/elements/1.1/"');
 		expect(xml).toContain("<channel>");
 		expect(xml).toContain("<title>chan9yu</title>");
 		expect(xml).toContain(`<link>${BASE}</link>`);
@@ -56,13 +56,12 @@ describe("buildRssFeed", () => {
 		expect(xml).toContain(`<atom:link href="${BASE}/rss"`);
 	});
 
-	it("각 포스트는 item 블록(title/link/guid/description/pubDate/author/category)을 갖는다", () => {
+	it("각 포스트는 item 블록(title/link/guid/description/pubDate/dc:creator/category)을 갖는다", () => {
 		const xml = buildRssFeed({
 			siteUrl: BASE,
 			siteTitle: "chan9yu",
 			siteDescription: "...",
 			authorName: "chan9yu",
-			authorEmail: "dev.cgyeo@gmail.com",
 			locale: "ko_KR",
 			posts: SAMPLE_POSTS
 		});
@@ -71,7 +70,8 @@ describe("buildRssFeed", () => {
 		expect(xml).toContain(`<link>${BASE}/posts/react-19-use</link>`);
 		expect(xml).toContain(`<guid isPermaLink="true">${BASE}/posts/react-19-use</guid>`);
 		expect(xml).toContain("<description>use() 훅 동작 원리</description>");
-		expect(xml).toContain("<author>dev.cgyeo@gmail.com (chan9yu)</author>");
+		expect(xml).toContain("<dc:creator>chan9yu</dc:creator>");
+		expect(xml).not.toContain("<author>");
 		expect(xml).toContain("<category>react</category>");
 		expect(xml).toContain("<category>react-19</category>");
 	});
@@ -82,7 +82,6 @@ describe("buildRssFeed", () => {
 			siteTitle: "chan9yu",
 			siteDescription: "...",
 			authorName: "chan9yu",
-			authorEmail: "dev.cgyeo@gmail.com",
 			locale: "ko_KR",
 			posts: [FIRST_POST]
 		});
@@ -97,7 +96,6 @@ describe("buildRssFeed", () => {
 			siteTitle: "chan9yu",
 			siteDescription: "...",
 			authorName: "chan9yu",
-			authorEmail: "dev.cgyeo@gmail.com",
 			locale: "ko_KR",
 			posts: [
 				{
@@ -125,12 +123,25 @@ describe("buildRssFeed", () => {
 			siteTitle: "chan9yu",
 			siteDescription: "...",
 			authorName: "chan9yu",
-			authorEmail: "dev.cgyeo@gmail.com",
 			locale: "ko_KR",
 			posts: many
 		});
 
 		const itemCount = (xml.match(/<item>/g) ?? []).length;
 		expect(itemCount).toBe(50);
+	});
+
+	it("lastBuildDate는 실린 글들의 updated와 date 중 가장 최근 값이다", () => {
+		const xml = buildRssFeed({
+			siteUrl: BASE,
+			siteTitle: "chan9yu",
+			siteDescription: "...",
+			authorName: "chan9yu",
+			locale: "ko_KR",
+			posts: [FIRST_POST, { ...SECOND_POST, updated: "2026-05-01" }]
+		});
+
+		const expected = new Date("2026-05-01").toUTCString();
+		expect(xml).toContain(`<lastBuildDate>${expected}</lastBuildDate>`);
 	});
 });

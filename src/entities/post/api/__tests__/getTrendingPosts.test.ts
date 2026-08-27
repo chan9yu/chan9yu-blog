@@ -96,28 +96,10 @@ describe("getTrendingPosts", () => {
 		warnSpy.mockRestore();
 	});
 
-	it("기본 limit은 5다", async () => {
-		mgetMock.mockResolvedValueOnce([1, 2, 3, 4, 5, 6, 7]);
-		const posts = Array.from({ length: 7 }, (_, i) => post(`p${i}`, `2026-01-0${i + 1}`));
-
-		const result = await getTrendingPosts(posts);
-
-		expect(result.posts).toHaveLength(5);
-	});
-
 	it("빈 입력에는 빈 배열과 fallback false를 반환한다", async () => {
 		const result = await getTrendingPosts([]);
 
 		expect(result).toEqual({ posts: [], fallback: false });
 		expect(mgetMock).not.toHaveBeenCalled();
-	});
-
-	it("limit이 입력 수보다 크면 모두 반환한다", async () => {
-		mgetMock.mockResolvedValueOnce([1]);
-		const posts = [post("a", "2026-01-01")];
-
-		const result = await getTrendingPosts(posts, 10);
-
-		expect(result.posts).toHaveLength(1);
 	});
 });

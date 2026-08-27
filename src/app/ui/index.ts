@@ -1,2 +1,2 @@
 export { notFoundMetadata, NotFoundPage } from "./NotFoundPage";
-export { RootLayout, rootMetadata } from "./RootLayout";
+export { RootLayout, rootMetadata, rootViewport } from "./RootLayout";

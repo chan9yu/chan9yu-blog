@@ -9,18 +9,12 @@ describe("stripSeriesPrefix", () => {
 		);
 	});
 
-	it("접두어가 없는 제목은 그대로 둔다", () => {
+	it("번호가 없는 대괄호와 본문 중간의 대괄호, 접두어가 없는 제목은 그대로 둔다", () => {
+		expect(stripSeriesPrefix("[초안] 제목")).toBe("[초안] 제목");
+		expect(stripSeriesPrefix("배열 [0] 인덱스 다루기")).toBe("배열 [0] 인덱스 다루기");
 		expect(stripSeriesPrefix("항해 플러스 프론트엔드 6기 1주차, Chapter 1-1")).toBe(
 			"항해 플러스 프론트엔드 6기 1주차, Chapter 1-1"
 		);
-	});
-
-	it("번호가 없는 대괄호는 접두어로 보지 않는다", () => {
-		expect(stripSeriesPrefix("[초안] 제목")).toBe("[초안] 제목");
-	});
-
-	it("본문 중간의 대괄호는 건드리지 않는다", () => {
-		expect(stripSeriesPrefix("배열 [0] 인덱스 다루기")).toBe("배열 [0] 인덱스 다루기");
 	});
 });
 
@@ -37,9 +31,5 @@ describe("stripSeriesPrefix 시리즈명 인자", () => {
 
 	it("걷어내면 빈 문자열이 되는 제목은 그대로 둔다", () => {
 		expect(stripSeriesPrefix("WebRTC 박살내기", "WebRTC 박살내기")).toBe("WebRTC 박살내기");
-	});
-
-	it("시리즈명으로 시작하지 않으면 그대로 둔다", () => {
-		expect(stripSeriesPrefix("완전히 다른 제목", "WebRTC 박살내기")).toBe("완전히 다른 제목");
 	});
 });

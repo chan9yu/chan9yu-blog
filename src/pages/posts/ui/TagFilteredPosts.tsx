@@ -1,13 +1,12 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
-
 import type { PostSummary } from "@/entities/post";
 import type { TagCount } from "@/entities/tag";
 import { getPostsByTag } from "@/entities/tag";
 import { formatLocalizedSlug } from "@/shared/lib/format/formatLocalizedSlug";
 import { PostList } from "@/widgets/post-list";
 
+import { useActiveTag } from "../lib/useActiveTag";
 import { TagFilter } from "./TagFilter";
 
 type TagFilteredPostsProps = {
@@ -16,8 +15,7 @@ type TagFilteredPostsProps = {
 };
 
 export function TagFilteredPosts({ posts, tags }: TagFilteredPostsProps) {
-	const searchParams = useSearchParams();
-	const activeTag = searchParams?.get("tag") ?? null;
+	const activeTag = useActiveTag();
 
 	const visiblePosts = activeTag ? getPostsByTag(posts, activeTag) : posts;
 	const scope = activeTag ? `#${formatLocalizedSlug(activeTag)}` : "전체";

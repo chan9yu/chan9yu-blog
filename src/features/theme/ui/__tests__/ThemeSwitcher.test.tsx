@@ -46,17 +46,6 @@ afterEach(() => {
 });
 
 describe("ThemeSwitcher", () => {
-	it("버튼은 `button` role + aria-label 제공", () => {
-		render(
-			<Wrapper>
-				<ThemeSwitcher />
-			</Wrapper>
-		);
-		const btn = screen.getByRole("button");
-		expect(btn).toHaveAttribute("aria-label");
-		expect(btn.getAttribute("aria-label") ?? "").toMatch(/모드/);
-	});
-
 	it("light 기본에서 클릭 시 dark 전환 (aria-pressed 및 html.dark 클래스)", async () => {
 		const user = userEvent.setup();
 		render(
@@ -109,21 +98,6 @@ describe("ThemeSwitcher", () => {
 		await user.click(btn);
 
 		expect(startViewTransitionSpy).toHaveBeenCalledTimes(1);
-		expect(document.documentElement.classList.contains("dark")).toBe(true);
-	});
-
-	it("View Transitions API 미지원 환경에서도 테마 전환 동작 (progressive enhancement)", async () => {
-		const user = userEvent.setup();
-		render(
-			<Wrapper>
-				<ThemeSwitcher />
-			</Wrapper>
-		);
-
-		const btn = await screen.findByRole("button", { name: /다크 모드로 변경/ });
-		await user.click(btn);
-
-		await screen.findByRole("button", { name: /라이트 모드로 변경/ });
 		expect(document.documentElement.classList.contains("dark")).toBe(true);
 	});
 

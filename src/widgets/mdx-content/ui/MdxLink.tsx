@@ -1,13 +1,34 @@
 import NextLink from "next/link";
 import type { ComponentProps } from "react";
 
+import { siteHostname } from "@/shared/config/site";
+
 type MdxLinkProps = ComponentProps<"a">;
 
-export function MdxLink({ href, children, ...rest }: MdxLinkProps) {
-	if (!href) return <span {...rest}>{children}</span>;
+const ABSOLUTE_URL_PATTERN = /^https?:\/\//i;
+const SELF_HOSTNAMES = [siteHostname, `www.${siteHostname}`];
 
-	const isExternal = /^https?:\/\//i.test(href);
-	if (isExternal) {
+function resolveInternalHref(href: string) {
+	if (!ABSOLUTE_URL_PATTERN.test(href)) {
+		return href;
+	}
+
+	const url = new URL(href);
+	if (!SELF_HOSTNAMES.includes(url.hostname)) {
+		return null;
+	}
+
+	return `${url.pathname}${url.search}${url.hash}`;
+}
+
+export function MdxLink({ href, children, ...rest }: MdxLinkProps) {
+	if (!href) {
+		return <span {...rest}>{children}</span>;
+	}
+
+	const internalHref = resolveInternalHref(href);
+
+	if (internalHref === null) {
 		return (
 			<a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
 				{children}
@@ -17,7 +38,7 @@ export function MdxLink({ href, children, ...rest }: MdxLinkProps) {
 	}
 
 	return (
-		<NextLink href={href} {...rest}>
+		<NextLink href={internalHref} {...rest}>
 			{children}
 		</NextLink>
 	);

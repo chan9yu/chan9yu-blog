@@ -23,11 +23,12 @@ type BlogPostingJsonLd = {
 	headline: string;
 	description: string;
 	datePublished: string;
-	dateModified?: string;
-	author: { "@type": "Person"; name: string };
+	dateModified: string;
+	author: { "@type": "Person"; "@id": string; name: string; url: string };
 	keywords: string;
+	inLanguage: string;
 	url: string;
-	image: string;
+	image: string[];
 	mainEntityOfPage: { "@type": "WebPage"; "@id": string };
 };
 
@@ -44,14 +45,17 @@ type BreadcrumbInput = {
 type PersonInput = {
 	name: string;
 	url?: string;
+	image?: string;
 	sameAs?: string[];
 };
 
 type PersonJsonLd = {
 	"@context": "https://schema.org";
 	"@type": "Person";
+	"@id"?: string;
 	name: string;
 	url?: string;
+	image?: string;
 	sameAs?: string[];
 };
 
@@ -75,9 +79,9 @@ export function buildWebSiteJsonLd(input: WebSiteInput) {
 
 export function buildBlogPostingJsonLd(input: BlogPostingInput) {
 	const url = `${input.siteUrl}/posts/${input.slug}`;
-	const image = input.image
-		? toAbsolute(input.siteUrl, input.image)
-		: `${input.siteUrl}/og?title=${encodeURIComponent(input.title)}`;
+	const aboutUrl = `${input.siteUrl}/about`;
+	const generatedImage = `${input.siteUrl}/og?title=${encodeURIComponent(input.title)}`;
+	const image = input.image ? [toAbsolute(input.siteUrl, input.image), generatedImage] : [generatedImage];
 
 	const ld: BlogPostingJsonLd = {
 		"@context": "https://schema.org",
@@ -85,14 +89,14 @@ export function buildBlogPostingJsonLd(input: BlogPostingInput) {
 		headline: input.title,
 		description: input.description,
 		datePublished: input.date,
-		author: { "@type": "Person", name: input.authorName },
+		dateModified: input.modified ?? input.date,
+		author: { "@type": "Person", "@id": `${aboutUrl}#person`, name: input.authorName, url: aboutUrl },
 		keywords: input.tags.join(", "),
+		inLanguage: "ko-KR",
 		url,
 		image,
 		mainEntityOfPage: { "@type": "WebPage", "@id": url }
 	};
-
-	if (input.modified) ld.dateModified = input.modified;
 
 	return ld;
 }
@@ -116,7 +120,11 @@ export function buildPersonJsonLd(input: PersonInput) {
 		"@type": "Person",
 		name: input.name
 	};
-	if (input.url) ld.url = input.url;
+	if (input.url) {
+		ld["@id"] = `${input.url}#person`;
+		ld.url = input.url;
+	}
+	if (input.image) ld.image = input.image;
 	if (input.sameAs && input.sameAs.length > 0) ld.sameAs = input.sameAs;
 	return ld;
 }

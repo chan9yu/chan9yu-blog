@@ -12,7 +12,7 @@ type TagCardProps = {
 export function TagCard({ tag, slug, count }: TagCardProps) {
 	return (
 		<Link
-			href={`/tags/${slug}`}
+			href={`/tags/${encodeURIComponent(slug)}`}
 			className="group bg-card border-border-subtle hover:border-accent/40 hover:bg-bg-subtle focus-visible:ring-ring flex min-h-19 flex-col gap-1.5 rounded-lg border p-4 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 		>
 			<span className="flex items-center gap-2">

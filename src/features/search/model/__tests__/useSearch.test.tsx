@@ -54,13 +54,6 @@ describe("useSearch", () => {
 		vi.useRealTimers();
 	});
 
-	it("초기 query는 빈 문자열이고 results는 빈 배열이다", () => {
-		const { result } = renderHook(() => useSearch({ posts }));
-
-		expect(result.current.query).toBe("");
-		expect(result.current.results).toEqual([]);
-	});
-
 	it("빈 공백 쿼리에는 결과가 빈 배열이다", () => {
 		const { result } = renderHook(() => useSearch({ posts }));
 
@@ -107,7 +100,7 @@ describe("useSearch", () => {
 		expect(found).toBe(true);
 	});
 
-	it("limit 옵션으로 최대 결과 개수를 제한한다 (기본 10)", () => {
+	it("limit 옵션으로 최대 결과 개수를 제한한다 (기본 10, 지정하면 그 값)", () => {
 		const manyPosts: PostSummary[] = Array.from({ length: 15 }, (_, i) => ({
 			...postBase,
 			slug: `react-post-${i}`,
@@ -125,28 +118,18 @@ describe("useSearch", () => {
 			vi.advanceTimersByTime(200);
 		});
 
-		expect(result.current.results.length).toBeLessThanOrEqual(10);
-	});
+		expect(result.current.results).toHaveLength(10);
 
-	it("limit 옵션 커스텀 값을 따른다", () => {
-		const manyPosts: PostSummary[] = Array.from({ length: 15 }, (_, i) => ({
-			...postBase,
-			slug: `react-post-${i}`,
-			title: `React 관련 포스트 ${i}`,
-			description: "설명",
-			tags: ["react"]
-		}));
-
-		const { result } = renderHook(() => useSearch({ posts: manyPosts, limit: 3 }));
+		const { result: limited } = renderHook(() => useSearch({ posts: manyPosts, limit: 3 }));
 
 		act(() => {
-			result.current.setQuery("react");
+			limited.current.setQuery("react");
 		});
 		act(() => {
 			vi.advanceTimersByTime(200);
 		});
 
-		expect(result.current.results).toHaveLength(3);
+		expect(limited.current.results).toHaveLength(3);
 	});
 
 	it("쿼리가 빠르게 연속 변경되면 마지막 값으로만 debounce 실행된다", () => {

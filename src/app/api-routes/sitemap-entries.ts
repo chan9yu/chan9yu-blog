@@ -4,61 +4,84 @@ import type { PostSummary } from "@/entities/post";
 import { getPublicPosts } from "@/entities/post/index.server";
 import type { Series } from "@/entities/series";
 import { getAllSeries } from "@/entities/series";
-import { getAllTags } from "@/entities/tag";
+import { TAG_INDEX_MIN_POSTS } from "@/entities/tag";
 import { getSiteUrl } from "@/shared/config/site";
 
 type BuildSitemapEntriesInput = {
 	siteUrl: string;
 	publicPosts: PostSummary[];
-	tags: string[];
 	series: Series<PostSummary>[];
 };
 
+function latestModifiedAt(posts: PostSummary[]) {
+	let latest: Date | undefined;
+
+	for (const post of posts) {
+		const modified = new Date(post.updated ?? post.date);
+		if (!latest || modified > latest) {
+			latest = modified;
+		}
+	}
+
+	return latest;
+}
+
+function groupPostsByTag(posts: PostSummary[]) {
+	const grouped = new Map<string, PostSummary[]>();
+
+	for (const post of posts) {
+		for (const tag of post.tags) {
+			const tagged = grouped.get(tag);
+			if (tagged) {
+				tagged.push(post);
+			} else {
+				grouped.set(tag, [post]);
+			}
+		}
+	}
+
+	return grouped;
+}
+
 export function buildSitemapEntries(input: BuildSitemapEntriesInput) {
-	const now = new Date();
-	const { siteUrl, publicPosts, tags, series } = input;
+	const { siteUrl, publicPosts, series } = input;
+	const siteModifiedAt = latestModifiedAt(publicPosts);
 
 	const staticEntries: MetadataRoute.Sitemap = [
-		{ url: `${siteUrl}/`, lastModified: now, changeFrequency: "daily", priority: 1.0 },
-		{ url: `${siteUrl}/posts`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
-		{ url: `${siteUrl}/series`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
-		{ url: `${siteUrl}/tags`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
-		{ url: `${siteUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 }
+		{ url: `${siteUrl}/`, lastModified: siteModifiedAt },
+		{ url: `${siteUrl}/posts`, lastModified: siteModifiedAt },
+		{ url: `${siteUrl}/series`, lastModified: siteModifiedAt },
+		{ url: `${siteUrl}/tags`, lastModified: siteModifiedAt },
+		{ url: `${siteUrl}/about` }
 	];
 
 	const postEntries: MetadataRoute.Sitemap = publicPosts.map((post) => ({
 		url: `${siteUrl}/posts/${post.slug}`,
-		lastModified: new Date(post.updated ?? post.date),
-		changeFrequency: "weekly",
-		priority: 0.8
+		lastModified: new Date(post.updated ?? post.date)
 	}));
 
 	const seriesEntries: MetadataRoute.Sitemap = series.map((s) => ({
 		url: `${siteUrl}/series/${encodeURIComponent(s.slug)}`,
-		lastModified: now,
-		changeFrequency: "weekly",
-		priority: 0.6
+		lastModified: latestModifiedAt(s.posts)
 	}));
 
-	const tagEntries: MetadataRoute.Sitemap = tags.map((tag) => ({
-		url: `${siteUrl}/tags/${encodeURIComponent(tag)}`,
-		lastModified: now,
-		changeFrequency: "weekly",
-		priority: 0.5
-	}));
+	const tagEntries: MetadataRoute.Sitemap = Array.from(groupPostsByTag(publicPosts))
+		.filter(([, tagged]) => tagged.length >= TAG_INDEX_MIN_POSTS)
+		.sort(([a], [b]) => a.localeCompare(b))
+		.map(([tag, tagged]) => ({
+			url: `${siteUrl}/tags/${encodeURIComponent(tag)}`,
+			lastModified: latestModifiedAt(tagged)
+		}));
 
 	return [...staticEntries, ...postEntries, ...seriesEntries, ...tagEntries];
 }
 
 export function sitemap(): MetadataRoute.Sitemap {
 	const publicPosts = getPublicPosts();
-	const tags = getAllTags(publicPosts);
-	const series = getAllSeries(publicPosts);
 
 	return buildSitemapEntries({
 		siteUrl: getSiteUrl(),
 		publicPosts,
-		tags,
-		series
+		series: getAllSeries(publicPosts)
 	});
 }

@@ -2,8 +2,7 @@ import "@/app/styles/globals.css";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata, Viewport } from "next";
 import type { PropsWithChildren } from "react";
 import { Suspense } from "react";
 
@@ -19,17 +18,15 @@ import { Footer } from "@/widgets/footer";
 import { Header } from "@/widgets/header";
 import { MobileMenu } from "@/widgets/mobile-menu";
 
-const pretendard = localFont({
-	src: "../../shared/assets/fonts/PretendardVariable.woff2",
-	display: "swap",
-	weight: "45 920",
-	variable: "--font-pretendard",
-	preload: true,
-	fallback: ["system-ui", "-apple-system", "BlinkMacSystemFont", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
-	adjustFontFallback: "Arial"
-});
-
 const ROOT_OG_IMAGE = `/og?title=${encodeURIComponent(siteMetadata.name)}`;
+
+const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const naverSiteVerification = process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION?.trim();
+
+const verification: Metadata["verification"] = {
+	...(googleSiteVerification ? { google: googleSiteVerification } : {}),
+	...(naverSiteVerification ? { other: { "naver-site-verification": naverSiteVerification } } : {})
+};
 
 export const rootMetadata: Metadata = {
 	metadataBase: new URL(getSiteUrl()),
@@ -38,6 +35,18 @@ export const rootMetadata: Metadata = {
 		template: `%s | ${siteMetadata.name}`
 	},
 	description: siteMetadata.description,
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+			"max-video-preview": -1
+		}
+	},
+	verification,
 	alternates: {
 		canonical: "/",
 		types: {
@@ -69,8 +78,15 @@ export const rootMetadata: Metadata = {
 	}
 };
 
+export const rootViewport: Viewport = {
+	themeColor: [
+		{ media: "(prefers-color-scheme: light)", color: "#ffffff" },
+		{ media: "(prefers-color-scheme: dark)", color: "#09090b" }
+	]
+};
+
 const websiteJsonLd = buildWebSiteJsonLd({
-	siteUrl: siteMetadata.url,
+	siteUrl: getSiteUrl(),
 	siteName: siteMetadata.name,
 	description: siteMetadata.description,
 	authorName: siteMetadata.author
@@ -80,7 +96,7 @@ export function RootLayout({ children }: PropsWithChildren) {
 	const searchablePosts = getPublicPosts();
 
 	return (
-		<html lang="ko" className={pretendard.variable} data-scroll-behavior="smooth" suppressHydrationWarning>
+		<html lang="ko" data-scroll-behavior="smooth" suppressHydrationWarning>
 			<body className="bg-background text-foreground flex min-h-screen flex-col font-sans antialiased">
 				<JsonLdScript id="website-json-ld" data={websiteJsonLd} />
 				<Providers>

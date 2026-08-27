@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@import "./fonts.css";
 @import "./tokens.css";
 @import "./motion.css";
 @import "./base.css";
@@ -8,6 +9,10 @@
 @import "./scrollbar.css";
 @import "./shiki.css";
 @import "./prose.css";
+
+:root {
+	--font-pretendard: "Pretendard Variable";
+}
 
 @custom-variant short (@media (max-height: 420px));
 

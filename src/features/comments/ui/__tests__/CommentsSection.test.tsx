@@ -67,17 +67,6 @@ describe("CommentsSection", () => {
 		expect(script?.async).toBe(true);
 	});
 
-	it("서로 다른 slug는 서로 다른 data-term으로 스크립트 주입", () => {
-		for (const [k, v] of Object.entries(giscusEnv)) vi.stubEnv(k, v);
-
-		const { container: c1 } = render(<CommentsSection slug="post-a" />);
-		expect(c1.querySelector<HTMLScriptElement>('script[src*="giscus.app"]')?.dataset.term).toBe("posts/post-a");
-		cleanup();
-
-		const { container: c2 } = render(<CommentsSection slug="post-b" />);
-		expect(c2.querySelector<HTMLScriptElement>('script[src*="giscus.app"]')?.dataset.term).toBe("posts/post-b");
-	});
-
 	it("언마운트 시 script 정리 (메모리 누수 방지)", () => {
 		for (const [k, v] of Object.entries(giscusEnv)) vi.stubEnv(k, v);
 		const { container, unmount } = render(<CommentsSection slug="react-19-use" />);

@@ -1,10 +1,15 @@
 import { ImageResponse } from "next/og";
 
+import { LOGO_MARK_WHITE_DATA_URI } from "@/shared/config/brand";
 import { loadPretendardFonts, PRETENDARD_FAMILY } from "@/shared/config/fonts";
 import { siteHostname, siteMetadata } from "@/shared/config/site";
 
 const MAX_TITLE = 80;
 const MAX_TAG = 32;
+const MARK_SIZE = 28;
+const CACHE_HEADERS = {
+	"Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
+};
 
 function truncate(input: string, max: number) {
 	if (input.length <= max) return input;
@@ -31,11 +36,17 @@ export function renderOgImage(req: Request) {
 
 	if (thumbnail) {
 		if (thumbnail.startsWith("/") && !thumbnail.startsWith("//")) {
-			return Response.redirect(`${origin}${thumbnail}`, 302);
+			return new Response(null, {
+				status: 302,
+				headers: { ...CACHE_HEADERS, Location: `${origin}${thumbnail}` }
+			});
 		}
 
 		if (isAllowedThumbnailUrl(thumbnail, hostname)) {
-			return Response.redirect(thumbnail, 302);
+			return new Response(null, {
+				status: 302,
+				headers: { ...CACHE_HEADERS, Location: thumbnail }
+			});
 		}
 	}
 
@@ -94,13 +105,17 @@ export function renderOgImage(req: Request) {
 				}}
 			>
 				<span>{siteHostname}</span>
-				<span style={{ fontWeight: 700, color: "#f8fafc" }}>{siteMetadata.name}</span>
+				<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+					<img src={LOGO_MARK_WHITE_DATA_URI} alt="" width={MARK_SIZE} height={MARK_SIZE} />
+					<span style={{ fontWeight: 700, color: "#f8fafc" }}>{siteMetadata.name}</span>
+				</div>
 			</div>
 		</div>,
 		{
 			width: 1200,
 			height: 630,
-			fonts: loadPretendardFonts()
+			fonts: loadPretendardFonts(),
+			headers: CACHE_HEADERS
 		}
 	);
 }

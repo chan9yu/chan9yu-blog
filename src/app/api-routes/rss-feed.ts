@@ -1,6 +1,6 @@
 import type { PostSummary } from "@/entities/post";
 import { getPublicPosts } from "@/entities/post/index.server";
-import { getSiteUrl, siteMetadata, siteSocials } from "@/shared/config/site";
+import { getSiteUrl, siteMetadata } from "@/shared/config/site";
 
 const RSS_ITEM_LIMIT = 50;
 
@@ -9,7 +9,6 @@ type BuildRssFeedInput = {
 	siteTitle: string;
 	siteDescription: string;
 	authorName: string;
-	authorEmail: string;
 	locale: string;
 	posts: PostSummary[];
 };
@@ -23,7 +22,20 @@ function escapeXml(value: string) {
 		.replace(/'/g, "&apos;");
 }
 
-function buildItemXml(siteUrl: string, authorName: string, authorEmail: string, post: PostSummary) {
+function resolveLastBuildDate(posts: PostSummary[]) {
+	let latest: Date | undefined;
+
+	for (const post of posts) {
+		const modified = new Date(post.updated ?? post.date);
+		if (!latest || modified > latest) {
+			latest = modified;
+		}
+	}
+
+	return (latest ?? new Date()).toUTCString();
+}
+
+function buildItemXml(siteUrl: string, authorName: string, post: PostSummary) {
 	const url = `${siteUrl}/posts/${post.slug}`;
 	const pubDate = new Date(post.date).toUTCString();
 	const categories = post.tags.map((tag) => `      <category>${escapeXml(tag)}</category>`).join("\n");
@@ -35,7 +47,7 @@ function buildItemXml(siteUrl: string, authorName: string, authorEmail: string, 
 		`      <guid isPermaLink="true">${escapeXml(url)}</guid>`,
 		`      <description>${escapeXml(post.description)}</description>`,
 		`      <pubDate>${pubDate}</pubDate>`,
-		`      <author>${escapeXml(authorEmail)} (${escapeXml(authorName)})</author>`,
+		`      <dc:creator>${escapeXml(authorName)}</dc:creator>`,
 		categories,
 		"    </item>"
 	].filter((line) => line.length > 0);
@@ -44,18 +56,16 @@ function buildItemXml(siteUrl: string, authorName: string, authorEmail: string, 
 }
 
 export function buildRssFeed(input: BuildRssFeedInput) {
-	const { siteUrl, siteTitle, siteDescription, authorName, authorEmail, locale, posts } = input;
+	const { siteUrl, siteTitle, siteDescription, authorName, locale, posts } = input;
 	const language = locale.replace("_", "-");
 
 	const limited = posts.slice(0, RSS_ITEM_LIMIT);
-	const items = limited.map((post) => buildItemXml(siteUrl, authorName, authorEmail, post)).join("\n");
-
-	const firstPost = limited[0];
-	const lastBuildDate = firstPost ? new Date(firstPost.date).toUTCString() : new Date().toUTCString();
+	const items = limited.map((post) => buildItemXml(siteUrl, authorName, post)).join("\n");
+	const lastBuildDate = resolveLastBuildDate(limited);
 
 	return [
 		'<?xml version="1.0" encoding="UTF-8"?>',
-		'<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+		'<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">',
 		"  <channel>",
 		`    <title>${escapeXml(siteTitle)}</title>`,
 		`    <link>${escapeXml(siteUrl)}</link>`,
@@ -71,21 +81,12 @@ export function buildRssFeed(input: BuildRssFeedInput) {
 		.join("\n");
 }
 
-function resolveAuthorEmail() {
-	const mailLink = siteSocials.find((s) => s.iconName === "Mail");
-	if (mailLink && mailLink.href.startsWith("mailto:")) {
-		return mailLink.href.slice("mailto:".length);
-	}
-	return "";
-}
-
 export function getRssFeed() {
 	const xml = buildRssFeed({
 		siteUrl: getSiteUrl(),
 		siteTitle: siteMetadata.title,
 		siteDescription: siteMetadata.description,
 		authorName: siteMetadata.author,
-		authorEmail: resolveAuthorEmail(),
 		locale: siteMetadata.locale,
 		posts: getPublicPosts()
 	});

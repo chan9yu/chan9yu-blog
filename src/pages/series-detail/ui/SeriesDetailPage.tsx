@@ -7,7 +7,7 @@ import { Thumbnail } from "@/entities/post";
 import { getPublicPosts } from "@/entities/post/index.server";
 import { getAllSeries, getSeriesDetail, stripSeriesPrefix } from "@/entities/series";
 import { getAllSeriesMeta } from "@/entities/series/index.server";
-import { getSiteUrl } from "@/shared/config/site";
+import { getSiteUrl, siteMetadata } from "@/shared/config/site";
 import { formatDate } from "@/shared/lib/format/formatDate";
 import { buildBreadcrumbJsonLd, buildMetadata, JsonLdScript, NOT_FOUND_METADATA } from "@/shared/seo";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
@@ -46,7 +46,7 @@ export async function SeriesDetailPage({ params }: SeriesDetailPageProps) {
 	const breadcrumbLd = buildBreadcrumbJsonLd({
 		siteUrl: getSiteUrl(),
 		items: [
-			{ name: "홈", path: "/" },
+			{ name: siteMetadata.name, path: "/" },
 			{ name: "시리즈", path: "/series" },
 			{ name: series.name, path: `/series/${encodeURIComponent(series.slug)}` }
 		]

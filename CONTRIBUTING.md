@@ -42,20 +42,23 @@ git submodule update --init --recursive
 
 ## 명령어
 
-| 명령어               | 설명                                   |
-| -------------------- | -------------------------------------- |
-| `pnpm dev`           | 개발 서버 (포트 3100)                  |
-| `pnpm build`         | 프로덕션 빌드                          |
-| `pnpm start`         | 빌드 결과 실행                         |
-| `pnpm type:check`    | 타입 검사                              |
-| `pnpm lint`          | ESLint                                 |
-| `pnpm format`        | Prettier로 포매팅                      |
-| `pnpm test`          | Vitest 단위 테스트와 통합 테스트       |
-| `pnpm test:watch`    | Vitest 감시 모드                       |
-| `pnpm test:coverage` | 커버리지 리포트                        |
-| `pnpm test:e2e`      | Playwright 브라우저 테스트             |
-| `pnpm validate:seo`  | 빌드 없이 frontmatter SEO 규칙만 검사  |
-| `pnpm link:agents`   | `.agents/` 본문을 도구 디렉토리에 링크 |
+| 명령어               | 설명                                          |
+| -------------------- | --------------------------------------------- |
+| `pnpm dev`           | 개발 서버 (포트 3100)                         |
+| `pnpm build`         | 프로덕션 빌드                                 |
+| `pnpm build:strict`  | frontmatter SEO 게이트 포함. 배포와 같은 조건 |
+| `pnpm start`         | 빌드 결과 실행                                |
+| `pnpm type:check`    | 타입 검사                                     |
+| `pnpm lint`          | ESLint                                        |
+| `pnpm lint:arch`     | Steiger. FSD 레이어와 슬라이스 경계 검사      |
+| `pnpm format`        | Prettier로 포매팅                             |
+| `pnpm format:check`  | Prettier 검사만. 파일을 고치지 않는다         |
+| `pnpm test`          | Vitest 단위 테스트와 통합 테스트              |
+| `pnpm test:watch`    | Vitest 감시 모드                              |
+| `pnpm test:coverage` | 커버리지 리포트                               |
+| `pnpm test:e2e`      | Playwright 브라우저 테스트                    |
+| `pnpm validate:seo`  | 빌드 없이 frontmatter SEO 규칙만 검사         |
+| `pnpm link:agents`   | `.agents/` 본문을 도구 디렉토리에 링크        |
 
 ## 프로젝트 구조
 
@@ -81,7 +84,7 @@ scripts/         빌드 전 검사와 이미지 복사, 커밋 템플릿
 
 지켜야 할 규칙은 세 가지입니다.
 
-1. 위 레이어가 아래 레이어만 참조합니다. 반대 방향 참조는 eslint의 no-restricted-imports가 막습니다.
+1. 위 레이어가 아래 레이어만 참조합니다. 도구 둘이 막습니다. 반대 방향 참조와 슬라이스 깊은 import는 eslint의 no-restricted-imports가 에디터에서 잡고, 같은 레이어 슬라이스끼리의 크로스 임포트는 Steiger가 CI에서 잡습니다.
 2. 슬라이스 밖에서는 public API(`index.ts`)로만 가져옵니다. 서버 전용 수출은 `index.server.ts`로 분리합니다.
 3. entities끼리는 import 대신 구조적 타입으로 경계를 지킵니다.
 
@@ -91,19 +94,7 @@ scripts/         빌드 전 검사와 이미지 복사, 커밋 템플릿
 
 저장소 루트의 `.agents/`와 `.claude/`는 AI 코딩 도구가 읽는 파일입니다. 사람이 쓰는 코드는 여기 없습니다.
 
-```
-.agents/         규칙과 스킬 본문. 도구에 매이지 않는 형식
-.claude/         Claude Code용. rules와 skills는 .agents/로 가는 링크
-AGENTS.md        늘 지켜야 하는 것. CLAUDE.md가 이 파일로 가는 링크
-```
-
-본문은 `.agents/`에 한 벌만 둡니다. 도구 디렉토리에는 링크만 두어 도구가 늘어도 고칠 곳이 한 군데로 남습니다. `.claude/rules/`나 `.claude/skills/`에 실제 파일을 만들면 링크 스크립트가 오류를 내고 멈춥니다.
-
-규칙이나 스킬을 더했으면 링크를 새로 겁니다. `pnpm install` 때도 자동으로 돕니다.
-
-```bash
-pnpm link:agents
-```
+본문은 `.agents/`에 한 벌만 두고 도구 디렉토리에는 링크만 둡니다. 규칙이나 스킬을 더했으면 `pnpm link:agents`로 링크를 겁니다. 자세한 규약은 [.agents/README.md](./.agents/README.md)에 있습니다.
 
 ## 코드 규약
 
@@ -115,10 +106,11 @@ pnpm link:agents
 
 ## 커밋 전 확인
 
-커밋하기 전에 네 가지를 통과시킵니다. 타입 검사가 가장 빠르고 lint가 가장 느리므로 이 순서가 실패를 빨리 드러냅니다.
+커밋하기 전에 다섯 가지를 통과시킵니다. 타입 검사가 가장 빠르고 lint가 가장 느리므로 이 순서가 실패를 빨리 드러냅니다.
 
 ```bash
 pnpm type:check
+pnpm lint:arch
 pnpm test
 pnpm build
 pnpm lint
@@ -158,7 +150,7 @@ feat: 검색 모달에 최근 포스트 추천 추가
 
 PR의 base는 `develop`입니다. `develop`을 `main`으로 올릴 때는 PR을 만들기 전에 `origin/main`을 `develop`에 먼저 merge해서 충돌을 해소합니다. 이 순서를 건너뛰면 PR마다 충돌을 만나게 됩니다.
 
-머지는 merge commit이나 rebase merge로 합니다. **squash merge는 쓰지 않습니다.** squash로 압축하면 `main`이 `develop`의 커밋 이력을 잃어 다음 PR에서 충돌이 폭증하고, `git blame`으로 변경 의도를 추적할 수 없게 됩니다.
+머지는 merge commit이나 rebase merge로 합니다. **squash merge는 쓰지 않습니다.** 이유는 PR 템플릿에 있습니다.
 
 `--force` 푸시는 하지 않습니다. 리베이스가 필요하면 `--force-with-lease`만 씁니다.
 
@@ -201,3 +193,5 @@ UPSTASH_REDIS_REST_TOKEN=
 ```
 
 없어도 빌드와 렌더는 정상 동작하고 조회수만 0으로 표시됩니다. 조회수를 확인할 일이 없다면 설정하지 않아도 됩니다.
+
+검색 엔진 소유 확인 변수 `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`과 `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`은 배포 환경에서만 뜻이 있어 로컬에는 넣지 않아도 됩니다. 전체 변수 목록은 `.env.example`에 있습니다.

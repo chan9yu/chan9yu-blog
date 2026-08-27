@@ -27,16 +27,6 @@
 	animation-delay: calc(min(var(--card-index, 0), 8) * 30ms);
 }
 
-@keyframes skeleton-pulse {
-	50% {
-		opacity: 0.5;
-	}
-}
-
-[data-skeleton] {
-	animation: skeleton-pulse 1.6s var(--ease-move) 3;
-}
-
 @keyframes link-hint-in {
 	to {
 		opacity: 0.45;

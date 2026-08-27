@@ -13,6 +13,20 @@ test.describe("M7-03 TOC 클릭 스크롤", () => {
 		await loadAllArticleImages(page);
 
 		const tocLinks = page.getByRole("navigation", { name: "목차" }).getByRole("link");
+
+		const tocHrefs = await tocLinks.evaluateAll((links) => links.map((link) => link.getAttribute("href") ?? ""));
+		expect(tocHrefs.length).toBeGreaterThan(0);
+
+		const headingIds = await page
+			.locator("article :is(h2, h3, h4)[id]")
+			.evaluateAll((headings) => headings.map((heading) => heading.id));
+		expect(headingIds.length).toBeGreaterThan(0);
+
+		for (const tocHref of tocHrefs) {
+			expect(tocHref).toMatch(/^#./);
+			expect(headingIds).toContain(tocHref.slice(1));
+		}
+
 		const targetLink = tocLinks.last();
 		const href = await targetLink.getAttribute("href");
 		expect(href).toMatch(/^#./);

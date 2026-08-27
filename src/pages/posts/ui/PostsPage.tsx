@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 
 import { getPublicPosts, resolvePostThumbnails } from "@/entities/post/index.server";
 import { getTagCounts } from "@/entities/tag";
 import { buildMetadata } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
 
-import { PostsSkeleton } from "./PostsSkeleton";
 import { TagFilteredPosts } from "./TagFilteredPosts";
 
 export const metadata: Metadata = buildMetadata({
 	title: "포스트",
 	description:
-		"chan9yu 개발 블로그의 전체 포스트 목록. React, TypeScript, Next.js, WebRTC 등 프론트엔드 실무 경험과 학습 기록을 모은 기술 글 모음으로, 태그·시리즈별로 탐색할 수 있습니다.",
+		"chan9yu 개발 블로그의 전체 포스트 목록입니다. React와 TypeScript, Next.js, WebRTC 등 프론트엔드 실무 경험과 학습 기록을 모았고, 태그와 시리즈로 원하는 글을 찾아 읽을 수 있습니다.",
 	path: "/posts"
 });
 
@@ -31,9 +29,7 @@ export function PostsPage() {
 					<p className="text-muted-foreground text-subtitle leading-prose">개발하면서 배운 것들을 기록합니다</p>
 				</header>
 
-				<Suspense fallback={<PostsSkeleton />}>
-					<TagFilteredPosts posts={resolvedPosts} tags={allTags} />
-				</Suspense>
+				<TagFilteredPosts posts={resolvedPosts} tags={allTags} />
 			</div>
 		</Container>
 	);

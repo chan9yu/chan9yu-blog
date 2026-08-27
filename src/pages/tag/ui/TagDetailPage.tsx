@@ -2,8 +2,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 
 import { getPublicPosts, resolvePostThumbnails } from "@/entities/post/index.server";
-import { getAllTags, getPostsByTag } from "@/entities/tag";
-import { getSiteUrl } from "@/shared/config/site";
+import { getAllTags, getPostsByTag, TAG_INDEX_MIN_POSTS } from "@/entities/tag";
+import { getSiteUrl, siteMetadata } from "@/shared/config/site";
 import { formatLocalizedSlug } from "@/shared/lib/format/formatLocalizedSlug";
 import { buildBreadcrumbJsonLd, buildMetadata, JsonLdScript, NOT_FOUND_METADATA } from "@/shared/seo";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
@@ -15,6 +15,23 @@ type TagDetailPageProps = {
 };
 
 const findPostsByTag = cache((decoded: string) => getPostsByTag(getPublicPosts(), decoded));
+
+const DESCRIPTION_MAX_LENGTH = 160;
+
+function buildTagDescription(display: string, titles: string[], total: number) {
+	const head = `${display} 태그 글 ${total}편.`;
+	let description = head;
+
+	for (const title of titles) {
+		const next = description === head ? `${head} ${title}` : `${description}, ${title}`;
+		if (next.length > DESCRIPTION_MAX_LENGTH) {
+			break;
+		}
+		description = next;
+	}
+
+	return description;
+}
 
 export async function generateStaticParams() {
 	return getAllTags(getPublicPosts()).map((tag) => ({ tag }));
@@ -29,10 +46,18 @@ export async function generateMetadata({ params }: TagDetailPageProps) {
 	if (matched.length === 0) return NOT_FOUND_METADATA;
 
 	const display = formatLocalizedSlug(decoded);
+	const isThin = matched.length < TAG_INDEX_MIN_POSTS;
+
 	return buildMetadata({
 		title: `#${display}`,
-		description: `${display} 태그가 포함된 포스트를 확인하세요. 관련 주제의 글을 한눈에 탐색할 수 있습니다.`,
-		path: `/tags/${encodeURIComponent(decoded)}`
+		description: buildTagDescription(
+			display,
+			matched.map((post) => post.title),
+			matched.length
+		),
+		path: `/tags/${encodeURIComponent(decoded)}`,
+		noIndex: isThin,
+		follow: isThin
 	});
 }
 
@@ -51,7 +76,7 @@ export async function TagDetailPage({ params }: TagDetailPageProps) {
 	const breadcrumbLd = buildBreadcrumbJsonLd({
 		siteUrl: getSiteUrl(),
 		items: [
-			{ name: "홈", path: "/" },
+			{ name: siteMetadata.name, path: "/" },
 			{ name: "태그", path: "/tags" },
 			{ name: `#${display}`, path: `/tags/${encodeURIComponent(decoded)}` }
 		]

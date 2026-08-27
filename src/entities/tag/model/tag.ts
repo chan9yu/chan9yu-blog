@@ -1,3 +1,5 @@
+export const TAG_INDEX_MIN_POSTS = 2;
+
 export type TaggedPost = {
 	tags: string[];
 };

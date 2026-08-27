@@ -21,7 +21,7 @@
 		"prebuild": "pnpm validate:seo && node scripts/copy-images.mjs",
 		"build": "next build",
 		"build:strict": "STRICT_FRONTMATTER=1 pnpm build",
-		"build:vercel": "pnpm build:strict",
+		"build:vercel": "pnpm build:strict && node scripts/notify-indexnow.mjs",
 		"validate:seo": "node scripts/validate-seo.mjs",
 		"copy:images": "node scripts/copy-images.mjs",
 		"type:check": "tsc --noEmit",

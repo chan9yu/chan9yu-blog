@@ -20,11 +20,8 @@
 
 ## 검증
 
-<!-- FSD 경계 검사(Steiger)와 type:check, Vitest는 CI가 자동으로 돌린다 (.github/workflows/ci.yaml). 아래는 CI가 보지 않는 것들 -->
+<!-- CI가 자동으로 돌리는 것 (.github/workflows/ci.yaml): FSD 경계 검사(Steiger), type:check, ESLint, Prettier, Vitest, Playwright e2e. e2e는 webServer가 build:strict로 프로덕션 빌드를 만들어 띄우므로 frontmatter SEO 게이트도 함께 지난다. 아래는 CI가 보지 않는 것 -->
 
-- [ ] `pnpm lint` 통과
-- [ ] `pnpm format:check` 통과
-- [ ] `pnpm build:strict` 성공 (frontmatter SEO 게이트 포함)
 - [ ] 개발 서버에서 동작 확인
 
 UI를 건드렸다면 아래도 확인한다.

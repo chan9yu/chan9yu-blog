@@ -62,5 +62,54 @@ jobs:
       - name: Typecheck
         run: pnpm type:check
 
+      - name: ESLint
+        run: pnpm lint
+
+      # 커밋 훅은 서브모듈이 더러우면 stash에 실패해 --no-verify로 넘기게 된다.
+      # 그때 포맷 검사가 통째로 건너뛰어지므로 CI에서 한 번 더 본다
+      - name: Prettier
+        run: pnpm format:check
+
       - name: Vitest
         run: pnpm test
+
+  e2e:
+    name: Playwright e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout (with private contents submodule)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.REPO_CLONE_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      # webServer가 프로덕션 빌드를 만들고 띄운다. playwright.config.ts를 본다
+      - name: Playwright
+        run: pnpm test:e2e
+
+      # CI 리포터가 list라 html 리포트는 안 생긴다. trace와 스크린샷이 남는 곳을 올린다
+      - name: 실패했을 때 trace와 스크린샷 남기기
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 7
+          if-no-files-found: ignore

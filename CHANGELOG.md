@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-08-27
+
+### Fixed
+
+- 발행 날짜가 읽는 사람의 시간대에 따라 하루 어긋나던 것을 고쳤다. 서버는 UTC로, 브라우저는 로컬 시간대로 그려서 UTC 15시 이후에 발행한 글 셋이 목록에서는 하루 뒤 날짜로 보이고 상세에서는 원래 날짜로 보였다. 날짜를 `Asia/Seoul`로 고정해 어디서 읽어도 저자가 발행한 날이 나온다.
+- 위 불일치가 `/posts`에서 하이드레이션 오류(React #418)를 내던 것을 함께 없앴다. 서버가 보낸 목록을 React가 버리고 클라이언트에서 다시 그리고 있었다.
+
 ## [1.3.0] - 2026-08-27
 
 v1.3.0 전면 재작성과 그 위의 기술 SEO 개선, 문서 정비다.
@@ -153,7 +160,8 @@ v1.3.0 전면 재작성과 그 위의 기술 SEO 개선, 문서 정비다.
 - 검색 노출을 위해 페이지마다 메타데이터와 구조화 데이터를 넣고 sitemap과 RSS, robots.txt를 자동으로 만든다. 공유 카드 이미지도 글마다 자동 생성한다.
 - 키보드만으로 전체를 쓸 수 있다. 본문 바로가기 링크와 초점 이동을 갖췄고 접근성 검사에서 심각한 문제가 없다.
 
-[Unreleased]: https://github.com/chan9yu/dev-blog/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/chan9yu/dev-blog/compare/v1.3.1...HEAD
+[1.3.1]: https://github.com/chan9yu/dev-blog/releases/tag/v1.3.1
 [1.3.0]: https://github.com/chan9yu/dev-blog/releases/tag/v1.3.0
 [1.2.0]: https://github.com/chan9yu/dev-blog/releases/tag/v1.2.0
 [1.1.8]: https://github.com/chan9yu/dev-blog/releases/tag/v1.1.8

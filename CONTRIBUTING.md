@@ -194,4 +194,4 @@ UPSTASH_REDIS_REST_TOKEN=
 
 없어도 빌드와 렌더는 정상 동작하고 조회수만 0으로 표시됩니다. 조회수를 확인할 일이 없다면 설정하지 않아도 됩니다.
 
-검색 엔진 소유 확인 변수 `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`과 `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`은 배포 환경에서만 뜻이 있어 로컬에는 넣지 않아도 됩니다. 전체 변수 목록은 `.env.example`에 있습니다.
+검색 엔진 소유 확인 변수 `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`은 배포 환경에서만 뜻이 있어 로컬에는 넣지 않아도 됩니다. 구글은 DNS TXT 레코드로 확인돼 있어 변수가 필요 없습니다. 전체 변수 목록은 `.env.example`에 있습니다.

@@ -16,31 +16,29 @@
 
 ## 검색 엔진 등록
 
-한 번만 하면 된다.
+구글과 네이버는 등록이 끝났다. 다시 하지 않는다.
 
-| 서비스                | 주소                             | 비고                                  |
-| --------------------- | -------------------------------- | ------------------------------------- |
-| Google Search Console | search.google.com/search-console | 도메인 속성으로 등록하고 DNS로 확인   |
-| Bing Webmaster Tools  | bing.com/webmasters              | Search Console에서 가져올 수 있다     |
-| 네이버 서치어드바이저 | searchadvisor.naver.com          | 한국 유입에 필요하다. RSS도 따로 등록 |
-| 다음 검색등록         | 선택                             | 점유율은 낮지만 비용이 없다           |
+| 서비스                | 소유 확인 방법                                            | 제출한 것    |
+| --------------------- | --------------------------------------------------------- | ------------ |
+| Google Search Console | 도메인 속성. DNS TXT 레코드                               | sitemap      |
+| 네이버 서치어드바이저 | HTML 태그. `NEXT_PUBLIC_NAVER_SITE_VERIFICATION` 환경변수 | sitemap, RSS |
 
-전부 sitemap 주소(`/sitemap.xml`)를 제출한다. 네이버는 RSS(`/rss`)를 따로 받으므로 함께 넣는다.
+빙과 다음은 아직 하지 않았다. 빙은 Search Console에서 가져올 수 있고 다음은 점유율이 낮지만 비용이 없다.
 
-등록 후 이틀쯤 지나 색인된 페이지 수가 0보다 큰지 확인한다.
+네이버는 사이트맵과 RSS를 각각 다른 화면에서 받는다. 사이트맵과 RSS는 전체 URL을 넣고 웹 페이지 수집은 경로만 넣는다. 같은 콘솔인데 입력 규칙이 갈리므로 제출 전에 입력창의 현재 값을 확인한다. 프로그램으로 값을 채우면 버튼이 활성화되지 않고, 자동등록 방지 확인 절차가 중간에 끼어든다.
 
 ### 소유 확인 meta
 
-소유 확인을 HTML 태그로 하는 서비스는 Vercel 프로젝트 환경 변수에 값을 넣어야 한다. 값이 있으면 다음 배포부터 head에 meta가 실리고, 비워 두면 그 meta 자체가 나가지 않는다.
+값이 있으면 다음 배포부터 head에 meta가 실리고 비워 두면 그 meta 자체가 나가지 않는다. `NEXT_PUBLIC_` 접두사가 붙어 빌드 시점에 번들에 박히므로 값만 저장하고 재배포하지 않으면 반영되지 않는다.
 
-| 환경 변수                              | 값을 어디서 받는가                                      |
-| -------------------------------------- | ------------------------------------------------------- |
-| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | Search Console의 HTML 태그 확인에 적힌 content 값       |
-| `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`  | 서치어드바이저의 사이트 소유확인 HTML 태그의 content 값 |
+| 환경 변수                              | 필요한가                                                        |
+| -------------------------------------- | --------------------------------------------------------------- |
+| `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`  | 필요하다. 서치어드바이저의 사이트 소유확인 HTML 태그 content 값 |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | 필요 없다. 구글은 DNS TXT 레코드로 확인돼 있다                  |
 
-구글은 위 표대로 도메인 속성을 DNS로 확인하므로 이 변수 없이도 등록이 끝난다. 네이버는 서치어드바이저에서 발급받은 값을 넣어야 소유 확인이 통과한다.
+Vercel에서는 Type을 Secret이 아니라 Config로 둔다. head에 그대로 공개되는 값이라 숨길 수 없고, Secret으로 저장하면 나중에 값을 대조할 수 없다.
 
-값을 넣고 배포한 뒤 각 콘솔에서 확인 버튼을 누른다. 확인이 끝나도 변수는 지우지 않는다. meta가 사라지면 소유 확인이 풀릴 수 있다.
+확인이 끝나도 변수는 지우지 않는다. meta가 사라지면 소유 확인이 풀릴 수 있다.
 
 ## 월 1회 점검
 
@@ -63,7 +61,7 @@
 
 ChatGPT와 Perplexity, Claude, Google AI 개요에 대표 주제를 직접 물어보고 블로그가 출처로 인용되는지 기록한다. 인용을 결정하는 것은 콘텐츠 품질과 외부 권위이지 코드가 아니다.
 
-AI 크롤러는 robots.txt에서 전부 허용한다(2026-08-26 결정). 검색 노출용 봇(OAI-SearchBot, Claude-SearchBot, PerplexityBot)을 막으면 위 인용 유입이 끊긴다. 학습용 봇(GPTBot, ClaudeBot, CCBot)만 막는 선택은 검색 노출과 무관한 별도 결정이고, 막으려면 `src/app/api-routes/robots.ts`의 rules를 배열로 바꿔 봇별 항목을 더한다.
+AI 크롤러는 robots.txt에서 전부 허용한다. 검색 노출용 봇(OAI-SearchBot, Claude-SearchBot, PerplexityBot)을 막으면 위 인용 유입이 끊긴다. 학습용 봇(GPTBot, ClaudeBot, CCBot)만 막는 선택은 검색 노출과 무관한 별도 결정이고, 막으려면 `src/app/api-routes/robots.ts`의 rules를 배열로 바꿔 봇별 항목을 더한다.
 
 ### 성능
 

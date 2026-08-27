@@ -1,13 +1,15 @@
-import Link from "next/link";
+"use client";
 
 import type { TagCount } from "@/entities/tag";
 import { cn } from "@/shared/lib/cn";
 import { formatLocalizedSlug } from "@/shared/lib/format/formatLocalizedSlug";
 
+import { pushActiveTag } from "../lib/useActiveTag";
+
 const ALL = "전체";
 
 const ITEM_BASE_CLASS =
-	"focus-visible:ring-ring block min-h-10 truncate rounded-r-md border-l-2 px-3 py-2.5 text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none";
+	"focus-visible:ring-ring block min-h-10 w-full truncate rounded-r-md border-l-2 px-3 py-2.5 text-left text-xs transition-colors focus-visible:ring-2 focus-visible:outline-none";
 
 const ITEM_STATE_CLASS: Record<"active" | "inactive", string> = {
 	active: "border-accent bg-accent-subtle text-accent font-bold",
@@ -27,22 +29,24 @@ export function TagFilter({ tags, activeTag }: TagFilterProps) {
 				<span>태그</span>
 			</h2>
 			<nav aria-label="태그로 좁히기" className="space-y-1">
-				<Link
-					href="/posts"
+				<button
+					type="button"
+					onClick={() => pushActiveTag(null)}
 					aria-current={activeTag === null ? "page" : undefined}
 					className={cn(ITEM_BASE_CLASS, ITEM_STATE_CLASS[activeTag === null ? "active" : "inactive"])}
 				>
 					{ALL}
-				</Link>
+				</button>
 				{tags.map((tag) => (
-					<Link
+					<button
 						key={tag.slug}
-						href={`/posts?tag=${encodeURIComponent(tag.tag)}`}
+						type="button"
+						onClick={() => pushActiveTag(tag.tag)}
 						aria-current={activeTag === tag.tag ? "page" : undefined}
 						className={cn(ITEM_BASE_CLASS, ITEM_STATE_CLASS[activeTag === tag.tag ? "active" : "inactive"])}
 					>
 						{formatLocalizedSlug(tag.tag)} ({tag.count})
-					</Link>
+					</button>
 				))}
 			</nav>
 		</div>

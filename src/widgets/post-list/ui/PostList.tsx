@@ -9,7 +9,7 @@ import type { ViewMode } from "./PostViewSwap";
 import { PostViewSwap } from "./PostViewSwap";
 import { ViewToggle } from "./ViewToggle";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 30;
 
 type PostListProps = {
 	posts: PostSummary[];

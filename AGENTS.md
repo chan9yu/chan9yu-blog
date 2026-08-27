@@ -4,7 +4,7 @@
 
 ## 구조
 
-Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구현을 재노출만 한다. `src/`는 FSD 레이어 여섯으로 나뉜다. 위에서부터 `app`과 `pages`, `widgets`, `features`, `entities`, `shared` 순이고 위 레이어가 아래 레이어만 참조한다. 슬라이스 밖에서는 public API(`index.ts`)로만 가져오고 서버 전용 수출은 `index.server.ts`로 분리한다. entities끼리는 import 대신 구조적 타입으로 경계를 지킨다. 레이어 경계는 도구 둘이 막는다. eslint 내장 no-restricted-imports가 위 레이어 참조와 깊은 import를 에디터에서 잡고, Steiger가 CI에서 같은 레이어 슬라이스끼리의 크로스 임포트까지 잡는다. glob 패턴만으로는 자기 슬라이스를 구분할 수 없어 크로스 임포트가 eslint를 통과한다.
+Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구현을 재노출만 한다. 예외는 route segment config(`dynamicParams` 등) 하나다. 재노출하면 빌드가 거부하므로 라우트 파일에 직접 선언한다. `src/`는 FSD 레이어 여섯으로 나뉜다. 위에서부터 `app`과 `pages`, `widgets`, `features`, `entities`, `shared` 순이고 위 레이어가 아래 레이어만 참조한다. 슬라이스 밖에서는 public API(`index.ts`)로만 가져오고 서버 전용 수출은 `index.server.ts`로 분리한다. entities끼리는 import 대신 구조적 타입으로 경계를 지킨다. 레이어 경계는 도구 둘이 막는다. eslint 내장 no-restricted-imports가 위 레이어 참조와 깊은 import를 에디터에서 잡고, Steiger가 CI에서 같은 레이어 슬라이스끼리의 크로스 임포트까지 잡는다. glob 패턴만으로는 자기 슬라이스를 구분할 수 없어 크로스 임포트가 eslint를 통과한다.
 
 ```
 app/             Next.js App Router. 재노출만 한다
@@ -19,7 +19,7 @@ contents/        MDX 콘텐츠 (별도 저장소, Git 서브모듈)
 docs/            문서. product, design, operations, prompts
 ```
 
-루트 `pages/`는 지우지 않는다. 없으면 Next.js가 `src/pages`를 Pages Router로 잡아 빌드가 E801로 멈춘다. 여기에 라우트 파일을 만들지도 않는다. 자세한 근거는 `pages/README.md`에 있다. 이 폴더가 있으면 `usePathname`의 반환 타입이 `string | null`이 되므로 `null`을 활성 상태 아님으로 다룬다.
+루트 `pages/`는 지우지 않는다. 없으면 Next.js가 `src/pages`를 Pages Router로 잡아 빌드가 E801로 멈춘다. 여기에 라우트 파일을 만들지도 않는다. 이 폴더가 있으면 `usePathname`의 반환 타입이 `string | null`이 되므로 `null`을 활성 상태 아님으로 다룬다.
 
 ## 명령어
 
@@ -75,19 +75,20 @@ pnpm test:e2e        # Playwright. dev 서버(3100)를 자동 기동, 로컬 전
 
 룰 본문은 `.agents/rules/`에 있다. Claude Code는 링크로 자동으로 읽고, 자동으로 읽지 않는 도구에서는 작업 전에 직접 연다. 링크 규약과 추가 방법은 `.agents/README.md`가 정본이다.
 
-룰은 다섯이다.
+룰은 여섯이다.
 
-| 룰                | 무엇을 다루는가                                                   |
-| ----------------- | ----------------------------------------------------------------- |
-| `git-workflow.md` | 브랜치 전략과 커밋 메시지 형식, 머지 방식, 금지 패턴              |
-| `no-fallback.md`  | 오류를 감싸 빈 값을 돌려주는 코드 금지. 허용되는 축소 동작의 조건 |
-| `comments.md`     | 주석을 쓰는 네 가지 경우. 지우면 동작이 깨지는 지시문 주석        |
-| `seo.md`          | 메타데이터와 JSON-LD 배치, RSS, OG 이미지, frontmatter 게이트     |
-| `tailwind.md`     | `X-[value]` 임의값 금지. 토큰과 `@utility`로 옮기는 네 갈래       |
+| 룰                | 무엇을 다루는가                                                        |
+| ----------------- | ---------------------------------------------------------------------- |
+| `git-workflow.md` | 브랜치 전략과 커밋 메시지 형식, 머지 방식, 금지 패턴                   |
+| `no-fallback.md`  | 오류를 감싸 빈 값을 돌려주는 코드 금지. 허용되는 축소 동작의 조건      |
+| `comments.md`     | 주석을 쓰는 네 가지 경우. 지우면 동작이 깨지는 지시문 주석             |
+| `seo.md`          | 메타데이터와 JSON-LD 배치, sitemap, RSS, OG 이미지, frontmatter 게이트 |
+| `tailwind.md`     | `X-[value]` 임의값 금지. 토큰과 `@utility`로 옮기는 네 갈래            |
+| `testing.md`      | 테스팅 트로피. 기본 동작은 삭제. 층마다 소유하는 것과 지우는 기준      |
 
 ## 하네스
 
-**목표.** 이 저장소에서 실제로 깨지는 자리를 지킨다. 레이어 경계와 직접 만든 UI, 접근성, 저장소 규칙 위반 넷이다. 에이전트 넷과 스킬 셋, 위 룰 절의 룰 다섯이 이 자리를 나눠 맡는다.
+**목표.** 이 저장소에서 실제로 깨지는 자리를 지킨다. 레이어 경계와 직접 만든 UI, 접근성, 저장소 규칙 위반 넷이다. 에이전트 넷과 스킬 셋, 위 룰 절의 룰 여섯이 이 자리를 나눠 맡는다.
 
 **에이전트.** fsd-architect가 레이어 배치와 경계를 정하고, ui-builder가 토큰 위에 컴포넌트를 만들고, a11y-verifier가 접근성을 판정하고, code-reviewer가 규칙 위반을 잡는다. 만든 사람이 판정하지 않는다. 구현은 ui-builder가, 판정은 a11y-verifier와 code-reviewer가 한다.
 

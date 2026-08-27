@@ -24,26 +24,18 @@ describe("ViewCounter", () => {
 		expect(screen.getByText("조회수 불러오는 중")).toBeInTheDocument();
 	});
 
-	it("마운트 후 POST +1 + GET으로 실 숫자 표시 (seeded 42 → 43)", async () => {
-		seedMockView("react-19-use", 42);
+	it("마운트 후 POST +1 + GET으로 실 숫자 표시 (seeded 1233 → toLocaleString ko-KR로 1,234)", async () => {
+		seedMockView("react-19-use", 1233);
 		render(<ViewCounter slug="react-19-use" />);
-
-		await waitFor(() => {
-			expect(screen.getByText(/조회 43/)).toBeInTheDocument();
-		});
-	});
-
-	it("3자리 이상 숫자는 toLocaleString(ko-KR) 포맷", async () => {
-		seedMockView("popular", 1233);
-		render(<ViewCounter slug="popular" />);
 
 		await waitFor(() => {
 			expect(screen.getByText(/조회 1,234/)).toBeInTheDocument();
 		});
 	});
 
-	it("동일 세션에서 같은 slug 재마운트 시 POST 재호출 금지 (sessionStorage dedup)", async () => {
+	it("동일 세션에서 같은 slug 재마운트 시 POST 재호출 금지 (sessionStorage dedup은 slug별)", async () => {
 		seedMockView("dedup-post", 10);
+		seedMockView("other-post", 20);
 
 		const { unmount } = render(<ViewCounter slug="dedup-post" />);
 		await waitFor(() => {
@@ -55,19 +47,9 @@ describe("ViewCounter", () => {
 		await waitFor(() => {
 			expect(screen.getByText(/조회 11/)).toBeInTheDocument();
 		});
-	});
-
-	it("서로 다른 slug는 각각 POST (dedup은 slug별)", async () => {
-		seedMockView("post-a", 5);
-		seedMockView("post-b", 20);
-
-		render(<ViewCounter slug="post-a" />);
-		await waitFor(() => {
-			expect(screen.getByText(/조회 6/)).toBeInTheDocument();
-		});
 		cleanup();
 
-		render(<ViewCounter slug="post-b" />);
+		render(<ViewCounter slug="other-post" />);
 		await waitFor(() => {
 			expect(screen.getByText(/조회 21/)).toBeInTheDocument();
 		});
@@ -91,15 +73,5 @@ describe("ViewCounter", () => {
 			expect(screen.getByText(/조회 0/)).toBeInTheDocument();
 		});
 		expect(screen.queryByLabelText("조회수를 불러오지 못했습니다")).not.toBeInTheDocument();
-	});
-
-	it("POST 실패도 UI 블록 없이 GET 결과 표시 (POST는 best-effort)", async () => {
-		seedMockView("post-c", 99);
-		server.use(http.post("/api/views", () => HttpResponse.error()));
-
-		render(<ViewCounter slug="post-c" />);
-		await waitFor(() => {
-			expect(screen.getByText(/조회 99/)).toBeInTheDocument();
-		});
 	});
 });

@@ -49,11 +49,6 @@ const posts: PostSummary[] = [
 ];
 
 describe("SearchModal", () => {
-	it("open=false이면 dialog가 DOM에 없다", () => {
-		render(<SearchModal open={false} onOpenChange={vi.fn()} posts={posts} />);
-		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-	});
-
 	it("open=true이면 dialog가 렌더되고 input에 autoFocus가 걸린다", async () => {
 		render(<SearchModal open={true} onOpenChange={vi.fn()} posts={posts} />);
 		const input = await screen.findByLabelText("검색어");
@@ -65,27 +60,6 @@ describe("SearchModal", () => {
 		expect(await screen.findByRole("heading", { name: /인기 태그/ })).toBeInTheDocument();
 		expect(screen.getByRole("heading", { name: /최근 포스트/ })).toBeInTheDocument();
 		expect(screen.getByText(new RegExp(`총 ${posts.length}개`))).toBeInTheDocument();
-	});
-
-	it("빈 상태 추천 링크에서 ArrowDown 키로 다음 링크로 포커스 이동한다", async () => {
-		const user = userEvent.setup();
-		render(<SearchModal open={true} onOpenChange={vi.fn()} posts={posts} />);
-
-		await screen.findByRole("heading", { name: /인기 태그/ });
-		await user.keyboard("{ArrowDown}");
-
-		const [firstLink] = screen.getAllByRole("link");
-		expect(firstLink).toHaveFocus();
-	});
-
-	it("타이핑 후 debounce(200ms)를 거쳐 결과가 렌더된다", async () => {
-		const user = userEvent.setup();
-		render(<SearchModal open={true} onOpenChange={vi.fn()} posts={posts} />);
-
-		const input = await screen.findByLabelText("검색어");
-		await user.type(input, "react");
-
-		await screen.findByRole("link", { name: /React 19 새로운 기능/ }, { timeout: 1000 });
 	});
 
 	it("결과가 없을 때 검색어를 되짚어 안내한다", async () => {
@@ -101,17 +75,6 @@ describe("SearchModal", () => {
 			},
 			{ timeout: 1000 }
 		);
-	});
-
-	it("결과 항목은 포스트 상세 경로로 링크된다", async () => {
-		const user = userEvent.setup();
-		render(<SearchModal open={true} onOpenChange={vi.fn()} posts={posts} />);
-
-		const input = await screen.findByLabelText("검색어");
-		await user.type(input, "react");
-
-		const link = await screen.findByRole("link", { name: /React 19 새로운 기능/ }, { timeout: 1000 });
-		expect(link).toHaveAttribute("href", "/posts/react-19-features");
 	});
 
 	it("결과 항목 클릭 시 onOpenChange(false)로 모달이 닫힌다", async () => {

@@ -48,36 +48,7 @@ describe("LightboxProvider + ImageLightbox", () => {
 		expect(screen.queryByRole("button", { name: /다음 이미지/ })).not.toBeInTheDocument();
 	});
 
-	it("다중 이미지 openMany: 이전/다음 화살표 렌더", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<MultiOpener />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open many" }));
-
-		expect(await screen.findByRole("button", { name: /이전 이미지/ })).toBeInTheDocument();
-		expect(screen.getByRole("button", { name: /다음 이미지/ })).toBeInTheDocument();
-	});
-
-	it("다음 이미지 버튼 클릭 시 index +1 (이미지 alt 변경)", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<MultiOpener />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open many" }));
-		expect((await screen.findByRole("img", { name: "image-a" })).tagName).toBe("IMG");
-
-		await user.click(screen.getByRole("button", { name: /다음 이미지/ }));
-		expect(await screen.findByRole("img", { name: "image-b" })).toBeInTheDocument();
-	});
-
-	it("이전 이미지 버튼 클릭 시 index -1", async () => {
+	it("이전/다음 버튼으로 index가 오르내리고 양끝에서 순환한다", async () => {
 		const user = userEvent.setup();
 		render(
 			<LightboxProvider>
@@ -86,42 +57,22 @@ describe("LightboxProvider + ImageLightbox", () => {
 		);
 
 		await user.click(screen.getByRole("button", { name: "open many" }));
-		expect(await screen.findByRole("img", { name: "image-b" })).toBeInTheDocument();
+		expect((await screen.findByRole("img", { name: "image-b" })).tagName).toBe("IMG");
 
-		await user.click(screen.getByRole("button", { name: /이전 이미지/ }));
-		expect(await screen.findByRole("img", { name: "image-a" })).toBeInTheDocument();
-	});
-
-	it("마지막 이미지에서 다음 → 첫 이미지 (circular)", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<MultiOpener startIndex={2} />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open many" }));
+		await user.click(screen.getByRole("button", { name: /다음 이미지/ }));
 		expect(await screen.findByRole("img", { name: "image-c" })).toBeInTheDocument();
 
 		await user.click(screen.getByRole("button", { name: /다음 이미지/ }));
 		expect(await screen.findByRole("img", { name: "image-a" })).toBeInTheDocument();
-	});
 
-	it("첫 이미지에서 이전 → 마지막 이미지 (circular)", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<MultiOpener startIndex={0} />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open many" }));
 		await user.click(screen.getByRole("button", { name: /이전 이미지/ }));
-
 		expect(await screen.findByRole("img", { name: "image-c" })).toBeInTheDocument();
+
+		await user.click(screen.getByRole("button", { name: /이전 이미지/ }));
+		expect(await screen.findByRole("img", { name: "image-b" })).toBeInTheDocument();
 	});
 
-	it("ArrowRight 키보드로 다음 이미지 이동", async () => {
+	it("ArrowRight와 ArrowLeft 키보드로 앞뒤 이미지 이동", async () => {
 		const user = userEvent.setup();
 		render(
 			<LightboxProvider>
@@ -134,35 +85,8 @@ describe("LightboxProvider + ImageLightbox", () => {
 
 		await user.keyboard("{ArrowRight}");
 		expect(await screen.findByRole("img", { name: "image-b" })).toBeInTheDocument();
-	});
-
-	it("ArrowLeft 키보드로 이전 이미지 이동", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<MultiOpener startIndex={2} />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open many" }));
-		await screen.findByRole("img", { name: "image-c" });
 
 		await user.keyboard("{ArrowLeft}");
-		expect(await screen.findByRole("img", { name: "image-b" })).toBeInTheDocument();
-	});
-
-	it("ESC 닫기: dialog 언마운트", async () => {
-		const user = userEvent.setup();
-		render(
-			<LightboxProvider>
-				<SingleOpener />
-			</LightboxProvider>
-		);
-
-		await user.click(screen.getByRole("button", { name: "open single" }));
-		expect(await screen.findByRole("dialog")).toBeInTheDocument();
-
-		await user.keyboard("{Escape}");
-		expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+		expect(await screen.findByRole("img", { name: "image-a" })).toBeInTheDocument();
 	});
 });

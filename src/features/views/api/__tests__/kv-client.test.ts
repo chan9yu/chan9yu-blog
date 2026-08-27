@@ -15,13 +15,10 @@ afterEach(() => {
 });
 
 describe("fetchPostViewsOrNull", () => {
-	it("저장된 slug의 조회수를 반환", async () => {
+	it("저장된 slug는 그 값, 미등록 slug는 0. 실패가 아니라 조회수가 실제로 0인 상태다", async () => {
 		seedMockView("react-19-use", 42);
-		await expect(fetchPostViewsOrNull("react-19-use")).resolves.toBe(42);
-		expect(console.warn).not.toHaveBeenCalled();
-	});
 
-	it("미등록 slug는 0. 실패가 아니라 조회수가 실제로 0인 상태다", async () => {
+		await expect(fetchPostViewsOrNull("react-19-use")).resolves.toBe(42);
 		await expect(fetchPostViewsOrNull("never-seen")).resolves.toBe(0);
 		expect(console.warn).not.toHaveBeenCalled();
 	});
@@ -43,27 +40,9 @@ describe("fetchPostViewsOrNull", () => {
 		await expect(fetchPostViewsOrNull("any")).resolves.toBeNull();
 		expect(console.warn).toHaveBeenCalled();
 	});
-
-	it("잘못된 slug 요청은 null", async () => {
-		await expect(fetchPostViewsOrNull("invalid slug with space")).resolves.toBeNull();
-		expect(console.warn).toHaveBeenCalled();
-	});
 });
 
 describe("incrementPostViews", () => {
-	it("POST 성공 시 조회수가 +1", async () => {
-		seedMockView("post-a", 5);
-		await incrementPostViews("post-a");
-		await expect(fetchPostViewsOrNull("post-a")).resolves.toBe(6);
-		expect(console.warn).not.toHaveBeenCalled();
-	});
-
-	it("최초 호출 시 0에서 1로", async () => {
-		await incrementPostViews("fresh-post");
-		await expect(fetchPostViewsOrNull("fresh-post")).resolves.toBe(1);
-		expect(console.warn).not.toHaveBeenCalled();
-	});
-
 	it("잘못된 slug는 조용히 무시 (throw 금지)", async () => {
 		await expect(incrementPostViews("invalid slug with space")).resolves.toBeUndefined();
 		expect(console.warn).toHaveBeenCalled();

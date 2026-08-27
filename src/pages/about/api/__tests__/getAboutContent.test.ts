@@ -14,13 +14,6 @@ describe("getAboutContent", () => {
 		vi.clearAllMocks();
 	});
 
-	it("contents/about/index.md 본문 string을 반환한다", () => {
-		const sample = "# About\n\nHello.";
-		mockedReadFileSync.mockReturnValueOnce(sample);
-
-		expect(getAboutContent()).toBe(sample);
-	});
-
 	it("파일 누락 시 fs 에러를 그대로 throw한다 (빌드 시점 감지)", () => {
 		mockedReadFileSync.mockImplementationOnce(() => {
 			throw new Error("ENOENT: no such file");

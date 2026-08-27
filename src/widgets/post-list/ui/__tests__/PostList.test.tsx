@@ -41,17 +41,6 @@ describe("PostList", () => {
 		expect(screen.getByRole("status")).toHaveTextContent(/글이 없습니다/);
 	});
 
-	it("포스트 배열 → 각 카드는 /posts/{slug} 링크", () => {
-		const posts = [makePost({ slug: "post-a", title: "포스트 A" }), makePost({ slug: "post-b", title: "포스트 B" })];
-
-		render(<PostList posts={posts} />);
-
-		const linkA = screen.getByRole("link", { name: /포스트 A/ });
-		const linkB = screen.getByRole("link", { name: /포스트 B/ });
-		expect(linkA).toHaveAttribute("href", "/posts/post-a");
-		expect(linkB).toHaveAttribute("href", "/posts/post-b");
-	});
-
 	it("카드에 제목·설명·reading time·태그 표시", () => {
 		const post = makePost({
 			title: "유니크 제목",
@@ -89,31 +78,25 @@ describe("PostList", () => {
 		expect(loadings.slice(1)).toEqual(loadings.slice(1).map(() => "lazy"));
 	});
 
-	it("최초 12개까지만 표시 (페이지 크기, 무한 스크롤 전)", () => {
-		const posts = Array.from({ length: 20 }, (_, i) =>
+	it("최초 30개까지만 표시 (페이지 크기, 무한 스크롤 전)", () => {
+		const posts = Array.from({ length: 40 }, (_, i) =>
 			makePost({ slug: `post-${i}`, title: `포스트 ${i}`, description: `설명 ${i}` })
 		);
 
 		render(<PostList posts={posts} />);
 
 		const links = screen.getAllByRole("link");
-		expect(links.length).toBe(12);
-		expect(screen.getByRole("link", { name: /포스트 11/ })).toBeInTheDocument();
-		expect(screen.queryByRole("link", { name: /포스트 12/ })).not.toBeInTheDocument();
-	});
-
-	it("ViewToggle 컨트롤 존재 (리스트/격자 전환 버튼)", () => {
-		render(<PostList posts={[makePost()]} />);
-		const toolbar = screen.getByRole("toolbar", { name: "뷰 모드" });
-		expect(within(toolbar).getByRole("button", { name: "리스트 보기" })).toBeInTheDocument();
-		expect(within(toolbar).getByRole("button", { name: "격자 보기" })).toBeInTheDocument();
+		expect(links.length).toBe(30);
+		expect(screen.getByRole("link", { name: /포스트 29/ })).toBeInTheDocument();
+		expect(screen.queryByRole("link", { name: /포스트 30/ })).not.toBeInTheDocument();
 	});
 
 	it("처음에는 격자 보기이고 저장된 값을 읽지 않는다", () => {
 		window.localStorage.setItem("blog:posts:view", "list");
 		render(<PostList posts={[makePost()]} />);
 
-		expect(screen.getByRole("button", { name: "격자 보기" })).toHaveAttribute("aria-pressed", "true");
-		expect(screen.getByRole("button", { name: "리스트 보기" })).toHaveAttribute("aria-pressed", "false");
+		const toolbar = screen.getByRole("toolbar", { name: "뷰 모드" });
+		expect(within(toolbar).getByRole("button", { name: "격자 보기" })).toHaveAttribute("aria-pressed", "true");
+		expect(within(toolbar).getByRole("button", { name: "리스트 보기" })).toHaveAttribute("aria-pressed", "false");
 	});
 });

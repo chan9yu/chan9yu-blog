@@ -12,7 +12,7 @@ export function robots(): MetadataRoute.Robots {
 	}
 
 	return {
-		rules: { userAgent: "*", allow: "/", disallow: "/api/" },
+		rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/badge/"] },
 		sitemap: `${getSiteUrl()}/sitemap.xml`
 	};
 }

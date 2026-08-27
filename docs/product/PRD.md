@@ -63,7 +63,7 @@ React와 Next.js, TypeScript를 실무에서 쓰는 한국어권 프론트엔드
 Vercel Analytics와 Speed Insights, Google Search Console로 잰다.
 
 - 월간 순 방문자 2,000명 이상
-- 공개 포스트 40편 이상 (2026-08-26 기준 25편)
+- 공개 포스트 40편 이상. 현재 편수는 sitemap의 `/posts/` 항목을 센다
 - 대표 포스트의 검색 유입이 전체 유입의 절반 이상
 - Core Web Vitals 세 지표(LCP 2.5초, CLS 0.1, INP 200ms) 전부 통과
 - 모든 공개 포스트가 Google에 색인

@@ -17,10 +17,12 @@ export default defineConfig({
 	},
 	projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 	webServer: {
-		command: "pnpm dev",
+		// CI는 프로덕션 빌드를 띄운다. dev 서버는 라우트마다 첫 요청에서 컴파일해
+		// 콜드 스타트가 테스트 timeout을 넘긴다
+		command: process.env.CI ? `pnpm build:strict && PORT=${PORT} pnpm start` : "pnpm dev",
 		url: BASE_URL,
 		reuseExistingServer: !process.env.CI,
-		timeout: 120_000,
+		timeout: process.env.CI ? 300_000 : 120_000,
 		stdout: "ignore",
 		stderr: "pipe"
 	}

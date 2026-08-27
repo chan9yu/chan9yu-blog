@@ -39,7 +39,7 @@ Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구�
 
 **주소 규칙은 영역마다 다릅니다.** 포스트 주소는 도구와 CDN 호환을 위해 영문만 씁니다. 태그와 시리즈는 한글을 허용하되 공백을 하이픈으로 바꿉니다.
 
-**테스트는 통합 테스트 중심입니다.** Testing Trophy를 따라 통합 테스트 비중을 가장 크게 두고 TDD로 작성합니다.
+**테스트는 남길 근거가 있는 것만 둡니다.** Testing Trophy를 따르되 층별 비율 목표는 두지 않습니다. 기준은 개수가 아니라 그 테스트가 빨간불을 냈을 때 무엇이 깨졌는지 이름으로 말할 수 있는가입니다.
 
 ## 문서
 
@@ -47,7 +47,7 @@ Next.js 라우팅은 루트 `app/`이 맡고 라우트 파일은 `src/`의 구�
 | ----------------------------------------------------- | ------------------------------- |
 | [product/PRD.md](./docs/product/PRD.md)               | 무엇을 왜 만드는지, 범위와 목표 |
 | [product/SPEC.md](./docs/product/SPEC.md)             | 기능이 정확히 어떻게 동작하는지 |
-| [product/ROADMAP.md](./docs/product/ROADMAP.md)       | 릴리스 이력과 다음 작업 계획    |
+| [product/ROADMAP.md](./docs/product/ROADMAP.md)       | 아직 하지 않은 것과 뺀 것       |
 | [design/DESIGN.md](./docs/design/DESIGN.md)           | 디자인 방향, 톤과 색            |
 | [design/DESIGN-SPEC.md](./docs/design/DESIGN-SPEC.md) | 화면별 배치와 상태              |
 | [operations/RUNBOOK.md](./docs/operations/RUNBOOK.md) | 배포 절차와 장애 대응           |

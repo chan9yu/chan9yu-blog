@@ -8,7 +8,7 @@ Vercel이 프로덕션과 미리보기를 모두 만든다. 도메인은 `chan9y
 
 www와 http 주소는 Vercel 도메인 설정이 `https://chan9yu.dev`로 308 리다이렉트한다. 저장소 코드에는 없는 설정이라 프로젝트를 새로 만들거나 도메인을 옮길 때 대시보드에서 함께 옮겨야 한다.
 
-빌드는 세 단계로 이어진다.
+빌드는 네 단계로 이어진다.
 
 1. `pnpm install:vercel`이 `.gitmodules`의 주소를 토큰이 붙은 형태로 바꿔 contents 서브모듈을 받고 의존성을 설치한다
 2. `prebuild`가 frontmatter의 SEO 규칙을 검사하고 콘텐츠 이미지를 `public/`으로 복사한다
@@ -31,9 +31,9 @@ IndexNow는 네이버와 빙이 받는다. 구글은 지원하지 않으므로 �
 | `GITHUB_REPO_CLONE_TOKEN`                                                                                                 | 서브모듈을 받지 못해 빌드가 멈춘다                                |
 | `NEXT_PUBLIC_GISCUS_REPO`와 `NEXT_PUBLIC_GISCUS_REPO_ID`, `NEXT_PUBLIC_GISCUS_CATEGORY`, `NEXT_PUBLIC_GISCUS_CATEGORY_ID` | 넷 중 하나라도 빠지면 댓글 자리에 안내 문구만 뜬다                |
 | `UPSTASH_REDIS_REST_URL`과 `UPSTASH_REDIS_REST_TOKEN`                                                                     | 둘 중 하나만 있어도 조회수가 0으로 보이고 인기 글이 최신순이 된다 |
-| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`과 `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`                                            | 검색 엔진 소유 확인 meta가 나가지 않는다                          |
+| `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`                                                                                     | 네이버 소유 확인 meta가 나가지 않아 소유 확인이 풀릴 수 있다      |
 
-소유 확인 키 둘은 검색 엔진 등록에만 쓰이고 없어도 사이트 동작은 그대로다. 값을 받는 곳과 등록 절차는 operations/SEO.md에 있다.
+소유 확인 키는 검색 엔진 등록에만 쓰이고 없어도 사이트 동작은 그대로다. 구글은 DNS TXT 레코드로 확인돼 있어 환경변수가 필요 없다. 등록 절차는 operations/SEO.md에 있다.
 
 토큰은 권한을 최소로 발급한다. 서브모듈 토큰은 읽기 전용이면 충분하다.
 

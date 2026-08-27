@@ -1,3 +1,4 @@
+export { getAllPosts } from "./api/getAllPosts";
 export { getPostDetail } from "./api/getPostDetail";
 export { getPublicPosts } from "./api/getPublicPosts";
 export { getTrendingPosts } from "./api/getTrendingPosts";

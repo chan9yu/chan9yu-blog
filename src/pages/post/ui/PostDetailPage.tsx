@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { findAdjacentPosts, findRelatedPostsByTags, PostMetaHeader } from "@/entities/post";
-import { getPostDetail, getPublicPosts, resolveThumbnailSrc } from "@/entities/post/index.server";
+import { getAllPosts, getPostDetail, getPublicPosts, resolveThumbnailSrc } from "@/entities/post/index.server";
 import { getSeriesDetail } from "@/entities/series";
 import { CommentsSection } from "@/features/comments";
 import { ViewCounter } from "@/features/views";
@@ -31,7 +31,7 @@ type PostDetailPageProps = {
 };
 
 export function generateStaticParams() {
-	return getPublicPosts().map((post) => ({ slug: post.slug }));
+	return getAllPosts({ includePrivate: true }).map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: PostDetailPageProps) {
@@ -93,7 +93,7 @@ export async function PostDetailPage({ params }: PostDetailPageProps) {
 		: buildBreadcrumbJsonLd({
 				siteUrl,
 				items: [
-					{ name: "홈", path: "/" },
+					{ name: siteMetadata.name, path: "/" },
 					{ name: "포스트", path: "/posts" },
 					{ name: detail.title, path: `/posts/${detail.slug}` }
 				]

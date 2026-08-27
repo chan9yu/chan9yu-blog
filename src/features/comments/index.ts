@@ -1,1 +1,1 @@
-export { CommentsSection } from "./components";
+export { CommentsSection } from "./ui/CommentsSection";

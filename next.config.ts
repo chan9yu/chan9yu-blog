@@ -8,10 +8,21 @@ const nextConfig: NextConfig = {
 		formats: ["image/avif", "image/webp"],
 		remotePatterns: [{ protocol: "https", hostname: "avatars.githubusercontent.com" }]
 	},
-	// contents/posts/*/images/는 빌드 타임에 public/posts/로 copy되므로 lambda에서 read 안 함.
-	// Next.js 16 auto-trace가 sibling images까지 over-include하는 경향이 있어 명시적 제외로 lambda payload 절감(155MB).
 	outputFileTracingExcludes: {
 		"*": ["contents/**/images/**"]
+	},
+	async headers() {
+		return [
+			{
+				source: "/(.*)",
+				headers: [
+					{ key: "X-Content-Type-Options", value: "nosniff" },
+					{ key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+					{ key: "X-Frame-Options", value: "SAMEORIGIN" },
+					{ key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
+				]
+			}
+		];
 	},
 	turbopack: {
 		rules: {

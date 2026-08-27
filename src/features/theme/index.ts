@@ -1,2 +1,1 @@
-export { ThemeSwitcher } from "./components";
-export { useTheme } from "./hooks";
+export { ThemeSwitcher } from "./ui/ThemeSwitcher";

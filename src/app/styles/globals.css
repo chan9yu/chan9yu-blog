@@ -1,0 +1,283 @@
+@import "tailwindcss";
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./motion.css";
+@import "./base.css";
+@import "./animations.css";
+@import "./dialog.css";
+@import "./scrollbar.css";
+@import "./shiki.css";
+@import "./prose.css";
+
+:root {
+	--font-pretendard: "Pretendard Variable";
+}
+
+@custom-variant short (@media (max-height: 420px));
+
+@theme {
+	--breakpoint-w420: 420px;
+	--breakpoint-w480: 480px;
+	--breakpoint-w900: 900px;
+}
+
+@layer base {
+	button {
+		background: none;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	:focus {
+		outline: none;
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-focus-ring);
+		outline-offset: 2px;
+		border-radius: var(--radius-sm);
+	}
+}
+
+@theme inline {
+	--color-bg-subtle: var(--color-bg-subtle);
+
+	--color-text-tertiary: var(--color-text-tertiary);
+
+	--color-border-subtle: var(--color-border-subtle);
+	--color-border-control: var(--color-border-control);
+
+	--color-accent: var(--color-accent-default);
+	--color-accent-hover: var(--color-accent-hover);
+	--color-accent-subtle: var(--color-accent-subtle);
+	--color-accent-foreground: var(--color-accent-foreground);
+
+	--color-success: var(--color-success);
+	--color-warning: var(--color-warning);
+
+	--radius-sm: var(--radius-sm);
+	--radius-md: var(--radius-md);
+	--radius-control: var(--radius-control);
+	--radius-lg: var(--radius-lg);
+	--radius-modal: var(--radius-modal);
+	--radius-full: var(--radius-full);
+
+	--shadow-sm: var(--shadow-sm);
+	--shadow-md: var(--shadow-md);
+	--shadow-lg: var(--shadow-lg);
+	--shadow-floating: var(--shadow-floating);
+
+	--container-content: var(--container-content);
+	--container-prose: var(--container-prose);
+	--container-drawer: var(--container-drawer);
+
+	--z-index-raised: var(--z-raised);
+	--z-index-sticky: var(--z-sticky);
+	--z-index-floating: var(--z-floating);
+	--z-index-toast: var(--z-toast);
+
+	--color-background: var(--color-bg-default);
+	--color-foreground: var(--color-text-primary);
+	--color-card: var(--color-surface-default);
+	--color-card-foreground: var(--color-text-primary);
+	--color-muted: var(--color-bg-muted);
+	--color-muted-foreground: var(--color-text-secondary);
+	--color-destructive: var(--color-danger);
+	--color-border: var(--color-border-default);
+	--color-ring: var(--color-focus-ring);
+
+	--animate-fade-in: fade-in var(--duration-exit) var(--ease-out);
+
+	--font-sans:
+		var(--font-pretendard), system-ui, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic",
+		sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, "SF Mono", "Cascadia Code", Menlo, Monaco, Consolas, monospace;
+
+	--text-xs: 0.78125rem;
+	--text-sm: 0.84375rem;
+	--text-base: 0.96875rem;
+	--text-lg: 1.0625rem;
+	--text-xl: 1.1875rem;
+	--text-2xl: 1.5625rem;
+	--text-3xl: 1.8125rem;
+	--text-4xl: 2.125rem;
+
+	--text-11: 0.6875rem;
+	--text-12: 0.75rem;
+	--text-13: 0.8125rem;
+	--text-14: 0.875rem;
+	--text-15: 0.9375rem;
+	--text-16: 1rem;
+	--text-17: 1.0625rem;
+
+	--text-chip: 0.71875rem;
+	--text-chip--line-height: 1.5;
+
+	--text-subtitle: 0.90625rem;
+	--text-subtitle--line-height: 1.6;
+
+	--leading-tight: 1.45;
+	--leading-snug: 1.55;
+	--leading-body: 1.75;
+	--leading-prose: 1.8;
+
+	--blur-header: 10px;
+
+	--tracking-hero: -0.035em;
+	--tracking-title: -0.03em;
+	--tracking-heading: -0.02em;
+	--tracking-flat: -0.015em;
+}
+
+@utility aspect-og {
+	aspect-ratio: 1200 / 630;
+}
+
+@utility grid-tags {
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+@media (min-width: 1024px) {
+	.grid-tags {
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	}
+}
+
+@utility w-accent-bar {
+	width: 3px;
+}
+
+@utility max-w-tag {
+	max-width: 150px;
+}
+
+@utility max-w-tag-md {
+	max-width: 160px;
+}
+
+@utility max-w-tag-sm {
+	max-width: 120px;
+}
+
+@utility bg-logo-mark {
+	background-image: url("/images/logo-mark-indigo.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.dark .bg-logo-mark {
+	background-image: url("/images/logo-mark-white.png");
+}
+
+@utility bg-post-placeholder {
+	background-image: url("/images/post-placeholder-light.png");
+	background-position: center;
+	background-size: cover;
+}
+
+.dark .bg-post-placeholder {
+	background-image: url("/images/post-placeholder-dark.png");
+}
+
+@utility grid-post-row {
+	grid-template-columns: 260px minmax(0, 1fr);
+}
+
+@media (max-width: 1023px) {
+	.grid-post-row {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@utility grid-cards {
+	grid-template-columns: repeat(auto-fill, minmax(var(--card-min), 1fr));
+}
+
+@utility grid-series {
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+
+@media (max-width: 479px) {
+	.grid-cards {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 699px) {
+	.grid-series {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@utility max-h-toc {
+	max-height: calc(100vh - 24rem);
+}
+
+@utility grid-home {
+	grid-template-columns: minmax(0, 1fr) var(--sidebar-home);
+}
+
+@utility grid-content-aside {
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+@utility grid-tag-rail {
+	grid-template-columns: var(--rail-tags) minmax(0, 1fr);
+}
+
+@utility grid-series-preview {
+	grid-template-columns: 18px minmax(0, 1fr) auto;
+}
+
+@utility max-h-search-results {
+	max-height: 52vh;
+}
+
+@utility max-h-tag-rail {
+	max-height: calc(100vh - 140px);
+}
+
+@utility transition-position {
+	transition-property: top;
+}
+
+@utility transition-rail {
+	transition-property: width, margin-left;
+}
+
+@utility max-h-lightbox {
+	max-height: 90vh;
+}
+
+@utility max-w-lightbox {
+	max-width: 90vw;
+}
+
+[data-toc-panel],
+[data-toc-opener] {
+	transition-property: opacity, transform, visibility;
+	transition-duration: var(--duration-screen);
+	transition-timing-function: var(--ease-move);
+	transition-behavior: allow-discrete;
+	opacity: 0;
+	visibility: hidden;
+}
+
+[data-toc-panel] {
+	transform: translateX(1rem);
+}
+
+[data-toc-opener] {
+	transform: translateX(-50%);
+}
+
+[data-toc-panel][data-open="true"],
+[data-toc-opener][data-open="true"] {
+	opacity: 1;
+	transform: translateX(0);
+	visibility: visible;
+	will-change: opacity, transform;
+}

@@ -1,1 +1,0 @@
-export { ViewCounter } from "./ViewCounter";

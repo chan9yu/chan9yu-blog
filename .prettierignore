@@ -1,12 +1,26 @@
-*.lock
-.DS_Store
+# 의존성
+node_modules
+
+# 빌드 결과물
 .next
 build
 coverage
 dist
 next-env.d.ts
-node_modules
 out
-package-lock.json
+
+# 정적 자산
+public/posts
+
+# 서브모듈
+contents
+
+# 작업 자료 (git 추적 대상 아님)
+_workspace
+
+# 락 파일
+*.lock
 pnpm-lock.yaml
-yarn.lock
+
+# 시스템 파일
+.DS_Store

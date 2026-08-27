@@ -1,0 +1,102 @@
+import { render, screen, within } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import type { PostSummary } from "@/entities/post";
+
+import { PostList } from "../PostList";
+
+class StubIntersectionObserver {
+	observe() {}
+	disconnect() {}
+	unobserve() {}
+}
+
+beforeEach(() => {
+	vi.stubGlobal("IntersectionObserver", StubIntersectionObserver);
+});
+
+afterEach(() => {
+	vi.unstubAllGlobals();
+});
+
+function makePost(overrides: Partial<PostSummary> = {}): PostSummary {
+	return {
+		slug: "sample-post",
+		title: "샘플 포스트",
+		description: "이것은 샘플 포스트 설명입니다.",
+		date: "2026-04-20",
+		tags: ["react", "nextjs"],
+		private: false,
+		thumbnail: null,
+		series: null,
+		seriesOrder: null,
+		readingTimeMinutes: 5,
+		...overrides
+	};
+}
+
+describe("PostList", () => {
+	it("빈 배열 → 안내 메시지 (role=status)", () => {
+		render(<PostList posts={[]} />);
+		expect(screen.getByRole("status")).toHaveTextContent(/글이 없습니다/);
+	});
+
+	it("카드에 제목·설명·reading time·태그 표시", () => {
+		const post = makePost({
+			title: "유니크 제목",
+			description: "유니크 설명",
+			tags: ["typescript", "testing"],
+			readingTimeMinutes: 7
+		});
+
+		render(<PostList posts={[post]} />);
+
+		const card = screen.getByRole("link", { name: /유니크 제목/ });
+		expect(within(card).getByText("유니크 제목")).toBeInTheDocument();
+		expect(within(card).getByText("유니크 설명")).toBeInTheDocument();
+		expect(within(card).getByText(/읽는 시간 7분/)).toBeInTheDocument();
+		expect(within(card).getByText("typescript")).toBeInTheDocument();
+	});
+
+	it("썸네일이 있는 포스트는 <img> 렌더 (카드 제목이 링크 이름을 담당하므로 alt는 비운다)", () => {
+		const post = makePost({ thumbnail: "/posts/sample/images/thumb.png", title: "썸네일 있음" });
+		const { container } = render(<PostList posts={[post]} />);
+
+		const img = container.querySelector("img");
+		expect(img).toBeInTheDocument();
+		expect(img).toHaveAttribute("alt", "");
+	});
+
+	it("첫 카드 썸네일만 eager로 받는다 (LCP 이미지가 lazy면 늦게 요청된다)", () => {
+		const posts = Array.from({ length: 3 }, (_, i) =>
+			makePost({ slug: `post-${i}`, title: `포스트 ${i}`, thumbnail: `/posts/post-${i}/images/thumb.png` })
+		);
+		const { container } = render(<PostList posts={posts} />);
+
+		const loadings = [...container.querySelectorAll("img")].map((img) => img.getAttribute("loading"));
+		expect(loadings[0]).toBe("eager");
+		expect(loadings.slice(1)).toEqual(loadings.slice(1).map(() => "lazy"));
+	});
+
+	it("최초 30개까지만 표시 (페이지 크기, 무한 스크롤 전)", () => {
+		const posts = Array.from({ length: 40 }, (_, i) =>
+			makePost({ slug: `post-${i}`, title: `포스트 ${i}`, description: `설명 ${i}` })
+		);
+
+		render(<PostList posts={posts} />);
+
+		const links = screen.getAllByRole("link");
+		expect(links.length).toBe(30);
+		expect(screen.getByRole("link", { name: /포스트 29/ })).toBeInTheDocument();
+		expect(screen.queryByRole("link", { name: /포스트 30/ })).not.toBeInTheDocument();
+	});
+
+	it("처음에는 격자 보기이고 저장된 값을 읽지 않는다", () => {
+		window.localStorage.setItem("blog:posts:view", "list");
+		render(<PostList posts={[makePost()]} />);
+
+		const toolbar = screen.getByRole("toolbar", { name: "뷰 모드" });
+		expect(within(toolbar).getByRole("button", { name: "격자 보기" })).toHaveAttribute("aria-pressed", "true");
+		expect(within(toolbar).getByRole("button", { name: "리스트 보기" })).toHaveAttribute("aria-pressed", "false");
+	});
+});

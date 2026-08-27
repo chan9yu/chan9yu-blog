@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   test:
-    name: Typecheck + Vitest
+    name: Steiger + Typecheck + Vitest
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -30,27 +30,34 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        # 버전은 package.json `packageManager` 필드(`pnpm@10.33.0`)에서 자동 읽음.
-        # `with: version: 10` 명시 시 ERR_PNPM_BAD_PM_VERSION으로 fail.
+        # 버전은 package.json `packageManager` 필드(`pnpm@11.22.0`)에서 자동 읽음.
+        # `with: version: 11` 명시 시 ERR_PNPM_BAD_PM_VERSION으로 fail.
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Generate next-env.d.ts (gitignore된 Next.js 자동 생성 파일)
+        # navigation-types/compat 참조는 루트 pages/ 폴더가 있는 프로젝트에서 next가 생성하는 줄.
+        # 이것이 빠지면 usePathname이 CI에서만 non-null로 좁혀져 로컬보다 느슨하게 검사된다.
+        # 실제 생성물에 있는 .next/types import 두 줄은 빌드 산출물이 필요해 스텁에 넣지 않는다.
         run: |
           cat > next-env.d.ts <<'EOF'
           /// <reference types="next" />
           /// <reference types="next/image-types/global" />
+          /// <reference types="next/navigation-types/compat/navigation" />
 
           // NOTE: This file should not be edited
           // see https://nextjs.org/docs/app/api-reference/config/typescript for more information.
           EOF
+
+      - name: FSD 경계 검사
+        run: pnpm lint:arch
 
       - name: Typecheck
         run: pnpm type:check

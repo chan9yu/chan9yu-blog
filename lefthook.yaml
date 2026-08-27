@@ -1,23 +1,22 @@
-min_version: 2.0.0
+prepare-commit-msg:
+  jobs:
+    - name: template
+      run: node scripts/commit-msg.mjs {1}
 
 pre-commit:
   parallel: true
-  commands:
-    eslint:
-      files: git diff --cached --name-only --diff-filter=d
-      glob: "*.{js,ts,jsx,tsx,mjs}"
-      run: pnpm exec eslint {files} --fix
-      stage_fixed: true
-    prettier:
-      files: git diff --cached --name-only --diff-filter=d
-      glob: "*.{js,ts,jsx,tsx,mjs,json,yaml,yml,md,css}"
-      run: pnpm exec prettier --write {files}
-      stage_fixed: true
-    type-check:
-      glob: "*.{ts,tsx}"
-      run: pnpm exec tsc --noEmit
+  skip:
+    - merge
+    - rebase
+  jobs:
+    - name: lint
+      glob: "*.{js,cjs,mjs,jsx,ts,tsx,mts,cts}"
+      run: pnpm run lint
+    - name: format
+      glob: "*.{js,cjs,mjs,jsx,ts,tsx,mts,cts,json,jsonc,yml,yaml,md,css,html}"
+      run: pnpm run format:check
 
-prepare-commit-msg:
-  commands:
-    template:
-      run: node scripts/commit-msg.mjs {1}
+pre-push:
+  jobs:
+    - name: typecheck
+      run: pnpm run type:check

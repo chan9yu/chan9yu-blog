@@ -1,0 +1,137 @@
+@keyframes fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes card-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(10px) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+[data-view-swap] {
+	animation: fade-in var(--duration-exit) var(--ease-out);
+}
+
+[data-card-reveal] {
+	animation: card-reveal var(--duration-enter) var(--ease-enter) both;
+	animation-delay: calc(min(var(--card-index, 0), 8) * 30ms);
+}
+
+@keyframes link-hint-in {
+	to {
+		opacity: 0.45;
+	}
+}
+
+@keyframes link-hint-pulse {
+	50% {
+		opacity: 0.15;
+	}
+}
+
+[data-link-hint] {
+	position: absolute;
+	bottom: 0.3rem;
+	left: 50%;
+	width: 0.3em;
+	height: 0.3em;
+	translate: -50% 0;
+	border-radius: 9999px;
+	background: currentColor;
+	opacity: 0;
+	visibility: hidden;
+}
+
+[data-link-hint][data-pending] {
+	visibility: visible;
+	animation-name: link-hint-in, link-hint-pulse;
+	animation-duration: 200ms, 1s;
+	animation-delay: 120ms, 120ms;
+	animation-timing-function: ease, ease-in-out;
+	animation-iteration-count: 1, 4;
+	animation-fill-mode: forwards, none;
+}
+
+@view-transition {
+	navigation: auto;
+}
+
+::view-transition-old(root) {
+	animation: theme-fade-out var(--duration-screen) var(--ease-move) both;
+	z-index: 1;
+}
+
+::view-transition-new(root) {
+	animation: theme-fade-in var(--duration-screen) var(--ease-move) both;
+	z-index: 2;
+}
+
+@keyframes theme-fade-out {
+	from {
+		opacity: 1;
+	}
+	to {
+		opacity: 0;
+	}
+}
+
+@keyframes theme-fade-in {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none !important;
+	}
+}
+
+.header-scroll-border::after {
+	content: "";
+	position: absolute;
+	inset-inline: 0;
+	bottom: 0;
+	height: 1px;
+	background: var(--color-border-subtle);
+	pointer-events: none;
+}
+
+@supports (animation-timeline: scroll()) {
+	@keyframes header-border-reveal {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.header-scroll-border::after {
+		opacity: 0;
+		animation: header-border-reveal var(--duration-color) var(--ease-out) both;
+		animation-timeline: scroll(root block);
+		animation-range: 1px 80px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.header-scroll-border::after {
+			animation: none;
+			opacity: 1;
+		}
+	}
+}

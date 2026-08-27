@@ -5,14 +5,14 @@
 			"url": "https://mcp.context7.com/mcp"
 		},
 		"playwright": {
-			"args": ["@playwright/mcp@latest"],
+			"args": ["-y", "@playwright/mcp@latest"],
 			"command": "npx",
-			"env": {},
 			"type": "stdio"
 		},
 		"sequential-thinking": {
 			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-			"command": "npx"
+			"command": "npx",
+			"type": "stdio"
 		},
 		"serena": {
 			"args": [
@@ -21,17 +21,10 @@
 				"serena",
 				"start-mcp-server",
 				"--context",
-				"ide-assistant",
-				"--project",
-				"/Users/chan9yu/Base/chan9yu/dev-blog"
+				"ide-assistant"
 			],
 			"command": "uvx",
-			"env": {},
 			"type": "stdio"
-		},
-		"shadcn": {
-			"args": ["shadcn@latest", "mcp"],
-			"command": "npx"
 		},
 		"vercel": {
 			"type": "http",

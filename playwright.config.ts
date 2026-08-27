@@ -15,14 +15,7 @@ export default defineConfig({
 		trace: "on-first-retry",
 		screenshot: "only-on-failure"
 	},
-	projects: [
-		{ name: "chromium", use: { ...devices["Desktop Chrome"] } },
-		{
-			name: "mobile-chromium",
-			use: { ...devices["Pixel 7"] },
-			testMatch: /mobile-.*\.spec\.ts$/
-		}
-	],
+	projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 	webServer: {
 		command: "pnpm dev",
 		url: BASE_URL,

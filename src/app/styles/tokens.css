@@ -1,0 +1,98 @@
+:root {
+	color-scheme: light;
+
+	--color-bg-default: #ffffff;
+	--color-bg-subtle: #f8fafc;
+	--color-bg-muted: #f1f5f9;
+	--color-surface-default: #ffffff;
+
+	--color-text-primary: #0f172a;
+	--color-text-secondary: #475569;
+	--color-text-tertiary: #5d6b80;
+
+	--color-border-subtle: #e2e8f0;
+	--color-border-control: #818b9c;
+	--color-border-default: #cbd5e1;
+	--color-border-strong: #94a3b8;
+
+	--color-accent-default: #4f46e5;
+	--color-accent-hover: #4338ca;
+	--color-accent-subtle: rgb(79 70 229 / 0.08);
+	--color-accent-foreground: #ffffff;
+
+	--color-success: #00a63e;
+	--color-warning: #d08700;
+	--color-danger: #dc2626;
+
+	--color-code-bg: #f1f5f9;
+	--color-code-border: #e2e8f0;
+	--color-code-inline-bg: rgb(15 23 42 / 0.06);
+	--color-code-inline-fg: #be185d;
+
+	--color-focus-ring: #4f46e5;
+
+	--shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.06);
+	--shadow-md: 0 4px 8px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.04);
+	--shadow-lg: 0 16px 32px -8px rgb(15 23 42 / 0.12), 0 4px 8px -2px rgb(15 23 42 / 0.06);
+	--shadow-floating: 0 6px 20px rgb(0 0 0 / 0.35);
+
+	--radius-sm: 0.375rem;
+	--radius-md: 0.5rem;
+	--radius-control: 0.5625rem;
+	--radius-code: 0.625rem;
+	--radius-lg: 0.75rem;
+	--radius-modal: 0.875rem;
+	--radius-sheet: 1rem;
+	--radius-full: 9999px;
+
+	--container-content: 70rem;
+	--container-prose: 44rem;
+	--container-drawer: 85vw;
+
+	--sidebar-home: 236px;
+	--rail-tags: 196px;
+	--card-min: 240px;
+
+	--z-raised: 100;
+	--z-sticky: 200;
+	--z-floating: 300;
+	--z-toast: 400;
+}
+
+.dark {
+	color-scheme: dark;
+
+	--color-bg-default: #09090b;
+	--color-bg-subtle: #18181b;
+	--color-bg-muted: #27272a;
+	--color-surface-default: #141416;
+
+	--color-text-primary: #f8fafc;
+	--color-text-secondary: #a1a1aa;
+	--color-text-tertiary: #909099;
+
+	--color-border-subtle: #27272a;
+	--color-border-control: #70707a;
+	--color-border-default: #3f3f46;
+	--color-border-strong: #52525b;
+
+	--color-accent-default: #818cf8;
+	--color-accent-hover: #a5b4fc;
+	--color-accent-subtle: rgb(129 140 248 / 0.14);
+	--color-accent-foreground: #0f172a;
+
+	--color-success: #05df72;
+	--color-warning: #fdc700;
+	--color-danger: #f87171;
+
+	--color-code-bg: #27272a;
+	--color-code-border: #3f3f46;
+	--color-code-inline-bg: rgb(248 250 252 / 0.08);
+	--color-code-inline-fg: #f472b6;
+
+	--color-focus-ring: #818cf8;
+
+	--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+	--shadow-md: 0 4px 8px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+	--shadow-lg: 0 16px 32px -8px rgb(0 0 0 / 0.6), 0 4px 8px -2px rgb(0 0 0 / 0.4);
+}

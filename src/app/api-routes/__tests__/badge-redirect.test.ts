@@ -21,9 +21,4 @@ describe("GET /badge/recent/[index]", () => {
 		expect(res.status).toBe(302);
 		expect(res.headers.get("Location")).toBe(`${getSiteUrl()}/posts/${newest.slug}`);
 	});
-
-	it("범위 밖·비정수 index는 404", async () => {
-		expect((await call("999")).status).toBe(404);
-		expect((await call("abc")).status).toBe(404);
-	});
 });

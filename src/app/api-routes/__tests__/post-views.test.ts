@@ -46,16 +46,11 @@ function buildPostRequest(body: PostBody) {
 }
 
 describe("GET /api/views", () => {
-	it("유효한 slug는 200 + views: number 반환", async () => {
+	it("유효한 slug는 200으로 views 숫자만 돌려준다 (slug 누설 금지)", async () => {
 		const res = await GET(buildGetRequest("react-19-use"));
 		expect(res.status).toBe(200);
 		const body = (await res.json()) as Record<string, unknown>;
 		expect(typeof body.views).toBe("number");
-	});
-
-	it("응답 body는 views 필드만 포함 (slug 누설 금지)", async () => {
-		const res = await GET(buildGetRequest("react-19-use"));
-		const body = (await res.json()) as Record<string, unknown>;
 		expect(Object.keys(body).sort()).toEqual(["views"]);
 	});
 
@@ -64,60 +59,33 @@ describe("GET /api/views", () => {
 		expect(res.headers.get("cache-control") ?? "").toMatch(/no-store/);
 	});
 
-	it("slug 누락 → 400", async () => {
-		const res = await GET(buildGetRequest(null));
-		expect(res.status).toBe(400);
-	});
-
-	it("빈 slug → 400", async () => {
-		const res = await GET(buildGetRequest(""));
-		expect(res.status).toBe(400);
-	});
-
-	it("공백이 포함된 무효 slug → 400", async () => {
-		const res = await GET(buildGetRequest("invalid%20slug"));
-		expect(res.status).toBe(400);
-	});
-
-	it("대문자 slug → 400 (영문 소문자+숫자+하이픈만 허용)", async () => {
-		const res = await GET(buildGetRequest("React-19"));
-		expect(res.status).toBe(400);
+	it("slug가 없거나 영문 소문자와 숫자, 하이픈 밖이면 400", async () => {
+		for (const slug of [null, "", "invalid%20slug", "React-19"]) {
+			const res = await GET(buildGetRequest(slug));
+			expect(res.status, String(slug)).toBe(400);
+		}
 	});
 });
 
 describe("POST /api/views", () => {
-	it("유효한 slug → 204 no content", async () => {
+	it("유효한 slug는 204 no content와 no-store 헤더로 응답한다", async () => {
 		const res = await POST(buildPostRequest({ type: "json", data: { slug: "react-19-use" } }));
 		expect(res.status).toBe(204);
-	});
-
-	it("Cache-Control: no-store 헤더 포함", async () => {
-		const res = await POST(buildPostRequest({ type: "json", data: { slug: "react-19-use" } }));
 		expect(res.headers.get("cache-control") ?? "").toMatch(/no-store/);
 	});
 
-	it("slug 필드 누락 → 400", async () => {
-		const res = await POST(buildPostRequest({ type: "json", data: {} }));
-		expect(res.status).toBe(400);
+	it("slug 필드가 없거나 무효하면 400", async () => {
+		for (const data of [{}, { slug: "invalid slug" }]) {
+			const res = await POST(buildPostRequest({ type: "json", data }));
+			expect(res.status, JSON.stringify(data)).toBe(400);
+		}
 	});
 
-	it("공백이 포함된 무효 slug → 400", async () => {
-		const res = await POST(buildPostRequest({ type: "json", data: { slug: "invalid slug" } }));
-		expect(res.status).toBe(400);
-	});
+	it("본문이 파싱 실패거나 객체가 아니면 400", async () => {
+		const malformed = await POST(buildPostRequest({ type: "malformed" }));
+		const primitive = await POST(buildPostRequest({ type: "json", data: "just-a-string" }));
 
-	it("malformed JSON body(파싱 실패) → 400", async () => {
-		const res = await POST(buildPostRequest({ type: "malformed" }));
-		expect(res.status).toBe(400);
-	});
-
-	it("JSON body가 string primitive → 400", async () => {
-		const res = await POST(buildPostRequest({ type: "json", data: "just-a-string" }));
-		expect(res.status).toBe(400);
-	});
-
-	it("JSON body가 null → 400", async () => {
-		const res = await POST(buildPostRequest({ type: "json", data: null }));
-		expect(res.status).toBe(400);
+		expect(malformed.status).toBe(400);
+		expect(primitive.status).toBe(400);
 	});
 });

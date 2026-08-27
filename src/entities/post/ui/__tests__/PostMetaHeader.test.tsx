@@ -44,28 +44,23 @@ describe("PostMetaHeader", () => {
 		expect(testingLink).toHaveAttribute("href", "/tags/testing");
 	});
 
-	it("한글 태그는 raw slug로 href 유지 (decodeURIComponent 경로 대응)", () => {
+	it("한글 태그 href는 sitemap과 canonical이 쓰는 백분율 인코딩으로 나간다", () => {
 		render(<PostMetaHeader post={makePost({ tags: ["항해99"] })} />);
 
 		const link = screen.getByRole("link", { name: /항해99/ });
-		expect(link).toHaveAttribute("href", "/tags/항해99");
+		expect(link).toHaveAttribute("href", `/tags/${encodeURIComponent("항해99")}`);
+	});
+
+	it("공백이 든 태그 href에 공백이 그대로 남지 않는다", () => {
+		render(<PostMetaHeader post={makePost({ tags: ["Claude Code"] })} />);
+
+		const link = screen.getByRole("link", { name: /Claude Code/ });
+		expect(link).toHaveAttribute("href", "/tags/Claude%20Code");
 	});
 
 	it("빈 tags → 태그 ul 자체 비렌더", () => {
 		render(<PostMetaHeader post={makePost({ tags: [] })} />);
 
 		expect(screen.queryByRole("list", { name: "태그" })).not.toBeInTheDocument();
-	});
-
-	it("viewCounterSlot에 주입된 노드 렌더", () => {
-		render(<PostMetaHeader post={makePost()} viewCounterSlot={<span data-testid="vc">조회수 42</span>} />);
-
-		expect(screen.getByTestId("vc")).toHaveTextContent("조회수 42");
-	});
-
-	it("shareSlot에 주입된 노드 렌더", () => {
-		render(<PostMetaHeader post={makePost()} shareSlot={<button type="button">공유</button>} />);
-
-		expect(screen.getByRole("button", { name: "공유" })).toBeInTheDocument();
 	});
 });

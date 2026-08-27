@@ -17,32 +17,16 @@ const post = (slug: string): PostSummary => ({
 });
 
 describe("findAdjacentPosts", () => {
-	it("중간 포스트는 prev(과거)와 next(미래)를 모두 반환한다", () => {
+	it("중간 포스트는 prev(과거)와 next(미래)를 모두 반환하고 양 끝은 한쪽이 null이다", () => {
 		const posts = [post("newest"), post("middle"), post("oldest")];
 		expect(findAdjacentPosts(posts, "middle")).toEqual({ prev: posts[2], next: posts[0] });
-	});
-
-	it("첫 포스트(가장 최신)는 next가 null이다", () => {
-		const posts = [post("newest"), post("middle"), post("oldest")];
 		expect(findAdjacentPosts(posts, "newest")).toEqual({ prev: posts[1], next: null });
-	});
-
-	it("마지막 포스트(가장 오래된)는 prev가 null이다", () => {
-		const posts = [post("newest"), post("middle"), post("oldest")];
 		expect(findAdjacentPosts(posts, "oldest")).toEqual({ prev: null, next: posts[1] });
+		expect(findAdjacentPosts([post("only")], "only")).toEqual({ prev: null, next: null });
 	});
 
-	it("일치 slug가 없으면 양쪽 모두 null", () => {
-		const posts = [post("a"), post("b")];
-		expect(findAdjacentPosts(posts, "missing")).toEqual({ prev: null, next: null });
-	});
-
-	it("단일 포스트는 양쪽 모두 null", () => {
-		const posts = [post("only")];
-		expect(findAdjacentPosts(posts, "only")).toEqual({ prev: null, next: null });
-	});
-
-	it("빈 입력에는 양쪽 모두 null", () => {
+	it("일치 slug가 없거나 입력이 비면 양쪽 모두 null", () => {
+		expect(findAdjacentPosts([post("a"), post("b")], "missing")).toEqual({ prev: null, next: null });
 		expect(findAdjacentPosts([], "anything")).toEqual({ prev: null, next: null });
 	});
 });

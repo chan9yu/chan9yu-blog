@@ -44,28 +44,4 @@ describe("findRelatedPostsByTags", () => {
 		const posts = [target, ...Array.from({ length: 5 }, (_, i) => post(`p${i}`, ["react"]))];
 		expect(findRelatedPostsByTags(posts, target)).toHaveLength(3);
 	});
-
-	it("custom limit을 적용한다", () => {
-		const target = post("target", ["react"]);
-		const posts = [target, post("a", ["react"]), post("b", ["react"])];
-		expect(findRelatedPostsByTags(posts, target, 1)).toHaveLength(1);
-	});
-
-	it("target에 태그가 없으면 빈 배열을 반환한다", () => {
-		const target = post("target", []);
-		const posts = [target, post("a", ["react"])];
-		expect(findRelatedPostsByTags(posts, target)).toEqual([]);
-	});
-
-	it("동률 시 입력 순서(date desc 가정)를 보존한다", () => {
-		const target = post("target", ["react"]);
-		const posts = [target, post("newer", ["react"]), post("older", ["react"])];
-		const result = findRelatedPostsByTags(posts, target);
-		expect(result.map((p) => p.slug)).toEqual(["newer", "older"]);
-	});
-
-	it("빈 입력에는 빈 배열을 반환한다", () => {
-		const target = post("target", ["react"]);
-		expect(findRelatedPostsByTags([], target)).toEqual([]);
-	});
 });

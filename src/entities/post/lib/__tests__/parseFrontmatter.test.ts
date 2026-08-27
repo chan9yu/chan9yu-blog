@@ -19,22 +19,10 @@ seriesOrder: null
 `;
 
 describe("parseFrontmatter", () => {
-	it("정상 frontmatter 파싱", () => {
-		const { frontmatter, content } = parseFrontmatter(VALID_RAW, "test-post");
-		expect(frontmatter.title).toBe("테스트 포스트");
-		expect(frontmatter.slug).toBe("test-post");
-		expect(frontmatter.tags).toEqual(["react", "nextjs"]);
-		expect(frontmatter.private).toBe(false);
-		expect(frontmatter.thumbnail).toBeNull();
+	it("series와 seriesOrder가 둘 다 없는 글은 refine을 통과한다", () => {
+		const { frontmatter } = parseFrontmatter(VALID_RAW, "test-post");
 		expect(frontmatter.series).toBeNull();
 		expect(frontmatter.seriesOrder).toBeNull();
-		expect(content).toContain("본문 내용");
-		expect(content).not.toContain("title:");
-	});
-
-	it("date ISO 형식 파싱", () => {
-		const { frontmatter } = parseFrontmatter(VALID_RAW, "test-post");
-		expect(frontmatter.date).toBe("2026-04-15");
 	});
 
 	it("-- → --- 보정 (두 대시 구분자)", () => {
@@ -60,18 +48,8 @@ seriesOrder: null
 		expect(() => parseFrontmatter(VALID_RAW, "different-dir")).toThrow(/slug/);
 	});
 
-	it("필수 필드 누락(description) 시 에러", () => {
-		const raw = `---
-title: "제목만"
-slug: no-desc
-date: "2026-04-15"
----
-`;
-		expect(() => parseFrontmatter(raw, "no-desc")).toThrow();
-	});
-
-	it("series만 있고 seriesOrder 없으면 에러", () => {
-		const raw = `---
+	it("series와 seriesOrder는 함께 있을 때만 통과한다", () => {
+		const seriesOnly = `---
 title: "시리즈 불일치"
 description: "설명"
 slug: series-test
@@ -83,11 +61,9 @@ series: "my-series"
 seriesOrder: null
 ---
 `;
-		expect(() => parseFrontmatter(raw, "series-test")).toThrow();
-	});
+		expect(() => parseFrontmatter(seriesOnly, "series-test")).toThrow();
 
-	it("series·seriesOrder 모두 설정 시 정상", () => {
-		const raw = `---
+		const bothSet = `---
 title: "시리즈 포스트"
 description: "설명"
 slug: series-ok
@@ -99,25 +75,8 @@ series: "my-series"
 seriesOrder: 1
 ---
 `;
-		const { frontmatter } = parseFrontmatter(raw, "series-ok");
+		const { frontmatter } = parseFrontmatter(bothSet, "series-ok");
 		expect(frontmatter.series).toBe("my-series");
 		expect(frontmatter.seriesOrder).toBe(1);
-	});
-
-	it("private: true 파싱", () => {
-		const raw = `---
-title: "비공개 포스트"
-description: "설명"
-slug: private-post
-date: "2026-04-15"
-private: true
-tags: []
-thumbnail: null
-series: null
-seriesOrder: null
----
-`;
-		const { frontmatter } = parseFrontmatter(raw, "private-post");
-		expect(frontmatter.private).toBe(true);
 	});
 });

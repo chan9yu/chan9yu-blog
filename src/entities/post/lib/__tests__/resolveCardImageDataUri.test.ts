@@ -17,11 +17,9 @@ const basePost: PostSummary = {
 };
 
 describe("resolveCardImageDataUri", () => {
-	it("썸네일이 null이면 null을 반환한다(resolveThumbnailSrc가 즉시 null)", () => {
+	it("썸네일이 없거나 raster 파일이 없으면 placeholder(svg)로 떨어져 null을 반환한다", () => {
 		expect(resolveCardImageDataUri(basePost)).toBeNull();
-	});
 
-	it("존재하지 않는 raster 경로는 placeholder(svg) 폴백 → null", () => {
 		const post = { ...basePost, thumbnail: "/posts/no-thumb/images/missing.png" };
 		expect(resolveCardImageDataUri(post)).toBeNull();
 	});

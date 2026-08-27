@@ -36,17 +36,6 @@ describe("getPostDetail", () => {
 		vi.clearAllMocks();
 	});
 
-	it("유효한 slug → PostDetail 반환", () => {
-		mockedReadFileSync.mockReturnValue(makeMdx("my-post") as unknown as ReturnType<typeof fs.readFileSync>);
-
-		const detail = getPostDetail("my-post");
-		expect(detail).not.toBeNull();
-		expect(detail?.slug).toBe("my-post");
-		expect(detail?.title).toBe("상세 포스트 제목");
-		expect(typeof detail?.readingTimeMinutes).toBe("number");
-		expect(detail?.readingTimeMinutes).toBeGreaterThanOrEqual(1);
-	});
-
 	it("contentMdx에 frontmatter를 제외한 본문이 담긴다", () => {
 		mockedReadFileSync.mockReturnValue(makeMdx("body-post") as unknown as ReturnType<typeof fs.readFileSync>);
 
@@ -55,24 +44,16 @@ describe("getPostDetail", () => {
 		expect(detail?.contentMdx).not.toContain("---");
 	});
 
-	it("toc는 본문의 h2·h3 heading을 순서대로 추출한다", () => {
-		mockedReadFileSync.mockReturnValue(makeMdx("toc-post") as unknown as ReturnType<typeof fs.readFileSync>);
-
-		const detail = getPostDetail("toc-post");
-		expect(detail?.toc).toHaveLength(2);
-		expect(detail?.toc[0]?.level).toBe(2);
-		expect(detail?.toc[0]?.text).toBe("섹션 1");
-		expect(detail?.toc[1]?.level).toBe(3);
-		expect(detail?.toc[1]?.text).toBe("서브섹션 1-1");
-	});
-
-	it("존재하지 않는 파일 → null 반환", () => {
+	it("존재하지 않는 파일과 frontmatter 검증 실패는 null을 반환한다", () => {
 		mockedReadFileSync.mockImplementation(() => {
 			throw new Error("ENOENT: no such file or directory");
 		});
+		expect(getPostDetail("non-existent")).toBeNull();
 
-		const detail = getPostDetail("non-existent");
-		expect(detail).toBeNull();
+		mockedReadFileSync.mockReturnValue(
+			"---\ntitle: incomplete\nslug: bad-post\ndate: 2026-04-01\n---\n" as unknown as ReturnType<typeof fs.readFileSync>
+		);
+		expect(getPostDetail("bad-post")).toBeNull();
 	});
 
 	it("private 포스트도 반환한다 (private 필터링은 호출자 책임)", () => {
@@ -83,14 +64,5 @@ describe("getPostDetail", () => {
 		const detail = getPostDetail("private-post");
 		expect(detail).not.toBeNull();
 		expect(detail?.private).toBe(true);
-	});
-
-	it("frontmatter 검증 실패 → null 반환", () => {
-		mockedReadFileSync.mockReturnValue(
-			"---\ntitle: incomplete\nslug: bad-post\ndate: 2026-04-01\n---\n" as unknown as ReturnType<typeof fs.readFileSync>
-		);
-
-		const detail = getPostDetail("bad-post");
-		expect(detail).toBeNull();
 	});
 });

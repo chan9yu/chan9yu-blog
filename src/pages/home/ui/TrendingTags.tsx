@@ -19,7 +19,7 @@ export function TrendingTags({ tags }: TrendingTagsProps) {
 				return (
 					<li key={tag.slug}>
 						<Link
-							href={`/tags/${tag.slug}`}
+							href={`/tags/${encodeURIComponent(tag.slug)}`}
 							aria-label={`${display} 태그, ${tag.count}개 글`}
 							className="bg-bg-subtle border-border-subtle text-muted-foreground hover:border-accent hover:text-accent focus-visible:ring-ring focus-visible:border-accent focus-visible:text-accent text-chip inline-flex h-7 items-center gap-1.5 rounded-sm border px-2.25 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 						>

@@ -10,8 +10,9 @@ const SAMPLE_PUBLIC_POSTS = [
 		title: "React 19 use",
 		description: "...",
 		date: "2026-04-13",
+		updated: "2026-05-01",
 		private: false,
-		tags: ["react"],
+		tags: ["react", "next"],
 		thumbnail: null,
 		series: null,
 		seriesOrder: null,
@@ -23,15 +24,13 @@ const SAMPLE_PUBLIC_POSTS = [
 		description: "...",
 		date: "2026-04-10",
 		private: false,
-		tags: ["next"],
+		tags: ["react"],
 		thumbnail: null,
 		series: null,
 		seriesOrder: null,
 		readingTimeMinutes: 4
 	}
 ];
-
-const SAMPLE_TAGS = ["react", "next"];
 
 const SAMPLE_SERIES = [
 	{
@@ -41,81 +40,92 @@ const SAMPLE_SERIES = [
 	}
 ];
 
+const LATEST_ISO = new Date("2026-05-01").toISOString();
+
 describe("buildSitemapEntries", () => {
-	it("정적 경로 5개를 priority/changefreq 표대로 생성한다", () => {
+	it("정적 경로 5개를 생성한다", () => {
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: [],
-			tags: [],
+			series: []
+		});
+
+		expect(entries.map((e) => e.url).sort()).toEqual(
+			[`${BASE}/`, `${BASE}/posts`, `${BASE}/series`, `${BASE}/tags`, `${BASE}/about`].sort()
+		);
+	});
+
+	it("/와 /posts, /series, /tags는 공개 글 전체의 최신 수정일을 쓰고 /about은 lastModified가 없다", () => {
+		const entries = buildSitemapEntries({
+			siteUrl: BASE,
+			publicPosts: SAMPLE_PUBLIC_POSTS,
 			series: []
 		});
 
 		const byUrl = new Map(entries.map((e) => [e.url, e]));
 
-		expect(byUrl.get(`${BASE}/`)).toMatchObject({ priority: 1.0, changeFrequency: "daily" });
-		expect(byUrl.get(`${BASE}/posts`)).toMatchObject({ priority: 0.9, changeFrequency: "daily" });
-		expect(byUrl.get(`${BASE}/series`)).toMatchObject({ priority: 0.7, changeFrequency: "weekly" });
-		expect(byUrl.get(`${BASE}/tags`)).toMatchObject({ priority: 0.6, changeFrequency: "weekly" });
-		expect(byUrl.get(`${BASE}/about`)).toMatchObject({ priority: 0.5, changeFrequency: "monthly" });
+		for (const path of ["/", "/posts", "/series", "/tags"]) {
+			expect((byUrl.get(`${BASE}${path}`)?.lastModified as Date).toISOString()).toBe(LATEST_ISO);
+		}
+		expect(byUrl.get(`${BASE}/about`)).not.toHaveProperty("lastModified");
 	});
 
-	it("public 포스트마다 /posts/[slug] entry를 priority 0.8 weekly로 생성한다", () => {
+	it("포스트 lastModified는 updated가 있으면 updated, 없으면 date다", () => {
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: SAMPLE_PUBLIC_POSTS,
-			tags: [],
 			series: []
 		});
 
-		const post = entries.find((e) => e.url === `${BASE}/posts/react-19-use`);
-		expect(post).toMatchObject({ priority: 0.8, changeFrequency: "weekly" });
-		expect(post?.lastModified).toBeInstanceOf(Date);
+		const updatedPost = entries.find((e) => e.url === `${BASE}/posts/react-19-use`);
+		const datedPost = entries.find((e) => e.url === `${BASE}/posts/next-16-app-router`);
+
+		expect((updatedPost?.lastModified as Date).toISOString()).toBe(LATEST_ISO);
+		expect((datedPost?.lastModified as Date).toISOString()).toBe(new Date("2026-04-10").toISOString());
 	});
 
-	it("태그마다 /tags/[tag] entry를 priority 0.5 weekly로 생성한다 (URL encode 포함)", () => {
+	it("시리즈 lastModified는 그 시리즈 글들의 최신 수정일이다", () => {
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: [],
-			tags: ["react", "타입스크립트"],
-			series: []
-		});
-
-		const ko = entries.find((e) => e.url === `${BASE}/tags/${encodeURIComponent("타입스크립트")}`);
-		expect(ko).toMatchObject({ priority: 0.5, changeFrequency: "weekly" });
-	});
-
-	it("시리즈마다 /series/[slug] entry를 priority 0.6 weekly로 생성한다", () => {
-		const entries = buildSitemapEntries({
-			siteUrl: BASE,
-			publicPosts: [],
-			tags: [],
 			series: SAMPLE_SERIES
 		});
 
 		const series = entries.find((e) => e.url === `${BASE}/series/react-19-deep-dive`);
-		expect(series).toMatchObject({ priority: 0.6, changeFrequency: "weekly" });
+		expect((series?.lastModified as Date).toISOString()).toBe(LATEST_ISO);
 	});
 
-	it("포스트 lastModified는 frontmatter date 기반이다", () => {
+	it("태그 lastModified는 그 태그 글들의 최신 수정일이다", () => {
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: SAMPLE_PUBLIC_POSTS,
-			tags: [],
 			series: []
 		});
 
-		const post = entries.find((e) => e.url === `${BASE}/posts/react-19-use`);
-		expect((post?.lastModified as Date).toISOString()).toBe(new Date("2026-04-13").toISOString());
+		const tag = entries.find((e) => e.url === `${BASE}/tags/react`);
+		expect((tag?.lastModified as Date).toISOString()).toBe(LATEST_ISO);
 	});
 
-	it("호출자가 private 제외한 입력만 넘기면 sitemap에 private이 등장하지 않는다", () => {
+	it("글이 한 편뿐인 태그는 noindex 대상이므로 사이트맵에서 뺀다", () => {
 		const entries = buildSitemapEntries({
 			siteUrl: BASE,
 			publicPosts: SAMPLE_PUBLIC_POSTS,
-			tags: SAMPLE_TAGS,
-			series: SAMPLE_SERIES
+			series: []
 		});
 
-		expect(entries.some((e) => e.url.includes("private"))).toBe(false);
+		expect(entries.some((e) => e.url === `${BASE}/tags/react`)).toBe(true);
+		expect(entries.some((e) => e.url === `${BASE}/tags/next`)).toBe(false);
+	});
+
+	it("태그 URL을 인코딩한다", () => {
+		const koreanTagged = SAMPLE_PUBLIC_POSTS.map((post) => ({ ...post, tags: ["타입스크립트"] }));
+
+		const entries = buildSitemapEntries({
+			siteUrl: BASE,
+			publicPosts: koreanTagged,
+			series: []
+		});
+
+		expect(entries.some((e) => e.url === `${BASE}/tags/${encodeURIComponent("타입스크립트")}`)).toBe(true);
 	});
 });

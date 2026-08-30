@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
-import { siteMetadata } from "@/shared/config/site";
+import { OG_IMAGE_SIZE, siteMetadata } from "@/shared/config/site";
+
+type OgImageInput = string | { url: string; width: number; height: number };
 
 type BuildMetadataInput = {
 	title: string;
 	description: string;
 	path: string;
-	image?: string;
+	image?: OgImageInput;
 	type?: "website" | "article";
 	publishedAt?: string;
 	modifiedAt?: string;
@@ -16,11 +18,18 @@ type BuildMetadataInput = {
 	follow?: boolean;
 };
 
+function resolveOgImage(image: OgImageInput | undefined, title: string) {
+	if (typeof image === "string") {
+		return { url: image, alt: title };
+	}
+
+	const resolved = image ?? { url: `/og?title=${encodeURIComponent(title)}`, ...OG_IMAGE_SIZE };
+
+	return { ...resolved, alt: title };
+}
+
 export function buildMetadata(input: BuildMetadataInput) {
-	const ogImage = input.image || `/og?title=${encodeURIComponent(input.title)}`;
-	const ogImageDescriptor = input.image
-		? { url: ogImage, alt: input.title }
-		: { url: ogImage, width: 1200, height: 630, alt: input.title };
+	const ogImage = resolveOgImage(input.image, input.title);
 
 	const ogCommon = {
 		url: input.path,
@@ -28,7 +37,7 @@ export function buildMetadata(input: BuildMetadataInput) {
 		locale: siteMetadata.locale,
 		title: input.title,
 		description: input.description,
-		images: [ogImageDescriptor]
+		images: [ogImage]
 	};
 
 	const openGraph: Metadata["openGraph"] =
@@ -60,7 +69,7 @@ export function buildMetadata(input: BuildMetadataInput) {
 			card: "summary_large_image",
 			title: input.title,
 			description: input.description,
-			images: [{ url: ogImage, alt: input.title }]
+			images: [{ url: ogImage.url, alt: input.title }]
 		}
 	};
 

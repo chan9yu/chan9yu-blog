@@ -113,9 +113,22 @@ BlogPosting의 author와 About의 Person은 같은 `@id`(`{siteUrl}/about#person
 `app/og/route.ts`는 `force-dynamic`이고 **런타임은 Node.js다.** runtime 지정이 없는 데다 폰트를 `node:fs`의 readFileSync로 `src/shared/assets/fonts`에서 읽는다. edge 런타임으로 바꾸면 폰트 로딩이 깨진다.
 
 - 폰트는 Pretendard Regular(400)와 Bold(700) 2종이다. `src/shared/config/fonts.ts`가 모듈 로드 시점에 읽는다
-- 1200x630 이미지를 만들고 title은 80자, tag는 32자에서 자른다
+- 크기는 `OG_IMAGE_SIZE`(1200x630) 하나에서 나온다. 라우트와 `buildMetadata`, 기본 이미지가 같은 상수를 본다. 숫자를 다시 적지 않는다
+- title은 80자, tag는 32자에서 자른다
 - thumbnail 파라미터가 있으면 302로 원본에 넘긴다. 루트 상대 경로이거나 요청 호스트 또는 `siteMetadata.url` 호스트의 http(s) URL일 때만이다. 다른 호스트는 무시하고 기본 이미지를 그린다
 - 응답에 `public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800`을 건다. 302로 넘기는 경우도 같은 헤더를 쓴다. `force-dynamic`이라 CDN이 캐시하지 않으면 SNS 크롤러가 올 때마다 Satori가 새로 그린다
+
+### 배경과 기본 이미지는 디자인 자산이다
+
+배경을 CSS 그라데이션으로 그리지 않는다. `src/shared/config/brand.ts`가 `og-background.jpg`를 base64로 읽어 Satori에 넘긴다. 디자인이 준 배경에는 광원과 질감이 들어 있어 `linear-gradient`로 재현되지 않는다.
+
+홈은 Satori를 거치지 않고 `public/images/og-default.jpg`를 그대로 쓴다. 로고와 이름, 태그라인이 이미 그려진 완성 이미지다. `buildMetadata`에 `OG_DEFAULT_IMAGE`를 넘기면 url과 함께 치수도 나간다.
+
+### 카드 안에 브랜드 표기는 하나다
+
+카카오톡과 링크드인은 이미지 **아래에** 제목과 도메인을 자기가 다시 그린다. 그래서 이미지 안에 같은 것을 또 넣으면 한 카드에서 브랜드가 대여섯 번 반복된다. 2026-08-30 이전 구현이 그랬다. 위쪽 `chan9yu.dev`와 아래쪽 `chan9yu.dev`가 글자까지 같았고, 태그를 넘기면 위쪽 `#react`가 제목 `#react`와 겹쳤다.
+
+지금 구성은 위쪽에 로고 심볼 하나(태그를 넘기면 `#태그`), 가운데 제목, 아래쪽 `chan9yu.dev`다. 요소를 더할 때 이미 있는 것과 같은 말을 하지 않는지 본다.
 
 ## frontmatter 게이트
 

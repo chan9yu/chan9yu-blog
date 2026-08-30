@@ -9,14 +9,11 @@ import {
 	isBadgeTheme,
 	parseBadgeIndex
 } from "@/shared/config/badge";
-import { LOGO_MARK_WHITE_DATA_URI } from "@/shared/config/brand";
+import { BADGE_PLACEHOLDER_DATA_URI } from "@/shared/config/badge-assets";
 import { loadPretendardFonts, PRETENDARD_FAMILY } from "@/shared/config/fonts";
-import { siteHostname } from "@/shared/config/site";
 import { formatDate } from "@/shared/lib/format/formatDate";
 
 import { badgeIndices } from "./badge-redirect";
-
-const MARK_SIZE = 42;
 
 export function generateBadgeCardParams() {
 	return BADGE_THEMES.flatMap((theme) => badgeIndices().map((index) => ({ index: String(index), theme })));
@@ -50,34 +47,13 @@ export async function renderBadgeCard(
 			}}
 		>
 			<div style={{ display: "flex", width: "100%", height: BADGE_CARD.thumbHeight, backgroundColor: palette.border }}>
-				{imageDataUri ? (
-					<img
-						src={imageDataUri}
-						alt=""
-						width={BADGE_CARD.width}
-						height={BADGE_CARD.thumbHeight}
-						style={{ objectFit: "cover" }}
-					/>
-				) : (
-					<div
-						style={{
-							display: "flex",
-							width: "100%",
-							height: "100%",
-							alignItems: "center",
-							justifyContent: "center",
-							gap: 12,
-							backgroundImage: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #4f46e5 100%)",
-							color: "#c7d2fe",
-							fontSize: 34,
-							fontWeight: 700,
-							letterSpacing: "0.04em"
-						}}
-					>
-						<img src={LOGO_MARK_WHITE_DATA_URI} alt="" width={MARK_SIZE} height={MARK_SIZE} />
-						{siteHostname}
-					</div>
-				)}
+				<img
+					src={imageDataUri ?? BADGE_PLACEHOLDER_DATA_URI[theme]}
+					alt=""
+					width={BADGE_CARD.width}
+					height={BADGE_CARD.thumbHeight}
+					style={{ objectFit: "cover" }}
+				/>
 			</div>
 
 			<div

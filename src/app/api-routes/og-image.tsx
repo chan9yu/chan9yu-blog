@@ -1,12 +1,12 @@
 import { ImageResponse } from "next/og";
 
-import { LOGO_MARK_WHITE_DATA_URI } from "@/shared/config/brand";
+import { LOGO_MARK_WHITE_DATA_URI, OG_BACKGROUND_DATA_URI } from "@/shared/config/brand";
 import { loadPretendardFonts, PRETENDARD_FAMILY } from "@/shared/config/fonts";
-import { siteHostname, siteMetadata } from "@/shared/config/site";
+import { OG_IMAGE_SIZE, siteHostname, siteMetadata } from "@/shared/config/site";
 
 const MAX_TITLE = 80;
 const MAX_TAG = 32;
-const MARK_SIZE = 28;
+const MARK_SIZE = 44;
 const CACHE_HEADERS = {
 	"Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
 };
@@ -50,8 +50,6 @@ export function renderOgImage(req: Request) {
 		}
 	}
 
-	const eyebrow = tag ? `#${tag}` : `${siteMetadata.name}.dev`;
-
 	return new ImageResponse(
 		<div
 			style={{
@@ -61,23 +59,29 @@ export function renderOgImage(req: Request) {
 				flexDirection: "column",
 				alignItems: "flex-start",
 				justifyContent: "space-between",
-				backgroundImage: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 55%, #4f46e5 100%)",
+				backgroundImage: `url(${OG_BACKGROUND_DATA_URI})`,
+				backgroundSize: `${OG_IMAGE_SIZE.width}px ${OG_IMAGE_SIZE.height}px`,
 				color: "#f8fafc",
 				fontFamily: PRETENDARD_FAMILY,
 				padding: "72px 88px"
 			}}
 		>
-			<div
-				style={{
-					display: "flex",
-					fontSize: 24,
-					fontWeight: 600,
-					letterSpacing: "0.04em",
-					color: "#c7d2fe",
-					textTransform: "uppercase"
-				}}
-			>
-				{eyebrow}
+			<div style={{ display: "flex", alignItems: "center", height: MARK_SIZE }}>
+				{tag ? (
+					<span
+						style={{
+							fontSize: 24,
+							fontWeight: 600,
+							letterSpacing: "0.04em",
+							color: "#818cf8",
+							textTransform: "uppercase"
+						}}
+					>
+						{`#${tag}`}
+					</span>
+				) : (
+					<img src={LOGO_MARK_WHITE_DATA_URI} alt="" width={MARK_SIZE} height={MARK_SIZE} />
+				)}
 			</div>
 
 			<div
@@ -94,26 +98,10 @@ export function renderOgImage(req: Request) {
 				{title}
 			</div>
 
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					width: "100%",
-					fontSize: 22,
-					color: "#a5b4fc"
-				}}
-			>
-				<span>{siteHostname}</span>
-				<div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-					<img src={LOGO_MARK_WHITE_DATA_URI} alt="" width={MARK_SIZE} height={MARK_SIZE} />
-					<span style={{ fontWeight: 700, color: "#f8fafc" }}>{siteMetadata.name}</span>
-				</div>
-			</div>
+			<div style={{ display: "flex", fontSize: 22, color: "#a1a1aa" }}>{siteHostname}</div>
 		</div>,
 		{
-			width: 1200,
-			height: 630,
+			...OG_IMAGE_SIZE,
 			fonts: loadPretendardFonts(),
 			headers: CACHE_HEADERS
 		}

@@ -31,6 +31,16 @@ export const siteMetadata = {
 
 export const siteHostname = new URL(siteMetadata.url).hostname;
 
+export const OG_IMAGE_SIZE = {
+	width: 1200,
+	height: 630
+} as const;
+
+export const OG_DEFAULT_IMAGE = {
+	url: "/images/og-default.jpg",
+	...OG_IMAGE_SIZE
+} as const;
+
 type SocialLinkConfig = {
 	label: string;
 	href: string;

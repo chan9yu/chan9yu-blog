@@ -1,8 +1,9 @@
-import { readFileSync } from "node:fs";
 import { join } from "node:path";
+
+import { fileToDataUri } from "@/shared/lib/fileToDataUri";
 
 const IMAGE_DIR = join(process.cwd(), "src", "shared", "assets", "images");
 
-const LOGO_MARK_WHITE = readFileSync(join(IMAGE_DIR, "logo-mark-white.png"));
+export const LOGO_MARK_WHITE_DATA_URI = fileToDataUri(join(IMAGE_DIR, "logo-mark-white.png"));
 
-export const LOGO_MARK_WHITE_DATA_URI = `data:image/png;base64,${LOGO_MARK_WHITE.toString("base64")}`;
+export const OG_BACKGROUND_DATA_URI = fileToDataUri(join(IMAGE_DIR, "og-background.jpg"));

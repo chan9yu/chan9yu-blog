@@ -50,7 +50,7 @@ const eslintConfig = defineConfig([
 	layerRule(["src/pages/**/*.{ts,tsx}"], ["app"]),
 	layerRule(["app/**/*.{ts,tsx}"], []),
 	prettierConfig,
-	globalIgnores([".next/**", "_workspace/**", "contents/**"])
+	globalIgnores([".next/**", "_workspace/**", "contents/**", "coverage/**"])
 ]);
 
 export default eslintConfig;

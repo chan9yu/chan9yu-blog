@@ -10,15 +10,13 @@ import { Providers } from "@/app/providers";
 import { getPublicPosts } from "@/entities/post/index.server";
 import { SearchTrigger } from "@/features/search";
 import { ThemeSwitcher } from "@/features/theme";
-import { getSiteUrl, siteMetadata } from "@/shared/config/site";
+import { getSiteUrl, OG_DEFAULT_IMAGE, siteMetadata } from "@/shared/config/site";
 import { buildWebSiteJsonLd, JsonLdScript } from "@/shared/seo";
 import { ScrollReset } from "@/shared/ui/ScrollReset";
 import { ScrollToTop } from "@/shared/ui/ScrollToTop";
 import { Footer } from "@/widgets/footer";
 import { Header } from "@/widgets/header";
 import { MobileMenu } from "@/widgets/mobile-menu";
-
-const ROOT_OG_IMAGE = `/og?title=${encodeURIComponent(siteMetadata.name)}`;
 
 const googleSiteVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
 const naverSiteVerification = process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION?.trim();
@@ -60,13 +58,13 @@ export const rootMetadata: Metadata = {
 		url: "/",
 		title: siteMetadata.title,
 		description: siteMetadata.description,
-		images: [{ url: ROOT_OG_IMAGE, width: 1200, height: 630, alt: siteMetadata.title }]
+		images: [{ ...OG_DEFAULT_IMAGE, alt: siteMetadata.title }]
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: siteMetadata.title,
 		description: siteMetadata.description,
-		images: [ROOT_OG_IMAGE]
+		images: [OG_DEFAULT_IMAGE.url]
 	},
 	icons: {
 		icon: [

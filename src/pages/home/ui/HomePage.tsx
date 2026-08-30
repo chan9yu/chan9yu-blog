@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getPublicPosts, getTrendingPosts, resolvePostThumbnails } from "@/entities/post/index.server";
 import { getTrendingSeries } from "@/entities/series";
 import { getTrendingTags } from "@/entities/tag";
+import { OG_DEFAULT_IMAGE } from "@/shared/config/site";
 import { buildMetadata } from "@/shared/seo";
 import { Container } from "@/shared/ui/Container";
 import { RecentPostsList } from "@/widgets/post-list";
@@ -20,7 +21,8 @@ export const metadata: Metadata = buildMetadata({
 	title: "chan9yu | 프론트엔드 개발 블로그",
 	description:
 		"프론트엔드 엔지니어 chan9yu의 기술 블로그. React 19, TypeScript, Next.js App Router 실무 경험과 WebRTC, 웹 성능 최적화 등 다양한 주제를 깊이 있게 다루며 최신 학습 내용을 정리해 공유합니다.",
-	path: "/"
+	path: "/",
+	image: OG_DEFAULT_IMAGE
 });
 
 const RECENT_POSTS_LIMIT = 6;
